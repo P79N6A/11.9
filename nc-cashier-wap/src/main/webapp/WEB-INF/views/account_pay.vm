@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <title>收银台</title>
+    <link href="${ctx.contextPath}/static/css/common.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="${ctx.contextPath}/static/css/mobile-pay-161c5cdb80.min.css" type="text/css">
+    <script src="${ctx.contextPath}/static/js/jbase64.min.js"></script>
+    <script>
+        document.title = sessionStorage.getItem("merchartName") ? sessionStorage.getItem("merchartName") : "收银台";
+        function encrypt(id) {
+            /*
+             * 同步提交表单加密
+             * */
+            var form = document.getElementById(id).cloneNode(true);
+            form.style.cssText = "position: absolute; left: -9999px; visibility: hidden";
+            var eles = form.elements;
+            for (var i = 0, l = eles.length; i < l; i++) {
+                if (eles[i].getAttribute("encrypt") == "true") {
+                    eles[i].value = BASE64.encoder(eles[i].value);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit();
+            return false;
+        }
+    </script>
+    <style>
+        .forget-password-trigger {
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            color: #23ac38;
+            text-align: center;
+        }
+
+        .pme-forget-password li span {
+            color: #e43826;
+        }
+
+        .pme-forget-password .yeepay {
+            text-align: center;
+        }
+
+        .pme-forget-password .yeepay img {
+            max-width: 60%;
+        }
+    </style>
+</head>
+<body>
+<header class="pme-order-info" id="mod-orderInfo">
+    <p class="receive-side" id="receiveSide"
+       style="font-size: 14px;margin-bottom:0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; margin-left: 10px; margin-right: 10px;">
+        $!{companyText}</p>
+
+    <p class="amount" style="margin-top: 0;">￥$!{amount}</p>
+    <label for="mod-detailsSwitch"></label>
+</header>
+<div class="pme-order-details-wrapper">
+    <input type="checkbox" class="details-switch" id="mod-detailsSwitch"/>
+
+    <div class="order-details" style="font-size: 14px;">
+        <div class="details-info">
+            <div style="color:#9e9e9e;">商品名称</div>
+            <div style="width:80%;white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">$!{productName}</div>
+        </div>
+        <div class="details-info">
+            <div style="color:#9e9e9e;">订单编号</div>
+            <div style="width:80%;white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">$!{orderId}</div>
+        </div>
+    </div>
+    <span class="details-switch-trigger">&#xe601;</span>
+</div>
+<div class="mt10">
+    <form id="accountPayForm" class="pme-form" method="post" action="${ctx.contextPath}/wap/accountpay/pay" onsubmit="return sub()">
+        <figure class="input-box">
+            <label>
+                <mark>账户名</mark>
+                <input type="text" encrypt="true" placeholder="请输入企业账户名" name="userAccount">
+                <i class="clear iconfont">&#xe600;</i>
+            </label>
+        </figure>
+        <figure class="input-box">
+            <label>
+                <mark>交易密码</mark>
+                <input type="password" encrypt="true" autocomplete="off" placeholder="请输入交易密码" name="tradePassword">
+                <i class="clear iconfont">&#xe600;</i>
+            </label>
+        </figure>
+        <figure class="input-box">
+            <label>
+                <mark>验证码</mark>
+                <input type="text" maxlength="10" placeholder="请输入验证码" name="captcha">
+                <i class="clear iconfont">&#xe600;</i>
+                <span><img src="/nc-cashier-wap/captcha/refresh?token=${token}" id="verifyCodeImg" height="28" style="vertical-align: middle"></span>
+            </label>
+        </figure>
+        <input type="hidden" name="token" value="$!{token}">
+        <div class="pme-wrapper pr">
+            <button type="submit" class="J-payBtn">确认支付</button>
+        </div>
+    </form>
+</div>
+<div class="forget-password-trigger" id="forgetPassword">忘记密码</div>
+<script src="${ctx.contextPath}/npc/js/jquery.js"></script>
+<script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+<script>
+    document.querySelector("#forgetPassword").addEventListener("click", function () {
+        To.Popup.base("<ol><li>登陆易宝商户后台</li><li>联系客服电话  <span>4001-500-800</span></li><li>关注易宝公众号  <span>yeepay007</span></li></ol><div class='yeepay'><img src='${ctx.contextPath}/static/images/yeepay.png'></div>", "pme-forget-password", true, true, "修改交易密码方法");
+    }, false);
+    function validate() {
+        var root = this.parentNode.parentNode;
+        if (this.name == "userAccount") {
+            if (this.value == "") {
+                To.ui.errorMsg("企业账户名不能为空", root);
+                return false;
+            }
+        }
+        if (this.name == "tradePassword") {
+            if (this.value == "") {
+                To.ui.errorMsg("交易密码不能为空", root);
+                return false;
+            }
+            if (this.value.length < 6) {
+                To.ui.errorMsg("交易密码最小长度为6位", root);
+                return false;
+            }
+            if (this.value.length > 32) {
+                To.ui.errorMsg("交易密码最大长度为32位", root);
+                return false;
+            }
+        }
+
+        if (this.name == "captcha") {
+            if (this.value == "") {
+                To.ui.errorMsg("验证码不能为空", root);
+                return false;
+            }
+        }
+        return true;
+    }
+    document.querySelector("#verifyCodeImg").addEventListener("click", function () {
+        var href = this.src.substring(0, this.src.indexOf("?"));
+        this.src = href + "?token=${token}&" + Date.now();
+    });
+    +function bindValidate() {
+        var inputs = document.querySelectorAll("form input");
+        var type = /(text|password|number|tel|email|time|date)/;
+        for (var i = 0, l = inputs.length; i < l; i++) {
+            type.test(inputs[i].type) ? inputs[i].addEventListener("blur", validate, false) : false;
+        }
+    }();
+    function sub() {
+        var error = document.querySelector("#pme-errorMsg");
+        var input = document.querySelectorAll("form input");
+        if (error && !error.classList.contains("hide")) {
+            document.querySelector(".J-payBtn").disabled = false;
+            return false;
+        }
+        for (var i = 0, l = input.length; i < l; i++) {
+            var result = validate.call(input[i]);
+            if (result === false) {
+                document.querySelector(".J-payBtn").disabled = false;
+                return false;
+            }
+
+        }
+        document.querySelector(".J-payBtn").disabled = true;
+        To.loading("正在支付，请耐心等待...");
+        return encrypt("accountPayForm");
+    }
+</script>
+#if ($errorMsg)
+<script>
+    if ("$!{retryTimes}" && "$!{retryTimes}">0) {
+        To.Popup.alert("密码输入错误，您还可以重试${retryTimes}次");
+    } else if ("$!{frozenTime}") {
+        To.Popup.alert("由于密码输入错误次数过多，您的帐号已经被冻结，请${frozenTime}后重试");
+    } else {
+        To.Popup.alert("$errorMsg($errorCode)");
+    }
+</script>
+#end
+</body>
+</html>

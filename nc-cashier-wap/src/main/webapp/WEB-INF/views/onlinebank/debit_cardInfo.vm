@@ -1,0 +1,644 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<title>一键支付</title>
+<link rel="stylesheet" href="${ctx.contextPath}/npc/css/mobile-pay-161c5cdb80.min.css">
+<link type="text/css" href="${ctx.contextPath}/npc/css/base.css" rel="stylesheet" />
+<link type="text/css" href="${ctx.contextPath}/npc/css/keyPay.css" rel="stylesheet" />
+<link type="text/css" href="${ctx.contextPath}/npc/css/form.css" rel="stylesheet" />
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/yeepay-1.0-min.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/getuserinfo.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+	<script type="text/javascript" src="${ctx.contextPath}/npc/js/jbase64.min.js"></script>
+	<script>
+		function encrypt(id) {
+			/*
+			 * 同步提交表单加密
+			 * */
+			var form = document.getElementById(id).cloneNode(true);
+			form.style.cssText = "position: absolute; left: -9999px; visibility: hidden";
+			var eles = form.elements;
+			for (var i = 0, l = eles.length; i < l; i++) {
+				if (eles[i].getAttribute("encrypt") == "true") {
+					eles[i].value = BASE64.encoder(eles[i].value);
+				}
+			}
+			document.body.appendChild(form);
+			form.submit();
+			return false;
+		}
+	</script>
+</head>
+
+<body>
+<!--头部-->
+<div class="header">
+  <div class="layout clearfix zoom">
+    <h1 class="fl mt15 logo"><a href="http://www.yeepay.com/" target="_blank" class="fl">易宝支付</a><span class="fl viceLogo">一键支付</span></h1>
+    <!--<p class="fr servicePhone">7x24小时客服电话：4001-500-800</p>--> 
+  </div>
+</div>
+<!--头部结束--> 
+<!--主要内容-->
+<div class="layout mainWrap clearfix zoom">
+  <div class="fl orderInfo">
+    <h2>我的订单</h2>
+    <dl class="infoList firstInfoList mt15 clearfix zoom">
+      <dt>金　额：</dt>
+      <dd><span class="sum fa">${amount}</span>元</dd>
+      <dt>商　品：</dt>
+      <dd>${productname}</dd>
+      <dt>商　户：</dt>
+      <dd>${companyname}</dd>
+    </dl>
+    <dl class="infoList mt15 clearfix zoom">
+      <dt>订单号：</dt>
+      <dd><span class="fa">${orderid}</span></dd>
+      <dt>日　期：</dt>
+      <dd><span class="fa">${transtime}</span></dd>
+    </dl>
+  </div>
+  <div class="fl rightContainer">
+    <ul class="tagWrap clearfix zoom">
+      <li>银行卡支付<p class="product-random-guide">随机立减</p></li>
+    </ul>
+    <div class="infoFormWrap">
+      <form action="${ctx.contextPath}/pc/pay/first" class="form" id="form1">
+        <input type="hidden" name="bankCode" value="${bc.bankCode}" />
+        <input type="hidden" name="cardno" value="${bc.cardno}">
+        <input type="hidden" name="cardType" value="${bc.cardtype}" />
+        <input type="hidden" name="bankName" value="${bc.bankName}" />
+        <input id="token" type="hidden" name="token" value="$!{token}" />
+        <input type="hidden" id="verifycodeHidden" name="verifycode" value="" />
+        <div class="row"> <span class="tit">储蓄卡：</span>
+          <p class="pr selectedBank ${bc.bankCode}"><span class="cif">******$!{bc.cardlater} (储蓄卡)</span></p>
+          #if(!${firstTouchuanIsCardNo} && ${showChangeCard})<!--是否是透传卡号,透传有卡号，不允许使用其他卡支付-->
+              #if(${isBindPay})<!--是否是绑卡支付的其他卡支付，如果是绑卡支付的其他卡支付，则在卡信息页点击其他卡支付时，跳转回绑卡支付页-->
+                 <a href="${ctx.contextPath}/pc/request/bind?token=${token}" class="f12">使用其他卡付款</a> 
+              #else
+                <a href="${ctx.contextPath}/pc/request/first?token=${token}" class="f12">使用其他卡付款</a> 
+              #end
+          #end
+           </div>
+           
+          #if(${quata}&&(${quata.orderQuotaDou}!=-1 || ${quata.dayQuotaDou}!=-1 || ${quata.monthQuotaDou}!=-1))
+              <div class="pr limitText"><span class="arrow"></span>
+                  $!{bc.bankName}信用卡默认单笔限额为
+                  #if(${quata.orderQuotaDou}!=-1 && ${quata.orderQuotaDou})${quata.orderQuotaDou}元/笔；#end
+                  单日限额为
+                  #if(${quata.dayQuotaDou}!=-1 && ${quata.dayQuotaDou})${quata.dayQuotaDou}元/日；#end
+                  单月限额为
+                  #if(${quata.monthQuotaDou}!=-1 && ${quata.monthQuotaDou})${quata.monthQuotaDou}元/月； #end
+                  实际限额以您在银行的设置为准。
+                 </div>
+          #end
+        
+        #if(${needname})
+        <div class="row"> <span class="tit">姓名：</span> <span>
+          #if(${owner})
+           <input id="name" type="text" placeholder="真实姓名" disabled name="name" value="$!{owner}"/>
+           #else
+           <input id="name" type="text" placeholder="付款银行卡的开户姓名" name="name" value="$!{cardInfo.name}"/>
+           #end
+          </span>
+          <p id="name_error" class="error none">请输入真实姓名</p>
+        </div>
+        #end
+       
+        #if(${needidno})
+        <div class="row"> <span class="tit">身份证：</span> <span>
+           #if(${idno})
+            <input id="idno" maxlength="18" type="text" disabled placeholder="请输入身份证号" name="idno" value="$!{idno}">
+            #else
+           <input id="idno" maxlength="18" type="text" placeholder="请输入身份证号" name="idno" value="$!{cardInfo.idno}">
+            #end
+          </span>
+          <p id="idno_error" class="error none">请正确输入身份证号</p>
+        </div>
+        #end
+        
+        #if(${needmobile})
+        <div class="row"> <span class="tit">手机号：</span> <span>
+			#if(${phoneNo})
+			<input id="phone" maxlength="11" type="text" disabled placeholder="此卡在银行预留的手机号" name="phone"  value="$!{phoneNo}">
+			#else
+           <input id="phone" maxlength="11" type="text" placeholder="此卡在银行预留的手机号" name="phone"  value="$!{cardInfo.phone}">
+			#end
+          </span>
+          <p id="phone_error" class="error none">请正确输入银行预留的手机号</p>
+           </div>
+        #end
+        
+        #if(${needpass})
+        <div class="row"> <span class="tit">取款密码：</span> <span>
+           <input id="pass" maxlength="6" type="password" placeholder="此卡对应的取款密码" name="pass"  value="$!{cardInfo.pass}">
+          </span>
+          <p id="pass_error" class="error none">请正确输入取款密码</p>
+           </div>
+        #end
+        
+        <p class="argeen pr">
+          <input id="agree" type="checkbox" value="我已同意" checked="checked" />
+          <span class="checkTxt">我已同意<a href="javascript:popup(5)">《一键支付协议》</a></span><span class="checkTxt boc-agreement none">和<a href="javascript:popup(8)">《中国银行快捷支付服务协议》</a></span></p>
+        <div class="submitPay">
+        <a href="javascript:void(0)" onclick="check()" class="greenBtn mb10" id="submitpay" ><i class="leftBorder"></i>提交支付</a>
+        <div class="error mb100 none" id="errorMsg"></div>
+        </div>
+        
+      </form>
+      <script>
+        var path="${ctx.contextPath}/npc";
+      </script>
+     <script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+     <script type="text/javascript" src="${ctx.contextPath}/npc/js/form-min.js"></script> 
+    </div>
+  </div>
+</div>
+<!--主要内容结束--> 
+<!--版权-->
+<div class="layout copyright">本支付由易宝支付提供，易宝支付版权所有 &copy; 2003-2014  京ICP备08100193号</div>
+<!--版权结束--> 
+<!--底部-->
+<div class="footer">
+  <div class="layout"> <a href="http://www.yeepay.com/article?type=wireless&aid=991" target="_blank"><img src="${ctx.contextPath}/npc/images/f_03.gif" /></a> <a href="http://www.yeepay.com/article?type=wireless&aid=990" target="_blank"><img src="${ctx.contextPath}/npc/images/f_05.gif" /></a> <a href="http://www.yeepay.com/article?type=wireless&aid=992" target="_blank"><img src="${ctx.contextPath}/npc/images/f_11.gif" /></a> <a href="http://www.visa.com.cn/index.shtml" target="_blank"><img src="${ctx.contextPath}/npc/images/f_07.gif" /></a> <a href="https://sealinfo.verisign.com/splash?form_file=fdf/splash.fdf&dn=*.yeepay.com&lang=en" target="_blank"><img src="${ctx.contextPath}/npc/images/f_10.gif" /></a> </div>
+</div>
+<!--底部结束-->
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+<script>
+
+	if(jQuery(".selectedBank").hasClass("BOC")){
+		jQuery(".boc-agreement").removeClass("none");
+	}
+//页面加载完毕后
+    //第一次发送成功的记录值
+     var SucesmsStatus = null;
+    //第一次发送失败的记录值
+    var FailsmsStatus = null;
+    //下单返回的短验类型
+    var smsType = null;
+	jQuery(document).ready(function() {
+		jQuery("#agree").attr("checked", "checked");//默认选中同意一键支付合约
+		jQuery("#agree").attr("checked", "true");
+		document.getElementById("agree").checked = true;
+		
+		function aaa(){
+			jQuery("#agree").attr("checked", "checked");//默认选中同意一键支付合约
+			jQuery("#agree").attr("checked", "true");
+		}
+		if("1464239833562PCYJ".length>17){
+			jQuery("#orderid").html("1464239833562PCYJ".substring(0, 17)+"...");
+		}
+		
+			jQuery("#name").focus(function(){
+	    		var id = jQuery(this).attr("id");
+	    		var error_id = id+"_error";
+	    		jQuery("#"+error_id).attr("class","none");
+	    		jQuery(this).attr("class","");
+			});
+			jQuery("#name").blur(function(){
+				//姓名校验
+				if (jQuery("#name").val() == "" || !/^[\u4E00-\u9FA5·.]+$/.test(jQuery("#name").val())) {
+					jQuery("#name_error").attr("class","error");
+					jQuery("#name").attr("class","writError");
+					return false;
+				} else {
+					if (jQuery("#name").val().length > 20) {
+						jQuery("#name_error").attr("class","error");
+						jQuery("#name").attr("class","writError");
+						return false;
+					} else {
+						if(/[\u4E00-\u9FA5]/i.test(jQuery("#name").val())){
+							jQuery("#name_error").attr("class","none");
+							jQuery("#name").attr("class", "");
+						}else{
+							jQuery("#name_error").attr("class","error");
+							jQuery("#name").attr("class","writError");
+							return false;
+						}
+					}
+				}
+			});
+		
+			jQuery("#phone").focus(function(){
+				var id = jQuery(this).attr("id");
+				var error_id = id+"_error";
+				jQuery("#"+error_id).attr("class","none");
+				jQuery(this).attr("class","");
+			});
+			jQuery("#phone").blur(function(){
+				//手机号码校验
+				if (jQuery("#phone").val() == "" || /[^\d]/.test(jQuery("#phone").val())) {
+					jQuery("#phone_error").attr("class","error");
+					jQuery("#phone").attr("class","writError");
+					return false;
+				}else {
+					if(jQuery("#phone").val().length!=11){
+						jQuery("#phone_error").attr("class","error");
+						jQuery("#phone").attr("class","writError");
+						return false;
+					}else{
+						jQuery("#phone_error").attr("class","none");
+						jQuery("#phone").attr("class","");
+					}
+				}
+			});
+			
+			jQuery("#pass").focus(function(){
+				var id = jQuery(this).attr("id");
+				var error_id = id+"_error";
+				jQuery("#"+error_id).attr("class","none");
+				jQuery(this).attr("class","");
+			    });
+			jQuery("#pass").blur(function(){
+			   if(jQuery("#pass").val() == "" || /[^\d]/.test(jQuery("#pass").val())){
+			        jQuery("#pass_error").attr("class","error");
+					jQuery("#pass").attr("class","writError");
+					return false;
+			   }else{
+			        if(jQuery("#pass").val().length!=6){
+						jQuery("#pass_error").attr("class","error");
+						jQuery("#pass").attr("class","writError");
+						return false;
+					}else{
+						jQuery("#pass_error").attr("class","none");
+						jQuery("#pass").attr("class","");
+					}
+			   }
+			});
+		
+			jQuery("#idno").focus(function(){
+				var id = jQuery(this).attr("id");
+				var error_id = id+"_error";
+				jQuery("#"+error_id).attr("class","none");
+				jQuery(this).attr("class","");
+			});
+			jQuery("#idno").blur(function(){
+				//身份证校验
+				if (jQuery("#idno").val() == "") {
+					jQuery("#idno_error").attr("class","error");
+					jQuery("#idno").attr("class","writError");
+					return false;
+				} else {
+					if (jQuery("#idno").val().length < 18
+							|| jQuery("#idno").val().length > 18) {
+						jQuery("#idno_error").attr("class","error");
+						jQuery("#idno").attr("class","writError");
+						return false;
+					} else {
+						if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(jQuery("#idno").val())) {
+							jQuery("#idno_error").attr("class","error");
+							jQuery("#idno").attr("class","writError");
+							return false;
+						} else {
+							if (isNaN(jQuery("#idno").val().substr(
+									jQuery("#idno").val().length - 1,
+									1))) {
+								if (jQuery("#idno").val()
+										.substr(
+												jQuery("#idno").val().length - 1,
+												1) != "X"
+										&& jQuery("#idno").val()
+												.substr(
+														jQuery("#idno").val().length - 1,
+														1) != "x") {
+									jQuery("#idno_error").attr("class","error");
+									jQuery("#idno").attr("class","writError");
+									return false;
+								} else {
+									jQuery("#idno_error").attr("class","none");
+									jQuery("#idno").attr("class","");
+								}
+							}else{
+								jQuery("#idno_error").attr("class","none");
+								jQuery("#idno").attr("class","");
+							}
+						}
+					}
+				}
+			});
+    	
+	});
+	//点击提交支付，再次校验输入的卡信息，并调用发短信接口
+     function check(){
+            //是否同意《一键支付协议》校验
+		    if(document.getElementById("agree").checked == false){
+		          popup(5);
+		          return false;
+			 }
+			 #if(${needname})
+			 #if(!${owner})
+    		//姓名校验
+			if (jQuery("#name").val() == "" || !/^[\u4E00-\u9FA5·.]+$/.test(jQuery("#name").val())) {
+				jQuery("#name_error").attr("class","error");
+				jQuery("#name").attr("class","writError");
+				return false;
+			} else {
+				if (jQuery("#name").val().length > 20) {
+					jQuery("#name_error").attr("class","error");
+					jQuery("#name").attr("class","writError");
+					return false;
+				} else {
+					jQuery("#name_error").attr("class","none");
+					jQuery("#name").attr("class", "");
+				}
+			}
+		    #end
+		    #end
+		    
+		    #if(${needidno}) 
+		    #if(!${idno})
+			//身份证校验
+			if (jQuery("#idno").val() == "") {
+				jQuery("#idno_error").attr("class","error");
+				jQuery("#idno").attr("class","writError");
+				return false;
+			} else {
+				if (jQuery("#idno").val().length < 18
+						|| jQuery("#idno").val().length > 18) {
+					jQuery("#idno_error").attr("class","error");
+					jQuery("#idno").attr("class","writError");
+					return false;
+				} else {
+					if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(jQuery("#idno").val())) {
+						jQuery("#idno_error").attr("class","error");
+						jQuery("#idno").attr("class","writError");
+						return false;
+					} else {
+						if (isNaN(jQuery("#idno").val().substr(
+								jQuery("#idno").val().length - 1,
+								1))) {
+							if (jQuery("#idno").val()
+									.substr(
+											jQuery("#idno").val().length - 1,
+											1) != "X"
+									&& jQuery("#idno").val()
+											.substr(
+													jQuery("#idno").val().length - 1,
+													1) != "x") {
+								jQuery("#idno_error").attr("class","error");
+								jQuery("#idno").attr("class","writError");
+								return false;
+							} else {
+								jQuery("#idno_error").attr("class","none");
+								jQuery("#idno").attr("class","");
+							}
+						}else{
+							jQuery("#idno_error").attr("class","none");
+							jQuery("#idno").attr("class","");
+						}
+					}
+				}
+			}
+           #end
+           #end
+           
+           #if(${needmobile}) 
+           #if(!${phoneNo})
+			//手机号码校验
+			if (jQuery("#phone").val() == "") {
+				jQuery("#phone_error").attr("class","error");
+				jQuery("#phone").attr("class","writError");
+				return false;
+			}else {
+				if(jQuery("#phone").val().length!=11){
+					jQuery("#phone_error").attr("class","error");
+					jQuery("#phone").attr("class","writError");
+					return false;
+				}else{
+					jQuery("#phone_error").attr("class","none");
+					jQuery("#phone").attr("class","");
+				}
+			}
+			#end
+			#end
+			  
+			  #if(${needpass}) 
+			   //密码校验
+			   jQuery("#pass").blur(function(){
+			   if(jQuery("#pass").val() == "" || /[^\d]/.test(jQuery("#pass").val())){
+			        jQuery("#pass_error").attr("class","error");
+					jQuery("#pass").attr("class","writError");
+					return false;
+			   }else{
+			        if(jQuery("#pass").val().length!=6){
+						jQuery("#pass_error").attr("class","error");
+						jQuery("#pass").attr("class","writError");
+						return false;
+					}else{
+						jQuery("#pass_error").attr("class","none");
+						jQuery("#pass").attr("class","");
+					}
+			   }
+			});
+			#end
+			   
+			jQuery.post("${ctx.contextPath}/pc/ajax/smsSend", {
+						bankCode:jQuery("#form1 input[name=bankCode]").val(),
+						cardno:BASE64.encoder(jQuery("#form1 input[name=cardno]").val()),
+						cardType:jQuery("#form1 input[name=cardType]").val(),
+						bankName:jQuery("#form1 input[name=bankName]").val(),
+						name:BASE64.encoder(jQuery("#form1 input[name=name]").val()),
+						idno:BASE64.encoder(jQuery("#form1 input[name=idno]").val()),
+						valid:BASE64.encoder(jQuery("#form1 input[name=valid]").val()),
+						cvv2:BASE64.encoder(jQuery("#form1 input[name=cvv2]").val()),
+						pass:BASE64.encoder(jQuery("#form1 input[name=pass]").val()),
+						phone:BASE64.encoder(jQuery("#form1 input[name=phone]").val()),
+						token:jQuery("#form1 input[name=token]").val()
+					},
+                       function(data) {
+                           var result = JSON.parse(data);
+                           var error = result.msg;
+                           var jumpTargett = result.jumpTarget;
+                           var jumpTarget = jumpTargett;
+                           var errormsg = result.msg;
+                           if (result.status == "success") {
+                             SucesmsStatus = result.status;
+                             smsType = result.reqSmsSendTypeEnum;
+                             if(result.reqSmsSendTypeEnum=="YEEPAY"){
+                                 #if(${phoneNo})
+                                       var ybNum = "${phoneNo}" ;
+                                       popup(0,ybNum);
+                                  #else
+                                       var ybNum = result.phoneNo;
+	                                   var ybVal = ybNum.replace(ybNum.substring(3 , 7) , "****");
+                                       popup(0,ybVal);
+                                  #end
+                              }else if(result.reqSmsSendTypeEnum=="VOICE"){
+                                popup(1);
+                              }
+                           }
+                           if (result.status == "failed") {
+                             FailsmsStatus = result.status;
+                            // popup(7);
+                                 if(jumpTarget == "pay_fail"){//jumpTarget为pay_fail表示短信验证码发送次数超限异常，跳转到支付失败页，提示用户重新支付，即重新下单。
+                                   window.location.href='${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg='+errormsg;
+                                 }else{
+                                   jQuery("#errorMsg").attr("class", "error");
+						           jQuery("#errorMsg").html(error);
+                                 }
+                           }
+                    });	
+			
+			return true;
+		}
+    	
+    	function checkProtocal(){//如果协议未被选中，点击提交支付时，弹出协议框，点击同意支付协议后，选中单选按钮；
+    	   document.getElementById("agree").checked = true;
+    	}
+    	
+    	function requestSms(){//重新获取验证码
+             jQuery.post("${ctx.contextPath}/pc/ajax/smsSend", {
+						 bankCode:jQuery("#form1 input[name=bankCode]").val(),
+						 cardno:BASE64.encoder(jQuery("#form1 input[name=cardno]").val()),
+						 cardType:jQuery("#form1 input[name=cardType]").val(),
+						 bankName:jQuery("#form1 input[name=bankName]").val(),
+						 name:BASE64.encoder(jQuery("#form1 input[name=name]").val()),
+						 idno:BASE64.encoder(jQuery("#form1 input[name=idno]").val()),
+						 valid:BASE64.encoder(jQuery("#form1 input[name=valid]").val()),
+						 cvv2:BASE64.encoder(jQuery("#form1 input[name=cvv2]").val()),
+						 pass:BASE64.encoder(jQuery("#form1 input[name=pass]").val()),
+						 phone:BASE64.encoder(jQuery("#form1 input[name=phone]").val()),
+						 token:jQuery("#form1 input[name=token]").val()
+					 },
+                       function(data) {
+                           var result = JSON.parse(data);
+                           var jumpTargett = result.jumpTarget;
+                           var jumpTarget = jumpTargett;
+                           var errormsg = result.msg;
+                           if (result.status == "success") {
+                           document.getElementById("verifycode").readOnly = false;
+                               if(result.reqSmsSendTypeEnum=="YEEPAY"){
+                                  #if(${phoneNo})
+                                       var ybNum = "${phoneNo}" ;
+                                       popup(0,ybNum);
+                                  #else
+                                       var ybNum = result.phoneNo;
+	                                   var ybVal = ybNum.replace(ybNum.substring(3 , 7) , "****");
+                                         popup(0,ybVal);
+                                  #end
+                              }else if(result.reqSmsSendTypeEnum=="VOICE"){
+                                     popup(1);
+                              }
+                           }
+                           if (result.status == "failed") {
+                                 if(jumpTarget == "pay_fail"){//jumpTarget为pay_fail表示短信验证码发送次数超限异常，跳转到支付失败页，提示用户重新支付，即重新下单。
+                                 window.location.href='${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg='+errormsg;
+                                 }else{
+                                 document.getElementById("reSmsVerifycodeFail").style.display="block";
+                                 document.getElementById("reSmsVerifycodeFail").innerHTML = errormsg;
+                                 }
+                           }
+                    });	
+                  //window.location.href='${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg="请求短验过于频繁，请重新支付！"';
+              }
+    	
+    	
+    	
+    	//弹框的确认支付按钮
+    	function popupSubmitBtn(){
+    	       var popupSubmitBtn=document.getElementById("popupSubmitBtn");//确认支付按钮只允许点击一次
+               var disabled=popupSubmitBtn.getAttribute("click-on");
+               var verifycode = document.getElementById("verifycode").value;
+               if(disabled=="false"){
+                 if(verifycode){
+                   popupSubmitBtn.setAttribute("click-on","true");//确认支付按钮只允许点击一次
+                   document.getElementById("verifycodeHidden").value = verifycode;
+                  // document.getElementById("form1").submit();
+                       jQuery.ajax({
+                              url: "${ctx.contextPath}/pc/ajax/firstpay", 
+                             data: {
+								 bankCode:jQuery("#form1 input[name=bankCode]").val(),
+								 cardno:BASE64.encoder(jQuery("#form1 input[name=cardno]").val()),
+								 cardType:jQuery("#form1 input[name=cardType]").val(),
+								 bankName:jQuery("#form1 input[name=bankName]").val(),
+								 name:BASE64.encoder(jQuery("#form1 input[name=name]").val()),
+								 idno:BASE64.encoder(jQuery("#form1 input[name=idno]").val()),
+								 valid:BASE64.encoder(jQuery("#form1 input[name=valid]").val()),
+								 cvv2:BASE64.encoder(jQuery("#form1 input[name=cvv2]").val()),
+								 pass:BASE64.encoder(jQuery("#form1 input[name=pass]").val()),
+								 phone:BASE64.encoder(jQuery("#form1 input[name=phone]").val()),
+								 token:jQuery("#form1 input[name=token]").val(),
+								 verifycode:jQuery("#verifycode").val()
+							 },
+                             method:"POST",
+                          success: function (data) {
+                                var result = JSON.parse(data);
+                                var error = result.msg;
+                                var jumpTargett = result.jumpTarget;
+                                var jumpTarget = jumpTargett;
+                                if(result.status == "success"){
+                                   window.location.href='${ctx.contextPath}/pc/query/result?token=${token}';
+                                }
+                                if (result.status == "failed") {
+                                  if(jumpTarget == "popup"){//jumpTarget为popup表示验证码错误，验证码错误在短验框下提示用户验证码错误；如果不是则跳转到支付失败页，提示错误信息。
+                                     popupSubmitBtn.setAttribute("click-on","false");//确认支付按钮只允许点击一次,但如果是验证码错误，则可以再次点击确认支付
+                                     jQuery("#confirmPayVerifycodeError").attr("class", "error");
+						             jQuery("#confirmPayVerifycodeError").html(error);
+						             document.getElementById("confirmPayVerifycodeError").style.display="block";
+                                  }else{
+                                     window.location.href='${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg='+error;
+                                  }
+                                }
+                            },
+                            
+                          error:function(){
+                                  popupSubmitBtn.setAttribute("click-on","false");//确认支付按钮只允许点击一次,但如果是请求超时，则可以再次点击确认支付
+                                  var error1 = "请求超时，请稍后重试！";
+                                  jQuery("#confirmPayVerifycodeError").attr("class", "error");
+						          jQuery("#confirmPayVerifycodeError").html(error1);
+                            }       
+                         })
+                         //window.location.href='${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg="多次支付失败，请重新支付！"';
+                 }else{
+                      if (verifycode == "") {
+                        document.getElementById("errorverifycode").style.display="block";
+                      } else{
+                        document.getElementById("errorverifycode").style.display="none";
+                      }
+                 }
+               }
+          }  
+          
+          function hideCodeMsg(){//光标定位到短信输入框时，隐藏错误提示信息
+             document.getElementById("confirmPayVerifycodeError").style.display="none";
+             document.getElementById("errorverifycode").style.display="none";
+          }
+          
+          function onlyNumber(obj) {//仅输入数字
+            var val = obj.value;
+            var reg = /\D/g;
+            obj.value = val.replace(reg.exec(val), "");
+          }
+		 #if("$!sendSMSNo" !="")
+		  var sendSMSNo=$!sendSMSNo;
+		  #else
+		   var sendSMSNo=null;
+		  #end
+
+    +function marketinginfo() {
+        /*获取营销立减活动信息*/
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/market/info",
+            data: {token: "${token}"},
+            dataType: "json"
+        }).done(function (data) {
+            if (data.doMarketActivity == "Y") {
+                if (data.activityCopyWrites.hasOwnProperty("ALL")) {
+                    /*所有支付方式都支持做营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.ALL.copyWrite);
+                }
+                if (data.activityCopyWrites.hasOwnProperty("NCPAY")) {
+                    /*一键支付支持营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.NCPAY.copyWrite);
+                }
+            }
+        });
+    }();
+</script>
+</body>
+</html>

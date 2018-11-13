@@ -1,0 +1,1029 @@
+#parse('header.vm')
+
+<body>
+<style>
+    .pm .pme-bind-card {
+        height: 34px;
+        border-bottom: none;
+    }
+
+    #changeCard {
+        margin-right: 50px;
+        top: 13px;
+        color: #4490de;
+        font-size: 14px;
+    }
+
+    .pme-bind-card.disabled {
+        background-color: #fcfcfc;
+        color: #9f9f9f;
+    }
+
+    .pme-bind-card .icon-yes {
+        position: absolute;
+        display: block;
+        background: url("../images/icon2.png") no-repeat;
+        background-size: 8.8rem 7rem;
+        top: 0.7rem;
+        right: 1rem;
+        width: 1.4rem;
+        height: 1.4rem;
+        background-position: -6rem 0;
+    }
+
+    .pme-bind-card .icon-yes.on {
+        background-position: -7.4rem 0;
+    }
+
+    /*验证码*/
+    form.verifycode {
+        margin: 15px auto;
+        font-size: 0;
+        text-align: center;
+    }
+
+    form.verifycode .unit {
+        display: inline-block;
+        vertical-align: top;
+        list-style: none;
+        width: 15%;
+        height: 45px;
+        line-height: 45px;
+        border: #cecece solid 1px;
+        border-left: none;
+        border-radius: 0;
+        font-size: 20px;
+        text-align: center;
+        outline: none;
+        font-family: Helvetica, Arial;
+        font-weight: 100;
+    }
+
+    form.verifycode .unit:first-child {
+        border-left: #cecece solid 1px;
+    }
+
+    form.verifycode .unit:focus {
+        /*border-color: #4490de;*/
+        /*box-shadow: #4490de 1px 1px 3px, #d9f2e3 -1px -1px 3px;*/
+    }
+
+    .get-code-btn {
+        height: 42px;
+        border: none;
+        border-top: #cecece solid 1px;
+        border-radius: 0;
+        color: #4490de;
+        background-color: transparent;
+    }
+
+    .popup-verifycode .content-wrapper {
+        padding: 0;
+    }
+
+    .popup-verifycode h2 {
+        text-align: center;
+    }
+
+    #verifyCode {
+        position: absolute;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        font-size: 12px;
+        -webkit-appearance: none;
+        color: #ffffff;
+    }
+
+    form.verifycode label {
+        display: block;
+    }
+
+    /*验证码结束*/
+
+    .bankInfo {
+        margin: 0.65rem 10px;
+        height: 105px;
+        background: #263646;
+        border-radius: 5px;
+        box-shadow: 1px 1px 1px;
+    }
+
+    .bankInfo .logo-m {
+        display: block;
+        margin: 5px 20px;
+        float: right;
+        width: 23px;
+        height: 24px;
+    }
+
+    .bankInfo .logo-m img {
+        display: block;
+        border-radius: 100%;
+        border: #ffffff solid 1px;
+    }
+
+    .bankInfo-tip {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .bankInfo-tip.error {
+        color: #fb2502;
+    }
+
+    .cardNumber {
+        padding: 2rem .75rem;
+    }
+
+    .cardNumber span {
+        display: block;
+    }
+
+    .cardNumber span:first-child {
+        font-size: 12px;
+        color: #6d757d;
+    }
+
+    .cardNumber span:last-child {
+        color: #fff;
+    }
+
+    .obtain {
+        display: inline-block;
+        width: 100%;
+        padding: .75rem 0;
+        text-align: center;
+        color: #4490de;
+    }
+
+    /*授权*/
+
+    .authorizationCode {
+        color: #454648;
+        height: 15px;
+        text-align: center;
+        padding: 10px 0 15px 0;
+        border-bottom: 1px solid #d9d9d9;
+        margin: 0;
+    }
+
+    #password {
+        font: 2em Verdana, Sans-Serif;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .pass {
+        font-size: 30px;
+        text-align: center;
+        width: 40px;
+        height: 40px;
+        border-left: 1px solid;
+        border-bottom: 1px solid;
+        border-top: 1px solid;
+    }
+
+    .pass_right {
+        border-right: 1px solid;
+    }
+
+    .again {
+        display: inline-block;
+        padding-left: 8px;
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        color: #4490de;
+    }
+
+    div.use-card {
+        width: 100%;
+        padding: 0.75rem 1.6rem;
+    }
+
+    .use-card span {
+        display: inline-block;
+        text-align: center;
+    }
+
+    .use-card span:last-child {
+        margin-left: 4.8rem;
+        color: #4490de;
+    }
+
+    /*输入验证码弹窗*/
+    .verificationCode {
+        padding: 10px 0 15px 0;
+        text-align: center;
+        color: #4490de;
+        height: .65rem;
+        line-height: .65rem;
+        font-weight: normal;
+        border-bottom: 1px solid #4490de;
+        margin: 0;
+    }
+
+    .verificationCode i {
+        display: inline-block;
+        float: right;
+        width: 0.65rem;
+        height: 0.65rem;
+        background: url("../../static/images/close.png") no-repeat;
+    }
+
+    .bankInfo {
+        margin: 10px ;
+        height: 105px;
+        background: #263646;
+        border-radius: 5px;
+        box-shadow: 1px 1px 1px;
+    }
+
+    .bankInfo .logo-m {
+        display: block;
+        margin: 5px 10px;
+        margin-right: 20px;
+        float: right;
+        width: 23px;
+        height: 24px;
+    }
+
+
+    .cardNumber {
+        padding: 2rem .75rem;
+    }
+
+    .cardNumber span {
+        display: block;
+    }
+
+    .cardNumber span:first-child {
+        font-size: 12px;
+        color: #6d757d;
+    }
+
+    .cardNumber span:last-child {
+        color: #fff;
+    }
+
+    .obtain {
+        display: inline-block;
+        width: 100%;
+        padding: .75rem 0;
+        text-align: center;
+        color: #4490de;
+    }
+
+    .authorized {
+        font-size: 14px;
+    }
+
+    .authorized h2 {
+        text-align: center;
+    }
+
+    .authorized .content-wrapper {
+        padding: 0
+    }
+
+    .authorized .use-card {
+        padding: 0;
+        border-top: #d9d9d9 solid 1px;
+        text-align: center;
+    }
+
+    .authorized .use-card span {
+        margin-left: 0;
+        height: 40px;
+        line-height: 40px;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        width: 46%;
+    }
+
+    .authorized .use-card span:first-child {
+        border-right: #d9d9d9 solid 1px;
+    }
+    .authorized form.verifycode .unit{
+        width: 14%;
+    }
+    #authorizedObtain {
+        margin-top: 10px;
+        display: inline-block;
+        vertical-align: middle;
+        width: 30px;
+        color: #4490de;
+    }
+
+    #authorizedObtain {
+        font-size: 12px;
+    }
+</style>
+<div id="J-bindedCard">
+    <div class="mt10">
+        <form id="J-cardInfo" class="pme-form">
+        <!--<form id="J-cardInfo" class="pme-form"-->
+              <!--onsubmit="return submitValidate(this)">-->
+            #if ($needBankCardDTO.needSurportDTO.cardnoIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>卡号</mark>
+                    #if($!{needBankCardDTO.cardno} && $!{needBankCardDTO.cardno}!="")
+                    <input type="tel" readonly maxlength="18" encrypt="true" placeholder="银行卡号" name="cardno"
+                           value="$!{needBankCardDTO.cardno}">
+                    #else
+                    <input type="tel" maxlength="18" encrypt="true" placeholder="银行卡号" name="cardno"
+                           value="$!{needBankCardDTO.cardno}">
+                    #end
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if(${merchantSamePersonConf})
+            <p class="prompt" style="margin-left: 10px">请使用<span class="emp" style="color: #ff7f01">本人信息</span>进行支付，支付成功后不可更改</p>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.ownerIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>姓名</mark>
+                    #if($!{needBankCardDTO.owner} && $!{needBankCardDTO.owner}!="")
+                    <input type="text" encrypt="true" addItem="true" readonly
+                           placeholder="请输入您的真实姓名"
+                            name="owner"
+                           value="$!{needBankCardDTO.owner}">
+                    #else
+                    <input type="text" encrypt="true" addItem="true" placeholder="真实姓名" name="owner"
+                           value="$!{needBankCardDTO.owner}">
+                    <i class="clear iconfont">&#xe600;</i>
+                    #end
+                </label>
+            </figure>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.idnoIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>证件号</mark>
+                    #if($!{needBankCardDTO.idno} && $!{needBankCardDTO.idno}!="")
+                    <input maxlength="18" type="text" addItem="true" readonly placeholder="真实证件号"
+                           name="idno" value="$!{needCardInfo.idno}">
+                    #else
+                    <input maxlength="18" type="text" addItem="true" placeholder="真实证件号" name="idno"
+                           value="$!{needBankCardDTO.idno}">
+                    #end
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.phoneNoIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>手机号</mark>
+                    #if($!{needBankCardDTO.phoneNo} && $!{needBankCardDTO.phoneNo}!="")
+                    <input type="tel" id="phoneNo" addItem="true" encrypt="true" readonly placeholder="银行预留手机号"
+                           name="phoneNo" value="$!{needBankCardDTO.phoneNo}">
+                    #else
+                    <input type="tel" id="phoneNo" addItem="true" encrypt="true" placeholder="银行预留手机号" name="phoneNo"
+                           value="$!{needBankCardDTO.phoneNo}">
+                    #end
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.ypMobileIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>手机号</mark>
+                    <input type="number" addItem="true" encrypt="true" placeholder="易宝预留手机号" name="ypMobile"
+                           value="$!{needBankCardDTO.ypMobile}">
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.avlidDateIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>有效期</mark>
+                    <input addItem="true" autocomplete="off" maxlength="4" encrypt="true" type="tel" addItem="true"
+                           placeholder="有效期,月/年（如09/15 输入0915）" name="avlidDate"
+                           value="$!{needBankCardDTO.avlidDate}">
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.cvvIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>C V V 2</mark>
+                    <input id="userCvv" addItem="true" encrypt="true" maxlength="3" type="tel" placeholder="CVV2,卡背后三位"
+                           name="user-cvv" value="$!{needCardInfo.cvv}">
+                    <input id="cvv" maxlength="3" encrypt="true" type="text" addItem="true"
+                           name="cvv" value="$!{needBankCardDTO.cvv}" style="display: none;">
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            <script>
+                document.querySelector("#userCvv").addEventListener("input", function () {
+                    document.querySelector("#cvv").value += this.value.charAt(this.value.length - 1);
+                    document.querySelector("#cvv").value = document.querySelector("#cvv").value.substr(0, this.value.length);
+                    var dot = '';
+                    for (var i = 0, l = this.value.length; i < l; i++) {
+                        dot += "•";
+                    }
+                    this.value = dot;
+                }, false)
+            </script>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.idCardTypeIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>证件类型</mark>
+                    #if($!{needBankCardDTO.idCardType} && $!{needBankCardDTO.idCardType}!="")
+                    <input type="text" readonly addItem="true" placeholder="证件类型" name="idCardType"
+                           value="$!{needBankCardDTO.idCardType}">
+                    #else
+                    <input type="text" addItem="true" placeholder="证件类型" name="idCardType"
+                           value="$!{needBankCardDTO.idCardType}">
+                    #end
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if ($needBankCardDTO.needSurportDTO.bankPWDIsNeed)
+            <figure class="input-box">
+                <label>
+                    <mark>取款密码</mark>
+                    <input addItem="true" type="password" encrypt="true" addItem="true" maxlength="6" placeholder="取款密码"
+                           name="bankPWD" data-key-type="tel" value="$!{needBankCardDTO.bankPWD}">
+                    <i class="clear iconfont">&#xe600;</i>
+                </label>
+            </figure>
+            #end
+            #if(!$notShowYeepayAgreementInfo)
+            <div class="pme-wrapper"><label><input type="checkbox" checked id="J-agree" class="checkbox"><i class="iconfont pme-checkbox">&#xe606;</i>#if($autoBindTip)${autoBindTip}#end同意</label><span class="pme-protocol-trigger J-prolTrigger">《服务协议》</span>
+            </div>
+            #end
+
+            <input type="hidden" name="token" value="$!{token}">
+            <input type="hidden" name="bindId" value="$!{bindId}">
+            <input type="hidden" name="smsType" value="$!{smsType}">
+            <input type="hidden" name="verifycode" value="">
+        </form>
+        <div class="pme-wrapper">
+            <button type="button" class="J-payBtn" onclick="submitValidate()">确认支付</button>
+        </div>
+    </div>
+</div>
+
+#if(!$notShowYeepayCompanyInfo)
+ #parse('footer.vm')
+#end
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+<script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+<script>
+    var ncIsClick = true;
+    if(document.querySelector("#J-agree")){
+        document.querySelector("#J-agree").addEventListener("click", function () {
+            if (this.checked) {
+                document.querySelector(".J-payBtn").disabled = false;
+            } else {
+                document.querySelector(".J-payBtn").disabled = true;
+            }
+        }, false);
+    }
+    if(document.querySelector(".J-prolTrigger")) {
+        var protocol = '<div class=content><p>一、概述</p><p>1、易宝支付《用户服务协议》（以下简称“本协议”）是您自愿与易宝支付有限公司（以下简称“易宝支付”）就易宝支付服务（以下简称“本服务”）的使用所签订的有效合约。您通过网络页面点击确认本协议或以其他方式选择接受本协议，即表示您与易宝支付已达成协议并同意接受本协议的全部约定内容。</p><p>2、在您接受本协议之前，请您仔细阅读本协议的全部内容，如您不同意接受本协议的任意内容，或者无法准确理解相关条款含义的，请不要进行后续操作。如果您对本协议的条款有疑问的，请通过易宝支付客服渠道进行询问（易宝支付客服电话为4001-500-800），易宝支付将向您解释条款内容。</p><p>3、您同意，易宝支付有权随时对本协议内容进行单方面的变更，无需另行单独通知您；若您在本协议内容公告变更生效后继续使用本服务的，表示您已充分阅读、理解并接受变更修改后的协议内容，也将遵循变更修改后的协议内容使用本服务；若您不同意变更修改后的协议内容，您应在变更生效前停止使用本服务。</p><p>二、双方权利义务</p><p>1、您应确保您在使用本服务时的银行卡为您本人的银行卡，确保您使用银行卡的行为合法、有效，未侵犯任何第三方合法权益；否则因此造成易宝支付、商户、持卡人损失的，您应负责赔偿并承担全部法律责任。</p><p>2、您应确保开通本服务所提供的手机号码为本人所有，并授权易宝支付可以通过第三方渠道对您所提供手机号码的真实性、有效性进行核实。</p><p>3、您应妥善保管银行卡、卡号、密码、发卡行预留的手机号码等与银行卡有关的一切信息。如您遗失或泄漏前述信息，您应及时通知发卡行及/或易宝支付，以减少可能发生的损失。无论是否已通知发卡行及/或易宝支付，因您的原因所致损失需由您自行承担。</p><p>4、您在使用本服务时，应当认真确认交易信息，包括且不限于商品名称、数量、金额等，并按易宝支付业务流程发出约定的指令。您认可和同意：您发出的指令不可撤回或撤销，易宝支付一旦根据您的指令委托银行或第三方从银行卡中划扣资金给收款人，您不应以非本人意愿交易或其他任何原因要求易宝支付退款或承担其他责任。</p><p>5、您不应将本服务用于任何违反国家相关法律法规或本协议的目的。</p><p>6、您在对使用本服务过程中发出指令的真实性及有效性承担全部责任；您承诺，易宝支付依照您的指令进行操作的一切风险由您承担。</p><p>7、您认可并以易宝支付系统平台记录的数据为准。</p><p>8、同时您授权易宝支付有权留存您在易宝支付网站填写的相应信息，以供后续向您持续性地提供相应服务（包括但不限于将本信息用于向您推广、提供其他更加优质的产品或服务）。</p><p>9、出现下列情况之一的，易宝支付有权立即终止您使用易宝支付相关服务而无需承担任何责任：</p><p>&nbsp;（1）违反本协议的约定；</p><p>&nbsp;（2）将本服务用于非法目的；</p><p>&nbsp;（3）违反易宝支付/或其他关联公司网站的条款、协议、规则、通告等相关规定，而被上述任一网站终止提供服务的；</p><p>&nbsp;（4）易宝支付认为向您提供本服务存在风险的；</p><p>&nbsp;（5）您的银行卡无效、有效期届满或注销（如有）。</p><p>10、若您未违反本协议约定且因不能归责于您的原因，造成银行卡内资金通过本服务出现损失，且您未从中获益的，您可向易宝支付申请补偿。您应在知悉资金发生损失后及时通知易宝支付并按要求提交相关的申请材料和证明文件，您同意，您能否得到补偿及具体金额取决于易宝支付自身独立的判断，易宝支付承诺不会因此损害您的合法权益。</p><p>11、您同意并认可易宝支付最终的补偿行为并不代表前述资金损失应归责于易宝支付，亦不代表易宝支付须为此承担其他任何责任。您同意，易宝支付在向您支付补偿的同时，即刻取得您可能或确实存在的就前述资金损失而产生的对第三方的所有债权及其他权利，包括但不限于就上述债权向第三方追偿的权利，且您不再就上述已经让渡给易宝支付的债权向该第三方主张任何权利，亦不再就资金损失向易宝支付主张任何权利。</p><p>12、此外，在接受补偿的同时或之后，您从其它渠道挽回了前述资金损失的，或有新证据证明您涉嫌欺诈的，或者发生您应当自行承担责任的其他情形，您应在第一时间返还易宝支付向您支付的补偿款项，否则易宝支付有权向您进行追偿。同时您承诺：资金损失事实真实存在，赔偿申请材料真实、有效。您已充分知晓并认识到，基于虚假信息申请保险赔偿将涉及刑事犯罪，易宝支付有权向国家有关机构申请刑事立案侦查。</p><p>三、承诺与保证</p><p>1、您保证使用本服务过程中提供的如姓名、身份证号、银行卡卡号及银行预留手机号等信息真实、准确、完整、有效。易宝支付按照您设置的相关信息为您提供相应服务，对于因您提供信息不真实或不完整所造成的损失由您自行承担。</p><p>2、您授权易宝支付在您使用本服务期间或本服务终止后，有权保留您在使用本服务期间所形成的相关信息数据，同时该授权不可撤销。</p><p>四、其他条款</p><p>1、您同意，本协议适用中华人民共和国大陆地区法律。因易宝支付与您就本协议的签订、履行或解释发生争议，双方应努力友好协商解决。如协商不成，易宝支付和用户同意由易宝支付住所地法院管辖审理双方的纠纷或争议。</p><p>2、本协议内容包括协议正文及所有易宝支付已经发布的或将来可能发布的易宝支付服务的使用规则。所有规则为本协议不可分割的一部分，与协议正文具有相同法律效力。若您在本协议内容发生修订后，继续使用本服务的，则视为您同意最新修订的协议内容；否则您须立即停止使用本服务。</p><p>3、您同意，本协议之效力、解释、变更、执行与争议解决均适用中华人民共和国法律，没有相关法律规定的，参照通用国际商业惯例和（或）行业惯例。</p><p>4、本协议部分内容被有管辖权的法院认定为违法或无效的，不因此影响其他内容的效力。</p><p>5、本协议未尽事宜，您需遵守易宝支付网站上公布的相关服务协议及相关规则。</p></div>';
+       document.querySelector(".J-prolTrigger").addEventListener("click", function () {
+            To.Popup.base(protocol, "pme-protocol", true, true, "服务协议", "同意");
+        }, false);
+    }
+    function showBindCard() {
+        var bankList = JSON.parse(document.querySelector("#J-bankList").textContent);
+        var html = '';
+        for (var i = 0, l = bankList.length; i < l; i++) {
+            var cardType = bankList[i].cardtype == "CREDIT" ? "信用卡" : "储蓄卡";
+            html += '<div class="pme-bind-card"> <div><img src="static/images/' + bankList[i].bankImage + '" height="30"></div><div class="ml10"><p class="f18">' + bankList[i].bankName + '</p><p class="mt5 card-num f12">尾号' + bankList[i].cardlater + '<span class="ml20">' + cardType + '</span></p></div><div class="bank-data" data-bank-image="' + bankList[i].bankImage + '" data-bank-name="' + bankList[i].bankName + '" data-bank-no="' + bankList[i].cardlater + '" data-card-type="' + bankList[i].cardtype + '" data-bind-id="' + bankList[i].bindid + '"></div></div>'
+        }
+        #if($showChangeCard)
+            html += '<a href="javascript:otherCard();" class="other-card" style="font-size: 18px;">其他卡支付</a>'
+        #end
+        To.Popup.base(html, "pme-bank-list", true, false, "更换银行卡");
+        document.querySelector(".pme-bank-list").addEventListener("click", function (event) {
+            if (event.target.classList.contains("bank-data")) {
+                var target = event.target;
+                var dom = window.document;
+                dom.querySelector("[name=bindId]").value = target.dataset.bindId;
+                dom.querySelector("#J-bindedCard").style.display = "block";
+                dom.querySelector("#J-otherCard").style.display = "none";
+                dom.querySelector("#J-bankLogo").src = "static/images/" + target.dataset.bankImage;
+                dom.querySelector("#J-bankName").textContent = target.dataset.bankName;
+                dom.querySelector("#J-bankNo").textContent = target.dataset.bankNo;
+                dom.querySelector("#J-cardType").textContent = target.dataset.cardType == "CREDIT" ? "信用卡" : "储蓄卡";
+                window.location.href = "wap/request/bind?token=${token}&bindId=" + target.dataset.bindId;
+            }
+            To.Popup.close();
+        }, false);
+    }
+    function otherCard() {
+        document.querySelector("#J-bindedCard").style.display = "none";
+        document.querySelector("#J-otherCard").style.display = "block";
+    }
+
+    function validate(smsType) {
+        var root = this.parentNode.parentNode;
+        if (this.name == "owner") {
+            if (this.value == "") {
+                To.ui.errorMsg("姓名不能为空", root);
+                return false;
+            }
+            if (!/^[\u4E00-\u9FA5·.*]+$/.test(this.value)) {
+                To.ui.errorMsg("姓名只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "idCardType") {
+            if (this.value == "") {
+                To.ui.errorMsg("证件类型不能为空", root);
+                return false;
+            }
+            if (/[^\u4e00-\u9fa5*]/.test(this.value)) {
+                To.ui.errorMsg("证件类型只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "cardno") {
+            if (this.value == "") {
+                To.ui.errorMsg("卡号不能为空", root);
+                return false;
+            } else if (/[^\d\s]/.test(this.value)) {
+                To.ui.errorMsg("卡号必须是数字", root);
+                return false;
+            }
+        }
+        if (this.name == "verifycode") {
+            if (this.value == "") {
+                To.ui.errorMsg("短信验证码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("短信验证码必须是数字", root);
+                return false;
+            }
+        }
+        if (this.name == "idno") {
+            if (this.value == "") {
+                To.ui.errorMsg("身份证号不能为空", root);
+                return false;
+            } else if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(this.value)) {
+                To.ui.errorMsg("身份证号码格式错误", root);
+                return false;
+            }
+        }
+        if (this.name == "phoneNo" || this.name == "ypMobile") {
+            var telPhone = document.getElementById("phoneNo");
+            if (telPhone !== null) {
+                var pNo = telPhone.value;
+                if (pNo == "") {
+                    if (this.value == "") {
+                        To.ui.errorMsg("手机号不能为空", root);
+                        return false;
+                    } else if (/[^\d]/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是数字", root);
+                        return false;
+                    } else if (/^[^1]/.test(this.value)) {
+                        To.ui.errorMsg("手机号格式不正确", root);
+                        return false;
+                    } else if (!/[\d]{11}/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是11位数字", root);
+                        return false;
+                    }
+                }
+            }
+        }
+        if (this.name == "avlidDate") {
+            if (this.value == "") {
+                To.ui.errorMsg("有效期不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("有效期必须是数字", root);
+                return false;
+            } else if (this.value.length < 4) {
+                To.ui.errorMsg("有效期必须是四位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "cvv") {
+            if (this.value == "") {
+                To.ui.errorMsg("CVV2不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("CVV2必须是数字", root);
+                return false;
+            }
+            else if (this.value.length < 3) {
+                To.ui.errorMsg("CVV2必须是三位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "bankPWD") {
+            if (this.value == "") {
+                To.ui.errorMsg("取款密码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("取款密码必须是数字", root);
+                return false;
+            }
+        }
+        if (this.name == "verifycode") {
+            if (this.value == "") {
+                To.ui.errorMsg("短信验证码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("短信验证码必须是数字", root);
+                return false;
+            }
+        }
+
+    }
+    function smsValidate() {
+        var root = this.parentNode.parentNode;
+        if (this.name == "owner") {
+            if (this.value == "") {
+                To.ui.errorMsg("姓名不能为空", root);
+                return false;
+            }
+            if (!/^[\u4E00-\u9FA5·.*]+$/.test(this.value)) {
+                To.ui.errorMsg("姓名只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "idCardType") {
+            if (this.value == "") {
+                To.ui.errorMsg("证件类型不能为空", root);
+                return false;
+            }
+            if (/[^\u4e00-\u9fa5*]/.test(this.value)) {
+                To.ui.errorMsg("证件类型只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "cardno") {
+            if (this.value == "") {
+                To.ui.errorMsg("卡号不能为空", root);
+                return false;
+            } else if (/[^\d\s]/.test(this.value)) {
+                To.ui.errorMsg("卡号必须是数字", root);
+                return false;
+            }
+        }
+
+        if (this.name == "idno") {
+            if (this.value == "") {
+                To.ui.errorMsg("身份证号不能为空", root);
+                return false;
+            } else if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(this.value)) {
+                To.ui.errorMsg("身份证号码格式错误", root);
+                return false;
+            }
+        }
+        if (this.name == "phoneNo" || this.name == "ypMobile") {
+            var telPhone = document.getElementById("phoneNo");
+            if (telPhone != null) {
+                var pNo = telPhone.value;
+                if (pNo == "") {
+                    if (this.value == "") {
+                        To.ui.errorMsg("手机号不能为空", root);
+                        return false;
+                    } else if (/[^\d]/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是数字", root);
+                        return false;
+                    } else if (/^[^1]/.test(this.value)) {
+                        To.ui.errorMsg("手机号格式不正确", root);
+                        return false;
+                    } else if (!/[\d]{11}/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是11位数字", root);
+                        return false;
+                    }
+                }
+            }
+        }
+        if (this.name == "avlidDate") {
+            if (this.value == "") {
+                To.ui.errorMsg("有效期不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("有效期必须是数字", root);
+                return false;
+            } else if (this.value.length < 4) {
+                To.ui.errorMsg("有效期必须是四位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "cvv") {
+            if (this.value == "") {
+                To.ui.errorMsg("CVV2不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("CVV2必须是数字", root);
+                return false;
+            }
+            else if (this.value.length < 3) {
+                To.ui.errorMsg("CVV2必须是三位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "bankPWD") {
+            if (this.value == "") {
+                To.ui.errorMsg("取款密码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("取款密码必须是数字", root);
+                return false;
+            }
+        }
+
+    }
+    /* +function bindValidate() {
+     var inputs = document.querySelectorAll("form input");
+     var type = /(text|password|number|tel|email|time|date)/;
+     for (var i = 0, l = inputs.length; i < l; i++) {
+     type.test(inputs[i].type) ? inputs[i].addEventListener("blur",validate, false) : false;
+     }
+     }();*/
+    var verifycode = '<div class="bankInfo">' +
+            '<p class="logo-m"><img class="bank-logo" src="'+sessionStorage.getItem("bindItemBankLogo")+'"></p>' +
+            '<div class="cardNumber">' +
+            '<span>卡号</span>' +
+            '<span class="card-later">'+'**** **** ****'+sessionStorage.getItem("bindItemBankNo")+'</span>' +
+            '</div>' +
+            '</div>' +
+            '<p class="bankInfo-tip none"></p>' +
+            '<form class="verifycode">' +
+            '<label for="verifyCode">' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '<input type="tel" id="verifyCode" maxlength="6">' +
+            '</label>' +
+            '</form>' +
+            '<button class="get-code-btn" onclick="getCode()">获取验证码</button>';
+
+    function secondPayModel(){
+        //一键二次/绑卡二次确认支付异步接口
+        jQuery.ajax({
+            method: "GET",
+            async: true,
+            url: "$!{ctx.contextPath}/wap/ajax/pay/bind",
+            data: {
+                cardno:BASE64.encoder(jQuery("input[name=cardno]").val()),
+                owner:BASE64.encoder(jQuery("input[name=owner]").val()),
+                idno:BASE64.encoder(jQuery("input[name=idno]").val()),
+                avlidDate:BASE64.encoder(jQuery("input[name=avlidDate]").val()),
+                cvv:BASE64.encoder(jQuery("input[name=cvv]").val()),
+                idCardType:jQuery("input[name=idCardType]").val(),
+                bankPWD:BASE64.encoder(jQuery("input[name=bankPWD]").val()),
+                phoneNo:BASE64.encoder(jQuery("input[name=phoneNo]").val()),
+                ypMobile:BASE64.encoder(jQuery("input[name=ypMobile]").val()),
+                token:jQuery("input[name=token]").val(),
+                bindId:jQuery("input[name=bindId]").val(),
+                smsType:jQuery("input[name=smsType]").val(),
+                verifycode:jQuery("#verifyCode").val()
+            },
+            success:function(res){
+                var data = JSON.parse(res);
+                switch(data.bizStatus){
+                    case "smsFailed":  //短信验证码错误  留在当前page
+                        var bankInfoTip = document.querySelector(".bankInfo-tip")
+                         document.querySelector(".bankInfo-tip").innerHTML= data.errormsg;
+                        break;
+                    case "success":
+                        location.assign("${ctx.contextPath}/wap/query/result?token="+data.token);
+                        break;
+                    case "failed":
+                        var needRepay = data.needRepay;
+                        if(needRepay){
+                            location.assign("${ctx.contextPath}/wap/fail?token="+data.token+"&errorCode="+data.errorcode+"&errorMsg="+data.errormsg+"&needRepay="+needRepay);
+                        }else{
+                            location.assign("${ctx.contextPath}/wap/fail?token="+data.token+"&errorCode="+data.errorcode+"&errorMsg="+data.errormsg);
+                        }
+                        break;
+                }
+            }
+        });
+    }
+    function verifycodeCallBack() {
+        var dom = document, session = window.sessionStorage;
+        var units = dom.querySelectorAll("form.verifycode li.unit");//保存验证码每一个单元格
+        var rule = /^\d+$/;
+        var verifyCodeField = dom.querySelector("#verifyCode");
+        verifyCodeField.addEventListener("input", function () {
+            document.querySelector("#J-cardInfo")["verifycode"].value=this.value;
+            for (var i = 0, l = 6; i < l; i++) {
+                typeof this.value[i] != "undefined" ? units[i].innerHTML = this.value[i] : units[i].innerHTML = "";
+            }
+            if(this.value.length==6){
+                #if($!{bankPay})  //一键支付二次支付
+                //zym start 2017/12/28
+                //document.querySelector("#J-cardInfo").submit();
+
+                    secondPayModel();
+                #elseif($!{bindCardPay})  //绑卡支付二次支付
+                    secondPayModel();
+                    //zym end 2017/12/28
+                #end
+            }
+        }, false);
+        verifyCodeField.addEventListener("focus",function(){
+            document.querySelector(".popup-verifycode").style.top="145px";
+        },false);
+        verifyCodeField.addEventListener("blur",function(){
+            document.querySelector(".popup-verifycode").style.top="50%";
+        },false);
+    }
+    function submitValidate() {
+        document.querySelector(".J-payBtn").disabled = true;
+//        var inputs = form.querySelectorAll("input");
+        var inputs = document.querySelectorAll("#J-cardInfo input");
+        var type = /(text|password|number|tel|email|time|date)/;
+//        document.querySelector(".content-wrapper").insertAdjacentHTML('beforeend',verifycode);
+        for (var i = 0, l = inputs.length; i < l; i++) {
+            if (type.test(inputs[i].type)) {
+                var result = validate.call(inputs[i]);
+                if (result === false) {
+                    document.querySelector(".J-payBtn").disabled = false;
+                    return false;
+                    break;
+                } else {
+                    document.querySelector(".J-payBtn").disabled = true;
+                    #if ($smsType!="null")
+                        jQuery.ajax({
+                            method: "POST",
+                            url: "${ctx.contextPath}/wap/ajax/bindSmsSend",
+                            async:true,
+                            data: {
+                                cardno:BASE64.encoder(jQuery("input[name=cardno]").val()),
+                                owner:BASE64.encoder(jQuery("input[name=owner]").val()),
+                                idno:BASE64.encoder(jQuery("input[name=idno]").val()),
+                                avlidDate:BASE64.encoder(jQuery("input[name=avlidDate]").val()),
+                                cvv:BASE64.encoder(jQuery("input[name=cvv]").val()),
+                                idCardType:jQuery("input[name=idCardType]").val(),
+                                bankPWD:BASE64.encoder(jQuery("input[name=bankPWD]").val()),
+                                phoneNo:BASE64.encoder(jQuery("input[name=phoneNo]").val()),
+                                ypMobile:BASE64.encoder(jQuery("input[name=ypMobile]").val()),
+                                token:jQuery("input[name=token]").val(),
+                                bindId:jQuery("input[name=bindId]").val(),
+                                smsType:jQuery("input[name=smsType]").val()
+                            },
+                            success: function (data) {
+                                To.Popup.base(verifycode, "popup-verifycode", true, true, "请输入验证码", "关闭");
+                                verifycodeCallBack();
+                                document.querySelector(".pme-popup .close").addEventListener("click",function(){
+                                    document.querySelector(".J-payBtn").disabled = false;
+                                },false);
+
+                                var result = JSON.parse(data);
+                                var getBtn=document.querySelector(".popup-verifycode .get-code-btn");
+                                getBtn.disabled=true;
+                                document.querySelector(".bankInfo-tip").classList.remove("none");
+                                //zym start 2018/1/4
+                                if(result.status == 'success'){
+                                timing(getBtn, 60, function () {
+                                    getBtn.disabled=false;
+                                    getBtn.textContent = "获取验证码";
+                                });
+                                    document.querySelector(".bankInfo-tip").innerHTML = "验证码发送成功！";
+                                    document.querySelector(".bankInfo-tip").classList.remove("dangerMsg")
+                                }else{
+                                    document.querySelector(".bankInfo-tip").innerHTML = result.msg ;
+                                    document.querySelector(".bankInfo-tip").classList.add("dangerMsg")
+                                }
+                                //zym end  2018/1/4
+                            }
+                        });
+                        return false;
+                    #else
+                        jQuery.ajax({
+                            method: "POST",
+                            url: "$!{ctx.contextPath}/wap/ajax/pay/bind",
+                            data: asyncEncrypt("J-cardInfo"),
+                            success: function (res) {
+                                var data = JSON.parse(res);
+                                switch (data.bizStatus) {
+                                    case "smsFailed":  //短信验证码错误  留在当前page
+                                        To.Popup.alert(data.errormsg);
+                                        document.querySelector(".J-payBtn").disabled = false;
+                                        break;
+                                    case "success":
+                                        location.assign("${ctx.contextPath}/wap/query/result?token=" + data.token);
+                                        break;
+                                    case "failed":
+                                        var needRepay = data.needRepay;
+                                        if (needRepay) {
+                                            location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg + "&needRepay=" + needRepay);
+                                        } else {
+                                            location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg);
+                                        }
+                                        break;
+                                }
+                            }
+                        });
+                    #end
+                }
+            }
+        }
+
+    }
+
+    function getCode(elem) {//获取验证码
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/wap/ajax/bindSmsSend",
+            data: {
+                cardno:BASE64.encoder(jQuery("input[name=cardno]").val()),
+                owner:BASE64.encoder(jQuery("input[name=owner]").val()),
+                idno:BASE64.encoder(jQuery("input[name=idno]").val()),
+                avlidDate:BASE64.encoder(jQuery("input[name=avlidDate]").val()),
+                cvv:BASE64.encoder(jQuery("input[name=cvv]").val()),
+                idCardType:jQuery("input[name=idCardType]").val(),
+                bankPWD:BASE64.encoder(jQuery("input[name=bankPWD]").val()),
+                phoneNo:BASE64.encoder(jQuery("input[name=phoneNo]").val()),
+                ypMobile:BASE64.encoder(jQuery("input[name=ypMobile]").val()),
+                token:jQuery("input[name=token]").val(),
+                bindId:jQuery("input[name=bindId]").val(),
+                smsType:jQuery("input[name=smsType]").val()
+            },
+            success: function (data) {
+                var result = JSON.parse(data);
+                var getBtn=document.querySelector(".popup-verifycode .get-code-btn");
+                getBtn.disabled=true;
+                //zym start 2017/12/28
+                var units = document.querySelectorAll("form.verifycode li.unit");//保存验证码每一个单元格
+                document.querySelector("#verifyCode").value = ''
+                units.forEach(function(item){
+                    item.innerHTML='';
+                })
+                //zym end  2017/12/28
+                document.querySelector(".bankInfo-tip").classList.remove("none");
+                //zym start 2018/1/4
+                if(result.status == 'success'){
+                timing(getBtn, 60, function () {
+                    getBtn.disabled=false;
+                    getBtn.textContent = "获取验证码";
+                });
+                    document.querySelector(".bankInfo-tip").innerHTML = "验证码发送成功！";
+                    document.querySelector(".bankInfo-tip").classList.remove("dangerMsg")
+                }else{
+                    document.querySelector(".bankInfo-tip").innerHTML = result.msg ;
+                    document.querySelector(".bankInfo-tip").classList.add("dangerMsg")
+                }
+                //zym end  2018/1/4
+            }
+        });
+    }
+    function timing(elem, t, callback, context) {//倒计时
+        /**
+         * @param [elem] DOM 显示倒计时的节点
+         * @param [t] number 倒计时长
+         * @param [callback] function 回调函数
+         * @param [context] object 回调函数上下文
+         * */
+        var timeId = null;
+        timeId = setTimeout(function () {
+            if (t > 0) {
+                elem.textContent = t + "s后重新发送";
+                t--;
+                timeId = setTimeout(arguments.callee, 1000);
+            } else {
+                t = 0;
+                clearTimeout(timeId);
+                typeof callback == "function" ? callback.call(context) : false;
+            }
+        }, 0);
+    }
+
+    function sub() {
+        var error = document.querySelector("#pme-errorMsg");
+        var input = document.querySelector("#J-otherCard form input");
+        var result = validate.call(input);
+        if (result === false) {
+            document.querySelector(".J-next").disabled = false;
+            return false;
+        } else {
+            document.querySelector(".J-next").disabled = true;
+            To.loading("正在支付，请耐心等待...")
+        }
+    }
+</script>
+#if ($errormsg)
+<script>
+    To.Popup.alert("$errormsg");
+</script>
+#end
+</body>
+</html>

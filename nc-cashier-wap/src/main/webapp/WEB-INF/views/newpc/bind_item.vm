@@ -1,0 +1,82 @@
+<script>
+    session.needSms = "$!{smsType}";
+</script>
+
+<form id="bindItemForm">
+    #if(${needBankCardDTO})
+    #if(${merchantSamePersonConf})
+    <p class="prompt">请使用<span class="emp">本人信息</span>进行支付，支付成功后不可更改</p>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.ownerIsNeed})
+    <div class="sington"><label><span class="title">姓名</span><input type="text" autocomplete="off"
+                                                                    placeholder="请输入您的真实姓名"
+                                                                         name="owner"
+                                                                         maxlength="16" encrypt="true"
+                                                                         value="$!{needBankCardDTO.owner}"
+                                                                         #if(${needBankCardDTO.owner})readonly#end></label>
+    </div>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.idnoIsNeed})
+    <div class="sington"><label><span class="title">身份证号</span><input type="text" autocomplete="off"
+                                                                           placeholder="请输入您的身份证号"
+                                                                           name="idno"
+                                                                           maxlength="18" encrypt="true"
+                                                                           value="$!{needBankCardDTO.idno}"
+                                                                           #if(${needBankCardDTO.idno})readonly#end></label>
+    </div>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.avlidDateIsNeed})
+    <div class="sington"><label><span class="title">有效期</span><input type="text" autocomplete="off"
+                                                                          placeholder="如：09/15 请输入0915"
+                                                                          name="avlidDate" encrypt="true"
+                                                                          value="$!{needBankCardDTO.avlidDate}"
+                                                                          #if(${needBankCardDTO.avlidDate})readonly#end
+                                                                          maxlength="4"><div class="sample valid"><img src="${ctx.contextPath}/newpc/assets/images/5nor_03.png"></div></label>
+    </div>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.cvvIsNeed})
+    <div class="sington"><label><span class="title">C V V</span><input type="password" autocomplete="off"
+                                                                            placeholder="信用卡背面后三位数字"
+                                                                            name="cvv" encrypt="true"
+                                                                            value="$!{needBankCardDTO.cvv}"
+                                                                            #if(${needBankCardDTO.cvv})readonly#end
+                                                                            maxlength="3"><div class="sample cvv"><img src="${ctx.contextPath}/newpc/assets/images/5nor_06.png"></div></label>
+    </div>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.bankPWDIsNeed})
+    <div class="sington"><label><span class="title">取款密码</span><input type="password" autocomplete="off"
+                                                                           placeholder="请输入取款密码"
+                                                                           name="bankPWD" encrypt="true"
+                                                                           value="$!{needBankCardDTO.bankPWD}"
+                                                                           #if(${needBankCardDTO.bankPWD})readonly#end
+                                                                           maxlength="6"></label>
+    </div>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.phoneNoIsNeed})
+    <div class="sington"><label><span class="title">手机号</span><input type="text" autocomplete="off"
+                                                                          placeholder="请输入银行预留手机号"
+                                                                          name="phoneNo"
+                                                                          maxlength="11" encrypt="true"
+                                                                          value="$!{needBankCardDTO.phoneNo}"
+                                                                          #if(${needBankCardDTO.phoneNo})readonly#end></label>
+    </div>
+    #end
+    #if($!{needBankCardDTO.needSurportDTO.ypMobileIsNeed})
+    <div class="sington"><label><span class="title">易宝手机号</span><input type="text" autocomplete="off"
+                                                                            placeholder="请输入易宝预留手机号"
+                                                                            name="ypMobile" encrypt="true"
+                                                                            value="$!{needBankCardDTO.ypMobile}"
+                                                                            #if(${needBankCardDTO.ypMobile})readonly#end
+                                                                            maxlength="11"></label>
+    </div>
+    #end
+    <input type="hidden" name="bankCode" readonly value="$!{bankCode}">
+    <input type="hidden" name="bankName" readonly value="$!{bankName}">
+    <input type="hidden" name="cardType" readonly value="$!{cardType}">
+    <script>
+        (function () {
+            User.form.validate("#bindItemForm");//绑定表单校验
+        }());
+    </script>
+    #end
+</form>

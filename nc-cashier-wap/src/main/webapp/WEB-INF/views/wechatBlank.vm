@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <title></title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .prompt {
+            margin-top: 100px;
+            color: #666666;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .weixin-pay, .back {
+            margin: 25px 10px;
+            display: block;
+            height: 50px;
+            line-height: 50px;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .weixin-pay {
+            background-color: #2eb944;
+            color: #ffffff;
+        }
+
+        .back {
+            background-color: #ffffff;
+            color: #2eb944;
+        }
+    </style>
+</head>
+<body>
+<p class="prompt">
+    若支付成功请返回，<br>
+    若支付失败请点击前往微信支付。
+</p>
+<a class="weixin-pay" href="${directWechatUrl}">前往微信支付</a>
+<a class="back" href="javascript:history.back()">返回</a>
+<script>
+    location.assign("${directWechatUrl}");
+</script>
+</body>
+</html>

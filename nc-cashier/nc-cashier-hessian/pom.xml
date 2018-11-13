@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+<parent>
+		<artifactId>nc-cashier-parent</artifactId>
+		<groupId>com.yeepay.g3.nccashier</groupId>
+		<version>1.0</version>
+	</parent>
+	<groupId>com.yeepay.g3.facade.nccashier</groupId>
+	<artifactId>nc-cashier-hessian</artifactId>
+	<packaging>war</packaging>
+	<version>1.0</version>
+	<name>nc-cashier-hessian</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+	<dependency>
+			<groupId>com.yeepay.g3.facade.nccashier</groupId>
+			<artifactId>nc-cashier-facade</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.core.nccashier</groupId>
+			<artifactId>nc-cashier-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.utils</groupId>
+			<artifactId>yeepay-rmi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.utils</groupId>
+			<artifactId>yeepay-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		
+		<!-- modify by meiling.zhuang:去除Athena（无人维护，又占据大量日志）-->
+		<!-- <dependency>
+		    <groupId>com.yeepay.g3.athena</groupId>
+		    <artifactId>athena-collection</artifactId>
+		    <version>1.5</version>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>com.yeepay.riskcontrol</groupId>
+			<artifactId>riskcontrol-facade</artifactId>
+			<version>1.5.5</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>nc-cashier-hessian</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<projectNameTemplate>[artifactId]</projectNameTemplate>
+					<wtpmanifest>true</wtpmanifest>
+					<wtpapplicationxml>true</wtpapplicationxml>
+					<wtpversion>2.0</wtpversion>
+					<manifest>${basedir}/src/main/resources/META-INF/MANIFEST.MF</manifest>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

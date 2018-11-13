@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <meta name="format-detection" content="telephone=no">
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: url("${ctx.contextPath}/npc/imagessdk/loading.gif") center no-repeat;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+</body>
+</html>

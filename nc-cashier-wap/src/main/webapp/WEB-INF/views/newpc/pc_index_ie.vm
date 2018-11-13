@@ -1,0 +1,375 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge; chrome">
+    <title>#if(!$notShowYeepay)易宝支付收银台#end</title>
+    <meta name="description"
+          content="易宝支付（YeePay.com)是中国行业支付的开创者和领导者。易宝支付于2003年8月成立，总部位于北京，现有上千名员工，在上海、广东、江苏、福建、广西、天津、云南、四川、浙江、山东、陕西等设有31家分公司。自公司成立以来，易宝支付秉承成就客户、极致服务、实事求是、开放分享的核心价值观，以交易服务改变生活为使命，致力成为世界一流的交易服务平台，领跑电子支付、移动互联和互联网金融。">
+    <meta content="易宝支付,收银台,支付，网银，快捷，一键支付，扫描支付" name="Keywords">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    #if(!$notShowYeepay)<link rel="shortcut icon" href="${ctx.contextPath}/newpc/assets/images/favicon.ico"/>#end
+    <link rel="stylesheet" href="${ctx.contextPath}/newpc/assets/css/reset.css">
+    <link rel="stylesheet" href="${ctx.contextPath}/newpc/assets/css/pc-shouyin-ie.css">
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/nwmatcher.min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/selectivizr.min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/json2.js"></script>
+</head>
+<body>
+<div class="header clearfix">
+    <div class="layout">
+        <div class="logo">#if(!$notShowYeepay)<img src="${ctx.contextPath}/newpc/assets/images/logo.png" alt="易宝支付">#end
+            <span class="sign">收银台</span><span>如果想获得更好的体验请升级浏览器</span><a href="https://browsehappy.com/" target="_blank"
+                                                                         style="color: #008efc; margin-left: 10px">点此链接升级</a>
+        </div>
+        #if(!$notShowYeepay)
+            <div class="service-phone">7X24小时客服电话：4001-500-800</div>#end
+    </div>
+    #if(!$notShowYeepay)
+        <!--右侧固定-->
+        <div class="fixed-sidebar">
+            <a class="item" href="javascript:void(0)" id="customerService"><i class="icon">&#xe607;</i>在线客服</a>
+            <a class="item" href="http://www.yeepay.com/customerService/question" target="_blank"><i class="icon">
+                &#xe64e;</i>常见问题</a>
+        </div>
+        <script type="text/javascript" src="${ctx.contextPath}/static/js/service.js"></script>
+        <script type="text/javascript">
+            jQuery("#customerService").on("click", function () {
+                /*
+                 * 点击在线客服请求后端订单信息（收银台版本、交易金额、交易时间、收款商家、商户编号、商品信息、商户订单号、报错信息、商品开通产品）
+                 * 成功拿到订单信息调用客服接口传入订单信息，并唤起对话窗口
+                 *
+                 * */
+                jQuery.ajax({
+                    url: "${ctx.contextPath}/helper/customerservice/${token}",
+                    success: function (orderInfo) {
+                        openPcPosChatWithUserInfo(orderInfo);
+                    }
+                });
+            });
+        </script>
+        <!--右侧固定结束-->
+    #end
+</div>
+<div class="main layout clearfix">
+    <div class="payment-time none" id="expireTime">请在<span class="time">$!{expireTime}</span>之前完成支付</div>
+    <div class="order-info layout clearfix">
+        <div class="amount"><span class="title">订单总额：</span><span class="money"
+                                                                  title="$!{amount}">￥$!{amount}</span>#if(${fee})
+            （包含手续费<span class="fee">$!{fee}</span>元）#end
+        </div>
+        <div class="merchant-info-wrapper">
+            <div class="merchant-info"><p><span class="title">购买商品：</span><span>$!{productName}</span></p>
+
+                <p><span class="title">订单号：</span><span title="$!{orderId}">$!{orderId}</span></p></div>
+            <input type="checkbox" id="order-details-handler">
+
+            <div class="merchant-info details"><p><span class="title">收款商家：</span><span>$!{companyName}</span></p>
+
+                <p><span
+                        class="title">交易时间：</span><span>$!{tradeTime}</span></p></div>
+            <label><span class="order-details-trigger icon"><i
+                    class="br-hack">详情</i></span></label>
+        </div>
+        <script type="text/javascript">
+            jQuery(".order-details-trigger").toggle(function(){
+                jQuery(".merchant-info.details").css("display","block");
+            },function(){
+                jQuery(".merchant-info.details").css("display","none");
+            });
+        </script>
+    </div>
+    <script type="text/javascript">
+        (function () {
+            /*
+             * 用户进入页面传入订单有效期
+             * 订单有效期和当前本地时间比较，如果小于30min，显示交易过期时间提示
+             * */
+            var expireTime = "$!{expireTime}".replace(/-/g, "/");
+            var delta = new Date(expireTime).getTime() - new Date().getTime() <= 30 * 60 * 1000;
+            if (delta) {
+                jQuery("#expireTime").removeClass("none");
+            }
+        })();
+    </script>
+    #if($showSccanPay || $showNcPay)
+    <script>
+        function imgLoadError(self) {
+            /*二维码加载失败*/
+            var src = self.src;
+            var error = document.getElementById("error");
+            var logo = document.getElementById("logo");
+            var refreshBtn = document.getElementById("refresh");
+            error.className = 'error'   //相当于去掉hidden ，为了显示  ，下边点击
+            var tempClass = logo.className.replace("hidden","").split(" ");
+            tempClass.push("hidden");
+            logo.className = tempClass.join(" ");
+            //                addEventListener  click
+//                attachEvent  onclick
+            refreshBtn.attachEvent('onclick',function(){
+                self.src = src; //重新加载图片
+            });
+        }
+        function imgLoad(self) {
+            var logo = document.getElementById("logo");
+            var error = document.getElementById("error");
+            error.className = 'error hidden'   //二维码加载失败 +hidden
+            var tempClass = logo.className.replace("hidden","").split(" "); //logo显示，去掉hidden
+            logo.className = tempClass.join(" ");
+        }
+    </script>
+    <div class="scan-pay">
+        <div class="typeText" id="typeText">
+            <i class="icon">&#xead5;</i><i class="textCon" id="textCon"></i>
+        </div>
+        <div class="qrcode-wrapper clearfix">
+            <div class="qrcode-item">
+                <div class="img-area" id="imgArea"><img id="img" width="100%" height="100%" onerror="imgLoadError(this)" onload="imgLoad(this)"><i class="icon logo weixin " id="logo"> </i>
+                </div>
+               <div class="error hidden" id="error">
+                   <p class="img-load-error">二维码加载失败！</p>
+                   <button class="refresh-qrcode" id="refresh">刷新</button>
+               </div>
+            </div>
+        </div>
+
+        <!--icon-->
+        <div class="support-app " id="supportApp">
+            #if($wechatLogo)<i class="icon weixin active" type="weixin" id="weixinQrIcon"></i>#end #if($alipayLogo)<i class="icon alipay" type="alipay" id="alipayQrIcon">
+            </i>#end #if($unionLogo) <i class="icon union" id="unionQrIcon" type="union"></i> #end #if($installment)<i class="icon installment" id="installmentQrIcon" type="installment"></i>#end #if(!$notShowYeepay)<i class="icon installment2" id="installmentQrIcon2" type="installment2"></i> #end #if($jdLogo)<i class="icon jd" id="jdQrIcon" type="jd"></i> #end #if($qqLogo)<i class="icon qq" id="qqQrIcon" type="qq"></i> #end   </div>
+        <!--icon-->
+    </div>
+
+    <script>
+        (function(){
+            var payType = {
+                "weixin":{
+                   "src":"${ctx.contextPath}/newpc/wx/qrcode/request?token=${token}",
+ //                    "src":"assets/images/icon_20170419.png",
+                    "type":"weixin",
+                    "text":"微信扫码支付"
+                },
+                "alipay":{
+                    "src":"${ctx.contextPath}/newpc/zfb/qrcode/request?token=${token}",
+                    "type":"alipay",
+                    "text":"支付宝扫码支付"
+                },
+                "union":{
+                    "src":"${ctx.contextPath}/newpc/union/qrcode/request?token=${token}",
+                    "type":"union",
+                    "text":"银联钱包扫码支付"
+                },
+                "installment":{
+                    "src":"${ctx.contextPath}/newpc/getHirePurchaseDirectQrCode?token=${token}",
+                    "type":"installment",
+                    "text":"分期支付"
+                },
+                "installment2":{
+                    "src":"${ctx.contextPath}/newpc/getYJZFQrCode?token=${token}",
+                    "type":"installment2",
+                    "text":"快捷支付"
+                },
+                "jd":{
+                    "src":"${ctx.contextPath}/newpc/jd/qrcode/request?token=${token}",
+                    "type":"jd",
+                    "text":"京东支付"
+                },
+                "qq":{
+                    "src":"${ctx.contextPath}/newpc/qq/qrcode/request?token=${token}",
+                    "type":"qq",
+                    "text":"QQ扫码支付"
+                }
+            }
+            var dom = document;
+            var icons = dom.getElementById("supportApp").getElementsByTagName("i");
+            var img = dom.getElementById("img");
+            var logo = dom.getElementById("logo");
+            var textCon = dom.getElementById("textCon");
+            var refresh = dom.getElementById("refresh");
+            var error = dom.getElementById("error");
+          /*---------------------------------------------------------------*/
+            function setQrcode(ev){
+                //设置展示二维码
+                var target=ev.srcElement;
+                var type=target.getAttribute("type");
+                img.src = payType[type].src;
+                textCon.innerHTML = payType[type].text;
+                changeIconState(ev);
+            }
+            function changeIconState(ev){
+                //改变按钮状态
+                for(var j = 0,l = icons.length;j < l; j++){
+                    icons[j].className = icons[j].className.replace("active","")   //清除active
+                }
+                var str = ev.srcElement.className.split(" ")  //添加active
+                str.push("active");
+                ev.srcElement.className = str.join(" ");
+                error.className = 'error hidden'
+                logo.className =  payType[ev.srcElement.getAttribute("type")].type + ' icon logo';
+            }
+            function bindEvent(elem){
+                elem.attachEvent("onclick",setQrcode);
+            }
+            for(var i = 0,l = icons.length;i < l; i++){
+                bindEvent(icons[i]);
+//                addEventListener  click
+//                attachEvent  onclick
+            }
+            /*---------------------------------------------------------------*/
+            icons[0].click();
+        })();
+    </script>
+    #end
+    #if($showEankPay)
+    <div id="bankPayWrapper">
+        <div class="column" id="ebank">
+
+        </div>
+    </div>
+    <script type="text/javascript">
+        jQuery.ajax({
+            url: "${ctx.contextPath}/newpc/ebank/index",
+            data: {"token": "$!{token}", "compatibleView":"Y"},
+            success: function (responseText) {
+                if (responseText.indexOf("errormsg") >= 0) {
+                    var error = JSON.parse(responseText);
+                    jQuery("#ebank").html("<div style='margin-left: 75px; color: #ff0043'>" + error.errormsg + "(" + error.errorcode + ")" + "</div>");
+                } else {
+                    jQuery("#ebank").html(responseText);
+                     #if($needClientId)
+                        jQuery(".bank-container .tab-wrapper .tab").eq(1).trigger("click");
+                    jQuery(".bank-container .tab-content-wrapper .tab-content.active li[bankcode='$needClientId']").trigger("click");
+                    eBankPayRoute();
+                    #end
+                }
+            }
+        });
+    </script>
+    <div id="mask" class="none"></div>
+    <div id="Popup" class="none"><h2><i class="icon close" onclick="closePopup()"></i></h2>
+
+        <div class="content">
+            <div class="waiting-pay"><p class="open-new">请在新打开的<span class="bank-name">农业银行</span>页面完成支付</p>
+
+                <p class="tip">支付完成前请不要关闭此窗口</p>
+
+                <div class="btn-group"><a href="javascript:ebankResult()" class="button complete">已完成支付</a><a
+                        href="http://www.yeepay.com/" class="button issue" target="_blank">支付遇到问题</a></div>
+                <div class="misc clearfix">
+                    <div class="fail"><p>跳转不到银行页面？</p>                <a
+                            href="http://www.yeepay.com/customerService/questionDetail/57ad493b02e381434704c8d3"
+                            target="_blank">查看解决办法</a>
+
+                        <p>若支付不成功，您可以</p>                <a href="javascript:closePopup()">选择其他支付方式</a></div>
+                    <div class="yeepay clearfix">
+                        <div class="yp-qrcode"><img src="${ctx.contextPath}/newpc/assets/images/yeepay.png" alt="易宝公众号"></div>
+                        <div class="yp-desc"><p>可扫码关注易宝支付公共账号输入订单号快速查单：）</p>
+
+                            <p class="number">商户订单号 <span class="merchant-order-id">undefined</span></p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="PopupClientId" class="none"><h2><i class="icon close" onclick="closePopup()"></i></h2>
+
+        <div class="content">
+            <div id="clientId"><p class="title"><span class="account-type">企业</span>需提供您在所选银行的网银企业客户号 </p>
+
+                <form id="clientIdForm">
+                    <div class="sington"><span class="bank-logo"></span><span class="bank-name"></span><input
+                            type="text" autofocus="" class="client-id" name="clientId" placeholder="请输入企业客户号"></div>
+                    <button type="button" onclick="eBankPay(true)">确定</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function closePopup() {
+            jQuery("#mask").addClass("none");
+            jQuery("#Popup").addClass("none");
+            jQuery("#PopupClientId").addClass("none");
+        }
+        function eBankPayRoute() {
+            /*
+             * 网银支付点击下一步
+             * 如果需要网银企业客户号，弹出弹层输入网银企业客户号
+             * 否则直接支付
+             * */
+            var currentBank = jQuery(".bank-list.active .active")[0];
+            if (currentBank.getAttribute("isneedclient") == "true") {
+                jQuery("#PopupClientId,#mask").removeClass("none");
+                jQuery("#clientIdForm .bank-logo")[0].className = "bank-logo " + currentBank.getAttribute("bankcode");
+                jQuery("#clientIdForm .bank-name")[0].innerHTML = currentBank.getAttribute("bankname");
+                return;
+            }
+            eBankPay();
+        }
+        function eBankPay(clientId) {
+            /*
+             * 网银支付
+             * */
+            var currentBank = jQuery(".bank-list.active .active")[0];
+            var sendData = {
+                token: "$!{token}",
+                bankCode:currentBank.getAttribute("bankcode"),
+                ebankAccountType:currentBank.getAttribute("bankaccounttype")
+            }
+            if (clientId) {
+                sendData.clientId = jQuery("#clientIdForm .client-id").val();
+            }
+            jQuery.ajax({
+                url: "${ctx.contextPath}/newpc/ebank/pay",
+                data: sendData,
+                cache:false,
+                success: function (responseText) {
+                    var data = JSON.parse(responseText);
+                    if (data.errorCode) {
+                        alert(data.errorMsg+"("+data.errorCode+")");
+                        closePopup();
+                        return;
+                    }
+                    jQuery("#mask,#Popup").removeClass("none");
+                    jQuery(".waiting-pay .bank-name").html(currentBank.getAttribute("bankname"));
+                    jQuery(".waiting-pay .issue").attr("href",data.questionUrl);
+                    jQuery(".waiting-pay .merchant-order-id").html(data.merchantOrderId);
+//                    window.open(data.payUrl, "_blank");
+                    /*跳转到银行支付页*/
+                    if(data.redirectType == 'TO_PCC'){
+                        window.open(data.payUrl, "_blank");
+                    }else if(data.redirectType == 'TO_BANK'){
+                        var ebankUrlInfo = typeof data.ebankUrlInfo == 'string' ? JSON.parse(data.ebankUrlInfo) : data.ebankUrlInfo;
+                        setForm(ebankUrlInfo)
+                    }
+                }
+            });
+        }
+        function setForm(obj) {   //创建表单提交数据到银联
+            var url = obj.url,
+                    charset = obj.charset,
+                    method = obj.method,
+                    params = obj.params;
+            var html = '<form name="toBankForm" id="toBankForm" target="_blank" action="'+url+'" method="'+method+'"  accept-charset="'+charset+'">'
+            for(var item in params){
+                html += '<input type="hidden" name="'+item+'" value="'+params[item]+'" />'
+            }
+            html += '</form>';
+            jQuery("#bankPayWrapper").append(html)
+            jQuery("#toBankForm").submit();
+            jQuery("#toBankForm").remove();
+        }
+        function ebankResult() {
+            /*
+             * 网银支付点击已完成支付查询结果页
+             * */
+            location.assign("${ctx.contextPath}/newpc/ebank/result/$!{token}");
+        }
+    </script>
+    #end
+</div>
+   #if(!$notShowYeepay)
+    <div class="footer layout">本支付由易宝支付提供，易宝支付版权所有 &copy; 2003-2013 京ICP备08100193号</div>
+    #end
+</body>
+</html>

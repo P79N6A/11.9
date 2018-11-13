@@ -1,0 +1,959 @@
+#parse('header.vm')
+<body>
+<style>
+   .pme-popup .pme-bind-card{ height: auto;}
+   .pme-bind-card .error-info{ padding-right:5px;font-size:12px;color:#9f9f9f}
+    .pme-bind-card .bank-data.disabled{ background-color: #cec8c8; opacity: .3;}
+</style>
+    #parse('back.vm')
+    #if(${pageRedirectParam})
+    <script>
+        var pageRedirectParam =${pageRedirectParam};
+        var html = '<form id="toBankForm"' + ' action="' + pageRedirectParam.redirectUrl + '" method="' + pageRedirectParam.method + '"  accept-charset="' + pageRedirectParam.encoding + '">'
+        for (var key in pageRedirectParam.extMap) {
+            html += '<input type="hidden" name="' + key + '" value="' + pageRedirectParam.extMap[key] + '" />'
+        }
+        html += '</form>';
+        document.querySelector("body").insertAdjacentHTML('beforeEnd', html)
+        document.querySelector("#toBankForm").submit();
+    </script>
+    #end
+<header class="pme-order-info" id="mod-orderInfo">
+    #if(!${theme} || ${theme.showMerchantName})
+        <p class="receive-side" id="receiveSide" style="margin-bottom:0px; font-size:14px;">$!{companyText}</p>
+    #end
+    <p class="amount" style="margin-top:0px; font-size:30px;">￥$!{amount}#if($fee)<span style="font-size:12px; color:#454648">(包含手续费<span style="color:#f26758;">$!{fee}</span>元)</span>#end</p>
+    <label for="mod-detailsSwitch"></label>
+</header>
+<div class="pme-order-details-wrapper" id="mod-orderDetails">
+    <input type="checkbox" class="details-switch" id="mod-detailsSwitch"/>
+
+    <div class="order-details">
+        <div class="details-info">
+            <div style="color:#9e9e9e;">商品名称</div>
+            <div>$!{productname}</div>
+        </div>
+        <div class="details-info">
+            <div style="color:#9e9e9e;">订单编号</div>
+            <div>$!{orderid}</div>
+        </div>
+    </div>
+    <span class="details-switch-trigger">&#xe601;</span>
+</div>
+    #if(!$cardNo)
+    <div id="J-bindedCard">
+        #if($otherCards)
+            <div class="mt10">
+                <div class="pme-bind-card" id="mod-bindCard" onclick="showBindCard()">
+                    <div><img src="${ctx.contextPath}/static/images/$!{bc.bankImage}" height="30" id="J-bankLogo"></div>
+                    <div class="ml10">
+                        <p class="f18" id="J-bankName">$!{bc.bankName}</p>
+
+                        <p class="mt5 card-num">尾号<span id="J-bankNo">$!{bc.cardlater}</span><span id="J-cardType"
+                                                                                                   class="ml20">
+                            #if ($bc.cardtype.name() == "CREDIT")
+                                信用卡
+                            #else
+                                储蓄卡
+                            #end
+                        </span></p>
+                    </div>
+                    <p class="product-random-guide">随机立减</p>
+                    <i class="arrow iconfont">&#xe605;</i>
+                </div>
+            </div>
+        #else
+            <div class="mt10">
+                <div class="pme-bind-card" id="mod-bindCard">
+                    <div><img src="${ctx.contextPath}/static/images/${bc.bankImage}" height="30"></div>
+                    <div class="ml10">
+                        <p class="f18">${bc.bankName}</p>
+
+                        <p class="mt5 card-num">尾号${bc.cardlater}<span class="ml20">
+                            #if ($bc.cardtype.name() == "CREDIT")
+                                信用卡
+                            #else
+                                储蓄卡
+                            #end
+                        </span></p>
+                    </div>
+                </div>
+            </div>
+        #end
+        <div class="mt10">
+            <form id="J-cardInfo" class="pme-form"
+                  onsubmit="return submitValidate(this)">
+                #if ($needCardInfo.needSurportDTO.cardnoIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>卡号</mark>
+                            #if($!{needCardInfo.cardno} && $!{needCardInfo.cardno}!="")
+                                <input type="tel" readonly maxlength="18" encrypt="true" placeholder="银行卡号" name="cardno"
+                                       value="$!{needCardInfo.cardno}">
+                            #else
+                                <input type="tel" maxlength="18" encrypt="true" placeholder="银行卡号" name="cardno"
+                                       value="$!{needCardInfo.cardno}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if(${merchantSamePersonConf})
+                <p class="prompt" style="margin-left: 10px">请使用<span class="emp" style="color: #ff7f01">本人信息</span>进行支付，支付成功后不可更改</p>
+                #end
+                #if ($needCardInfo.needSurportDTO.ownerIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>姓名</mark>
+                            #if($!{needCardInfo.owner} && $!{needCardInfo.owner}!="")
+                                <input type="text" encrypt="true" addItem="true" readonly
+                                       placeholder="请输入您的真实姓名"
+                                       name="owner"
+                                       value="$!{needCardInfo.owner}">
+                            #else
+                                <input type="text" encrypt="true" addItem="true" placeholder="真实姓名" name="owner"
+                                       value="$!{needCardInfo.owner}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.idnoIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>证件号</mark>
+                            #if($!{needCardInfo.idno} && $!{needCardInfo.idno}!="")
+                                <input maxlength="18" encrypt="true" addItem="true" type="text" readonly placeholder="真实证件号"
+                                       name="idno" value="$!{needCardInfo.idno}">
+                            #else
+                                <input maxlength="18" encrypt="true" addItem="true" type="text" placeholder="真实证件号" name="idno"
+                                       value="$!{needCardInfo.idno}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.avlidDateIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>有效期</mark>
+                            <input addItem="true" autocomplete="off" encrypt="true" maxlength="4" type="tel" placeholder="有效期,月/年（如09/15 输入0915）"
+                                   name="avlidDate" value="$!{needCardInfo.avlidDate}">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.cvvIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>C V V 2</mark>
+                            <input id="userCvv" addItem="true" autocomplete="off" maxlength="3" encrypt="true" type="tel" placeholder="CVV2,卡背后三位" name="user-cvv"
+                                    value="$!{needCardInfo.cvv}">
+                            <input id="cvv" maxlength="3" encrypt="true" type="text" addItem="true"
+                                   name="cvv" value="$!{needBankCardDTO.cvv}" style="display: none;">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                <script>
+                    document.querySelector("#userCvv").addEventListener("input", function () {
+                        document.querySelector("#cvv").value += this.value.charAt(this.value.length - 1);
+                        document.querySelector("#cvv").value = document.querySelector("#cvv").value.substr(0, this.value.length);
+                        var dot = '';
+                        for (var i = 0, l = this.value.length; i < l; i++) {
+                            dot += "•";
+                        }
+                        this.value = dot;
+                    }, false)
+                </script>
+                #end
+                #if ($needCardInfo.needSurportDTO.idCardTypeIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>证件类型</mark>
+                            <input type="text" addItem="true" placeholder="证件类型" name="idCardType"
+                                   value="$!{needCardInfo.idCardType}">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.bankPWDIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>取款密码</mark>
+                            <input type="password" addItem="true" encrypt="true" maxlength="6" placeholder="取款密码" name="bankPWD"
+                                   data-key-type="tel" value="$!{needCardInfo.bankPWD}">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.phoneNoIsNeed)
+                <figure class="input-box">
+                    <label>
+                        <mark>手机号</mark>
+                        #if($!{needCardInfo.phoneNo} && $!{needCardInfo.phoneNo}!="")
+                        <input type="tel" addItem="true" encrypt="true" id="phoneNo" readonly placeholder="银行预留手机号"
+                               name="phoneNo" value="$!{needCardInfo.phoneNo}">
+                        #else
+                        <input type="tel" addItem="true" encrypt="true" id="phoneNo" placeholder="银行预留手机号" name="phoneNo"
+                               value="$!{needCardInfo.phoneNo}">
+                        #end
+                        <i class="clear iconfont">&#xe600;</i>
+                    </label>
+                </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.ypMobileIsNeed)
+                <figure class="input-box">
+                    <label>
+                        <mark>手机号</mark>
+                        <input type="number" addItem="true" encrypt="true" placeholder="易宝预留手机号" name="ypMobile"
+                               value="$!{needCardInfo.ypMobile}">
+                        <i class="clear iconfont">&#xe600;</i>
+                    </label>
+                </figure>
+                #end
+                #if ($smsType)
+                    <figure class="input-box">
+                        <label>
+                            <mark>验证码</mark>
+                            <input type="tel" maxlength="10" readonly="readonly" id="J_verifycode" placeholder="短信验证码"
+                                   name="verifycode">
+                            <i class="clear iconfont">&#xe600;</i>
+                            <!--<button onclick="getCode(this)" id="J_getCode" class="pme-btn pme-btn-sm">获取验证码</button>-->
+                            <a href="javascript:void(-1);" onclick="getCode(this)" id="J_getCode" class="pme-btn pme-btn-sm"
+                               style=" width: auto; height: 28px; background-color: #fff;line-height: 28px;padding: 0 3px;">获取验证码</a>
+                        </label>
+                    </figure>
+                #end
+                <div class="pme-wrapper">
+                    <button type="submit" class="J-payBtn">确认支付</button>
+                </div>
+                <input type="hidden" name="token" value="$!{token}">
+                <input type="hidden" name="bindId" value="$!{bc.bindid}">
+                <input type="hidden" name="smsType" value="$!{smsType}">
+            </form>
+        </div>
+    </div>
+    <div id="J-otherCard" class="none">
+        <div class="mt10">
+            <div class="pme-bind-card f18" id="mod-bindCard" onclick="showBindCard()">
+                <div>其他卡支付</div>
+                <i class="arrow iconfont">&#xe605;</i>
+            </div>
+        </div>
+        <div class="mt10">
+            <form id="cardInfo" class="pme-form" method="post" action="${ctx.contextPath}/wap/first/cardinfo?isChangeCard=changCard"
+                  onsubmit="return sub()">
+                <figure class="input-box">
+                    <label>
+                        <mark>卡号</mark>
+                        <input type="tel" name="cardNo" data-format="true" encrypt="true" placeholder="请输入银行卡卡号" id="testCardNo">
+                        <i class="clear iconfont">&#xe600;</i>
+                    </label>
+                </figure>
+                <div class="pme-wrapper">
+                    <button type="submit">下一步</button>
+                </div>
+                <input type="hidden" name="token" value="$!{token}">
+            </form>
+        </div>
+        <div class="pme-wrapper mt20">
+            <a href="${ctx.contextPath}/newwap/toSupportBankPage?token=$!{token}" class="pme-supbk">可用银行列表与限额</a>
+        </div>
+    </div>
+    #else
+    <div id="J-bindedCard" class="none">
+        #if($otherCards)
+            <div class="mt10">
+                <div class="pme-bind-card" id="mod-bindCard" onclick="showBindCard()">
+                    <div><img src="${ctx.contextPath}/static/images/$!{bc.bankImage}" height="30" id="J-bankLogo"></div>
+                    <div class="ml10">
+                        <p class="f18" id="J-bankName">$!{bc.bankName}</p>
+
+                        <p class="mt5 card-num">尾号<span id="J-bankNo">$!{bc.cardlater}</span><span id="J-cardType"
+                                                                                                   class="ml20">
+                            #if ($bc.cardtype == "CREDIT")
+                                信用卡
+                            #else
+                                储蓄卡
+                            #end
+                        </span></p>
+                    </div>
+                    <p class="product-random-guide">随机立减</p>
+                    <i class="arrow iconfont">&#xe605;</i>
+                </div>
+            </div>
+        #else
+            <div class="mt10">
+                <div class="pme-bind-card" id="mod-bindCard" onclick="showBindCard()">
+                    <div><img src="${ctx.contextPath}/static/images/${bc.bankImage}" height="30"></div>
+                    <div class="ml10">
+                        <p class="f18">${bc.bankName}</p>
+
+                        <p class="mt5 card-num">尾号${bc.cardlater}<span class="ml20">
+                            #if ($bc.cardtype == "CREDIT")
+                                信用卡
+                            #else
+                                储蓄卡
+                            #end
+                        </span></p>
+                    </div>
+                </div>
+            </div>
+        #end
+        <div class="mt10">
+            <form id="J-cardInfo" class="pme-form"
+                  onsubmit="return submitValidate(this)">
+                #if ($needCardInfo.needSurportDTO.cardnoIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>卡号</mark>
+                            #if($!{needCardInfo.cardno} && $!{needCardInfo.cardno}!="")
+                                <input type="tel" readonly maxlength="18" encrypt="true" placeholder="银行卡号" name="cardno"
+                                       value="$!{needCardInfo.cardno}">
+                            #else
+                                <input type="tel" maxlength="18" encrypt="true" placeholder="银行卡号" name="cardno"
+                                       value="$!{needCardInfo.cardno}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if(${merchantSamePersonConf})
+                <p class="prompt" style="margin-left: 10px">请使用<span class="emp" style="color: #ff7f01">本人信息</span>进行支付，支付成功后不可更改</p>
+                #end
+                #if ($needCardInfo.needSurportDTO.ownerIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>姓名</mark>
+                            #if($!{needCardInfo.owner} && $!{needCardInfo.owner}!="")
+                                <input type="text" encrypt="true" addItem="true" readonly
+                                       placeholder="请输入您的真实姓名"
+                                       name="owner"
+                                       value="$!{needCardInfo.owner}">
+                            #else
+                                <input type="text" encrypt="true" addItem="true"
+                                       placeholder="请输入您的真实姓名"
+                                      name="owner"
+                                       value="$!{needCardInfo.owner}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.idnoIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>证件号</mark>
+                            #if($!{needCardInfo.idno} && $!{needCardInfo.idno}!="")
+                                <input maxlength="18" encrypt="true" type="text" addItem="true" readonly placeholder="真实证件号"
+                                       name="idno" value="$!{needCardInfo.idno}">
+                            #else
+                                <input maxlength="18" encrypt="true" type="text" addItem="true" placeholder="真实证件号" name="idno"
+                                       value="$!{needCardInfo.idno}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.avlidDateIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>有效期</mark>
+                            <input addItem="true" encrypt="true" maxlength="4" type="tel" addItem="true"
+                                   placeholder="有效期,月/年（如09/15 输入0915）" name="avlidDate"
+                                   value="$!{needCardInfo.avlidDate}">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.cvvIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>C V V 2</mark>
+                            <input id="userCvv" addItem="true" encrypt="true" maxlength="3" type="tel" placeholder="CVV2,卡背后三位"
+                                   name="user-cvv" value="$!{needCardInfo.cvv}">
+                            <input id="cvv" maxlength="3" encrypt="true" type="text" addItem="true"
+                                   name="cvv" value="$!{needBankCardDTO.cvv}" style="display: none;">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                <script>
+                    document.querySelector("#userCvv").addEventListener("input", function () {
+                        document.querySelector("#cvv").value += this.value.charAt(this.value.length - 1);
+                        document.querySelector("#cvv").value = document.querySelector("#cvv").value.substr(0, this.value.length);
+                        var dot = '';
+                        for (var i = 0, l = this.value.length; i < l; i++) {
+                            dot += "•";
+                        }
+                        this.value = dot;
+                    }, false)
+                </script>
+                #end
+                #if ($needCardInfo.needSurportDTO.idCardTypeIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>证件类型</mark>
+                            #if($!{needCardInfo.idCardType} && $!{needCardInfo.idCardType}!="")
+                                <input type="text" readonly addItem="true" placeholder="证件类型" name="idCardType"
+                                       value="$!{needCardInfo.idCardType}">
+                            #else
+                                <input type="text" addItem="true"  placeholder="证件类型" name="idCardType"
+                                       value="$!{needCardInfo.idCardType}">
+                            #end
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.bankPWDIsNeed)
+                    <figure class="input-box">
+                        <label>
+                            <mark>取款密码</mark>
+                            <input addItem="true" type="password" encrypt="true" addItem="true" maxlength="6" placeholder="取款密码"
+                                   name="bankPWD" data-key-type="tel" value="$!{needCardInfo.bankPWD}">
+                            <i class="clear iconfont">&#xe600;</i>
+                        </label>
+                    </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.phoneNoIsNeed)
+                <figure class="input-box">
+                    <label>
+                        <mark>手机号</mark>
+                        #if($!{needCardInfo.phoneNo} && $!{needCardInfo.phoneNo}!="")
+                        <input type="tel" id="phoneNo" addItem="true" encrypt="true" readonly placeholder="银行预留手机号"
+                               name="phoneNo" value="$!{needCardInfo.phoneNo}">
+                        #else
+                        <input type="tel" id="phoneNo" addItem="true" encrypt="true" placeholder="银行预留手机号" name="phoneNo"
+                               value="$!{needCardInfo.phoneNo}">
+                        #end
+                        <i class="clear iconfont">&#xe600;</i>
+                    </label>
+                </figure>
+                #end
+                #if ($needCardInfo.needSurportDTO.ypMobileIsNeed)
+                <figure class="input-box">
+                    <label>
+                        <mark>手机号</mark>
+                        <input type="number" addItem="true" encrypt="true" placeholder="易宝预留手机号" name="ypMobile"
+                               value="$!{needCardInfo.ypMobile}">
+                        <i class="clear iconfont">&#xe600;</i>
+                    </label>
+                </figure>
+                #end
+                #if ($smsType)
+                    <figure class="input-box">
+                        <label>
+                            <mark>验证码</mark>
+                            <input type="tel" maxlength="10" placeholder="短信验证码" name="pme-popup">
+                            <i class="clear iconfont">&#xe600;</i>
+                            <!--<button onclick="getCode(this)" id="J_getCode" class="pme-btn pme-btn-sm">获取验证码</button>-->
+                        </label>
+                        <a href="javascript:void(-1);" onclick="getCode(this)" id="J_getCode" class="pme-btn pme-btn-sm"
+                           style="position: absolute; width: 92px; height: 28px; top: 5px; right: 8px;">获取验证码</a>
+                    </figure>
+                #end
+                <div class="pme-wrapper">
+                    <button type="submit" class="J-payBtn">确认支付</button>
+                </div>
+                <input type="hidden" name="token" value="$!{token}">
+                <input type="hidden" name="bindId" value="$!{bindId}">
+                <input type="hidden" name="smsType" value="$smsType">
+            </form>
+        </div>
+    </div>
+    <div id="J-otherCard">
+        <div class="mt10">
+            <div class="pme-bind-card" id="mod-bindCard" onclick="showBindCard()">
+                <div class="f18">其他卡支付</div>
+                <i class="arrow iconfont">&#xe605;</i>
+            </div>
+        </div>
+        <div class="mt10">
+            <form id="cardInfo" class="pme-form" method="post" action="${ctx.contextPath}/wap/first/cardinfo?isChangeCard=changCard"
+                  onsubmit="return sub()">
+                <figure class="input-box">
+                    <label>
+                        <mark>卡号</mark>
+                        <input type="tel" id="testCardNo" name="cardNo" data-format="true" encrypt="true" maxlength="23" value="$!{cardNo}"
+                               placeholder="请输入银行卡卡号">
+                        <i class="clear iconfont">&#xe600;</i>
+                    </label>
+                </figure>
+                <div class="pme-wrapper">
+                    <button type="submit" class="mt20 J-next">下一步</button>
+                </div>
+                <input type="hidden" name="token" value="$!{token}">
+            </form>
+        </div>
+        <div class="pme-wrapper mt20">
+            <a href="${ctx.contextPath}/newwap/toSupportBankPage?token=$!{token}" class="pme-supbk">可用银行列表与限额</a>
+        </div>
+    </div>
+    #end
+<div class="none" id="J-bankList">${otherCards}</div>
+#if(!$notShowYeepayCompanyInfo)
+    #parse('footer.vm')
+#end
+<script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+<script>
+    #if(!$bc)
+      otherCard();
+    #end
+    var ncIsClick = true;
+    #if($createPaymentError)
+    var createPaymentError = JSON.parse('${createPaymentError}');
+    #else
+    var createPaymentError = {};
+    #end
+    function showBindCard() {
+        var bankList = JSON.parse(document.querySelector("#J-bankList").textContent);
+        var html = '';
+        for (var i = 0, l = bankList.length; i < l; i++) {
+            var cardType = bankList[i].cardtype == "CREDIT" ? "信用卡" : "储蓄卡";
+            html += '<div class="pme-bind-card"> <div><img src="${ctx.contextPath}/static/images/' + bankList[i].bankImage + '" height="30"></div><div class="ml10"><p class="f18">' + bankList[i].bankName + '</p><p class="mt5 card-num f12">尾号' + bankList[i].cardlater + '<span class="ml20">' + cardType + '</span></p>'+ (typeof createPaymentError[bankList[i].bindid] != "undefined" ? '<p class="error-info">' + createPaymentError[bankList[i].bindid].errorMsg + createPaymentError[bankList[i].bindid].errorCode + '</p>' : '') +'</div><div class="bank-data'+ (typeof createPaymentError[bankList[i].bindid] != "undefined"?' disabled':'') +'" data-bank-image="' + bankList[i].bankImage + '" data-bank-name="' + bankList[i].bankName + '" data-bank-no="' + bankList[i].cardlater + '" data-card-type="' + bankList[i].cardtype + '" data-bind-id="' + bankList[i].bindid + '"></div></div>'
+        }
+        #if($showChangeCard)
+            html += '<a href="javascript:otherCard();" class="other-card" style="font-size: 18px;">其他卡支付</a>'
+        #end
+        To.Popup.base(html, "pme-bank-list", true, false, "更换银行卡");
+        document.querySelector(".pme-bank-list").addEventListener("click", function (event) {
+            if (event.target.classList.contains("bank-data")) {
+                var target = event.target;
+                var dom = window.document;
+                dom.querySelector("[name=bindId]").value = target.dataset.bindId;
+                dom.querySelector("#J-bindedCard").style.display = "block";
+                dom.querySelector("#J-otherCard").style.display = "none";
+                dom.querySelector("#J-bankLogo").src = "${ctx.contextPath}/static/images/" + target.dataset.bankImage;
+                dom.querySelector("#J-bankName").textContent = target.dataset.bankName;
+                dom.querySelector("#J-bankNo").textContent = target.dataset.bankNo;
+                dom.querySelector("#J-cardType").textContent = target.dataset.cardType == "CREDIT" ? "信用卡" : "储蓄卡";
+                window.location.href = "${ctx.contextPath}/wap/request/bind?token=${token}&bindId=" + target.dataset.bindId;
+            }
+            To.Popup.close();
+        }, false);
+    }
+    function otherCard() {
+        document.querySelector("#J-bindedCard").style.display = "none";
+        document.querySelector("#J-otherCard").style.display = "block";
+    }
+
+    function validate(smsType) {
+        var root = this.parentNode.parentNode;
+        if (this.name == "owner") {
+            if (this.value == "") {
+                To.ui.errorMsg("姓名不能为空", root);
+                return false;
+            }
+            if (!/^[\u4E00-\u9FA5·.*]+$/.test(this.value)) {
+                To.ui.errorMsg("姓名只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "idCardType") {
+            if (this.value == "") {
+                To.ui.errorMsg("证件类型不能为空", root);
+                return false;
+            }
+            if (/[^\u4e00-\u9fa5*]/.test(this.value)) {
+                To.ui.errorMsg("证件类型只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "cardNo" || this.name == "cardno") {
+            if (this.value == "") {
+                To.ui.errorMsg("卡号不能为空", root);
+                return false;
+            } else if (/[^\d\s]/.test(this.value)) {
+                To.ui.errorMsg("卡号必须是数字", root);
+                return false;
+            }else if(this.value.length<17 || this.value.length>23){
+                To.ui.errorMsg("卡号不合法，请修改卡号", root);
+                return false;
+            }
+        }
+        if (this.name == "verifycode") {
+            if (this.value == "") {
+                To.ui.errorMsg("短信验证码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("短信验证码必须是数字", root);
+                return false;
+            }
+        }
+        if (this.name == "idno") {
+            if (this.value == "") {
+                To.ui.errorMsg("身份证号不能为空", root);
+                return false;
+            } else if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(this.value)) {
+                To.ui.errorMsg("身份证号码格式错误", root);
+                return false;
+            }
+        }
+        if (this.name == "phoneNo" || this.name == "ypMobile") {
+            var telPhone = document.getElementById("phoneNo");
+            if (telPhone !== null) {
+                var pNo = telPhone.value;
+                if (pNo == "") {
+                    if (this.value == "") {
+                        To.ui.errorMsg("手机号不能为空", root);
+                        return false;
+                    } else if (/[^\d]/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是数字", root);
+                        return false;
+                    } else if (/^[^1]/.test(this.value)) {
+                        To.ui.errorMsg("手机号格式不正确", root);
+                        return false;
+                    } else if (!/[\d]{11}/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是11位数字", root);
+                        return false;
+                    }
+                }
+            }
+        }
+        if (this.name == "avlidDate") {
+            if (this.value == "") {
+                To.ui.errorMsg("有效期不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("有效期必须是数字", root);
+                return false;
+            } else if (this.value.length < 4) {
+                To.ui.errorMsg("有效期必须是四位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "cvv") {
+            if (this.value == "") {
+                To.ui.errorMsg("CVV2不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("CVV2必须是数字", root);
+                return false;
+            }
+            else if (this.value.length < 3) {
+                To.ui.errorMsg("CVV2必须是三位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "bankPWD") {
+            if (this.value == "") {
+                To.ui.errorMsg("取款密码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("取款密码必须是数字", root);
+                return false;
+            }
+        }
+        if (this.name == "verifycode") {
+            if (this.value == "") {
+                To.ui.errorMsg("短信验证码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("短信验证码必须是数字", root);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function smsValidate() {
+        var root = this.parentNode.parentNode;
+        if (this.name == "owner") {
+            if (this.value == "") {
+                To.ui.errorMsg("姓名不能为空", root);
+                return false;
+            }
+            if (!/^[\u4E00-\u9FA5·.*]+$/.test(this.value)) {
+                To.ui.errorMsg("姓名只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "idCardType") {
+            if (this.value == "") {
+                To.ui.errorMsg("证件类型不能为空", root);
+                return false;
+            }
+            if (/[^\u4e00-\u9fa5*]/.test(this.value)) {
+                To.ui.errorMsg("证件类型只能为中文", root);
+                return false;
+            }
+        }
+        if (this.name == "cardNo" || this.name == "cardno") {
+            if (this.value == "") {
+                To.ui.errorMsg("卡号不能为空", root);
+                return false;
+            } else if (/[^\d\s]/.test(this.value)) {
+                To.ui.errorMsg("卡号必须是数字", root);
+                return false;
+            }
+        }
+
+        if (this.name == "idno") {
+            if (this.value == "") {
+                To.ui.errorMsg("身份证号不能为空", root);
+                return false;
+            } else if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(this.value)) {
+                To.ui.errorMsg("身份证号码格式错误", root);
+                return false;
+            }
+        }
+        if (this.name == "phoneNo" || this.name == "ypMobile") {
+            var telPhone = document.getElementById("phoneNo");
+            if (telPhone != null) {
+                var pNo = telPhone.value;
+                if (pNo == "") {
+                    if (this.value == "") {
+                        To.ui.errorMsg("手机号不能为空", root);
+                        return false;
+                    } else if (/[^\d]/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是数字", root);
+                        return false;
+                    } else if (/^[^1]/.test(this.value)) {
+                        To.ui.errorMsg("手机号格式不正确", root);
+                        return false;
+                    } else if (!/[\d]{11}/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是11位数字", root);
+                        return false;
+                    }
+                }
+            }
+        }
+        if (this.name == "avlidDate") {
+            if (this.value == "") {
+                To.ui.errorMsg("有效期不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("有效期必须是数字", root);
+                return false;
+            } else if (this.value.length < 4) {
+                To.ui.errorMsg("有效期必须是四位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "cvv") {
+            if (this.value == "") {
+                To.ui.errorMsg("CVV2不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("CVV2必须是数字", root);
+                return false;
+            }
+            else if (this.value.length < 3) {
+                To.ui.errorMsg("CVV2必须是三位数字", root);
+                return false;
+            }
+        }
+        if (this.name == "bankPWD") {
+            if (this.value == "") {
+                To.ui.errorMsg("取款密码不能为空", root);
+                return false;
+            } else if (/[^\d]/.test(this.value)) {
+                To.ui.errorMsg("取款密码必须是数字", root);
+                return false;
+            }
+        }
+
+    }
+    /* +function bindValidate() {
+         var inputs = document.querySelectorAll("form input");
+         var type = /(text|password|number|tel|email|time|date)/;
+         for (var i = 0, l = inputs.length; i < l; i++) {
+             type.test(inputs[i].type) ? inputs[i].addEventListener("blur",validate, false) : false;
+         }
+     }();*/
+
+    function submitValidate(form) {
+        event.preventDefault();
+        document.querySelector(".J-payBtn").disabled = true;
+        var inputs = form.querySelectorAll("input");
+        var type = /(text|password|number|tel|email|time|date)/;
+        var result = null;
+        for (var i = 0, l = inputs.length; i < l; i++) {
+            if (type.test(inputs[i].type)) {
+                result = validate.call(inputs[i]);
+            }
+        }
+        if (result || result == null) {
+            jQuery.ajax({
+                method: "POST",
+                url: "$!{ctx.contextPath}/wap/ajax/pay/bind",
+                data: asyncEncrypt(form),
+                success: function (res) {
+                    var data = JSON.parse(res);
+                    switch (data.bizStatus) {
+                        case "smsFailed":  //短信验证码错误  留在当前page
+                            To.Popup.alert(data.errormsg);
+                    document.querySelector(".J-payBtn").disabled = false;
+                            break;
+                        case "success":
+                            location.assign("${ctx.contextPath}/wap/query/result?token=" + data.token);
+                    break;
+                        case "failed":
+                            var needRepay = data.needRepay;
+                            if (needRepay) {
+                                location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg + "&needRepay=" + needRepay);
+                } else {
+                                location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg);
+                }
+                            break;
+            }
+        }
+            });
+        } else {
+            document.querySelector(".J-payBtn").disabled = false;
+        }
+    }
+
+    function getCode(elem) {//获取验证码
+        var form = document.querySelector("#J-cardInfo");
+        var inputs = form.querySelectorAll("input");
+        var type = /(text|password|number|tel|email|time|date)/;
+        for (var i = 0, l = inputs.length; i < l; i++) {
+            if (type.test(inputs[i].type)) {
+                var result = smsValidate.call(inputs[i]);
+                if (result === false) {
+                    return result;
+                }
+            }
+        }
+
+
+        var verifycode = document.getElementById("J_verifycode");
+        verifycode.removeAttribute("readOnly");
+        var target = document.getElementById("J_getCode");
+        if (typeof elem.dataset.disabled == "undefined" || elem.dataset.disabled == "") {
+            target.dataset.disabled = "true";
+            jQuery.ajax({
+                method: "POST",
+                url: "${ctx.contextPath}/wap/ajax/bindSmsSend",
+                data: {
+                    cardno:BASE64.encoder(jQuery("input[name=cardno]").val()),
+                    owner:BASE64.encoder(jQuery("input[name=owner]").val()),
+                    idno:BASE64.encoder(jQuery("input[name=idno]").val()),
+                    avlidDate:BASE64.encoder(jQuery("input[name=avlidDate]").val()),
+                    cvv:BASE64.encoder(jQuery("input[name=cvv]").val()),
+                    idCardType:jQuery("input[name=idCardType]").val(),
+                    bankPWD:BASE64.encoder(jQuery("input[name=bankPWD]").val()),
+                    phoneNo:BASE64.encoder(jQuery("input[name=phoneNo]").val()),
+                    ypMobile:BASE64.encoder(jQuery("input[name=ypMobile]").val()),
+                    token:jQuery("input[name=token]").val(),
+                    bindId:jQuery("input[name=bindId]").val(),
+                    smsType:jQuery("input[name=smsType]").val()
+                },
+                success: function (data) {
+                    var result = JSON.parse(data);
+                    if (result.status == "success") {
+                        target.dataset.disabled = "true";
+                        timing(target, 60, function () {
+                            target.removeAttribute("data-disabled");
+                            target.textContent = "获取验证码";
+                        });
+                        var addItem = document.querySelectorAll("#J-cardInfo input[addItem=true]");
+                        for (var _i = 0, l = addItem.length; _i < l; _i++) {
+                            addItem[_i].readOnly = true;
+                        }
+                        #if($smsType)
+                            #if($smsType == "YEEPAY")
+                                #if($needCardInfo.needSurportDTO.phoneNoIsNeed)
+                                    var bankNum = document.getElementById("phoneNo");
+                                    if (bankNum != null) {
+                                        var bankPhone = bankNum.value;
+                                        var bankNum1 = bankPhone.toString();
+                                        var bankVal = bankNum1.replace(bankNum1.substring(3, 7), "****");
+                                        To.Popup.alert("验证码已发送到手机：" + bankVal);
+                                    }
+                                #elseif("$!needCardInfo.phoneNo" !="")
+                                    var ybNum = "$!{needCardInfo.phoneNo}";
+                                    var ybNum1 = ybNum.toString();
+                                    var ybVal = ybNum1.replace(ybNum1.substring(3, 7), "****");
+                                    To.Popup.alert("验证码已发送到手机：" + ybVal);
+                                #else
+                                    var ybNum = "$!{needCardInfo.ypMobile}";
+                                    var ybNum1 = ybNum.toString();
+                                    var ybVal = ybNum1.replace(ybNum1.substring(3, 7), "****");
+                                    To.Popup.alert("验证码已发送到手机：" + ybVal);
+                                #end
+                            #elseif($smsType == "VOICE")
+                                #if("$!sendSMSNo" !="")
+                                    To.Popup.alert("<span style='color: #0073C7;'>$!sendSMSNo</span>" + "为您播报语音验证码");
+                                #else
+                                    To.Popup.alert("<div style='text-align: center'><span style='color: #0073C7;'>语音</span>验证码播报中，请注意接听</div>");
+                                #end
+                            #end
+                        #end
+                    } else {
+                        target.dataset.disabled = "";
+                        To.Popup.alert(result.msg);
+                    }
+                },
+                error: function () {
+                    target.dataset.disabled = "";
+                    To.Popup.alert("获取验证码失败,请重试。");
+                }
+            });
+        }
+    }
+    function timing(elem, t, callback, context) {//倒计时
+        /**
+         * @param [elem] DOM 显示倒计时的节点
+         * @param [t] number 倒计时长
+         * @param [callback] function 回调函数
+         * @param [context] object 回调函数上下文
+         * */
+        var timeId = null;
+        timeId = setTimeout(function () {
+            if (t > 0) {
+                elem.textContent = t + "s后重新发送";
+                t--;
+                timeId = setTimeout(arguments.callee, 1000);
+            } else {
+                t = 0;
+                clearTimeout(timeId);
+                typeof callback == "function" ? callback.call(context) : false;
+            }
+        }, 0);
+    }
+    //20160508
+
+
+    function sub() {
+        var error = document.querySelector("#pme-errorMsg");
+        var input = document.querySelector("#J-otherCard form input");
+        var result = validate.call(input);
+        if (result === false) {
+            document.querySelector(".J-next").disabled = false;
+            return false;
+        } else {
+            return encrypt("cardInfo");
+            /*document.querySelector(".J-next").disabled = true;
+            To.loading("正在支付，请耐心等待...");*/
+        }
+    }
+    +function marketinginfo() {
+        /*获取营销立减活动信息*/
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/market/info",
+            // url: "mock/marketinginfo.vm",
+            data: {token: "${token}"},
+            dataType: "json"
+        }).done(function (data) {
+            if (data.doMarketActivity == "Y") {
+                if (data.activityCopyWrites.hasOwnProperty("ALL")) {
+                    /*所有支付方式都支持做营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.ALL.copyWrite);
+                }
+                if (data.activityCopyWrites.hasOwnProperty("NCPAY")) {
+                    /*一键支付支持营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.NCPAY.copyWrite);
+                }
+            }
+        });
+    }();
+</script>
+    #if ($errormsg)
+    <script>
+        To.Popup.alert("$errormsg");
+    </script>
+    #end
+</body>
+</html>

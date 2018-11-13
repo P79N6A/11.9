@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <meta name="format-detection" content="telephone=no">
+    <style>
+        html {
+            height: 100%;
+        }
+
+       
+
+        body, div, p {
+            margin: 0;
+            padding: 0;
+        }
+body {
+           min-height:-webkit-calc(100% -80px);
+		   padding-bottom:80px;
+            position: relative;
+            background-color: #f7f7f7;
+            font-size: 14px;
+        }
+        @font-face {
+            font-family: 'iconfont';
+            src: url('${ctx.contextPath}/npc/iconfontsdk/iconfont.eot');
+            src: url('${ctx.contextPath}/npc/iconfontsdk/iconfont.eot?#iefix') format('embedded-opentype'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.woff') format('woff'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.ttf') format('truetype'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.svg#iconfont') format('svg');
+        }
+
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .payment-result {
+            margin: 20px 15px 0;
+            text-align: center;
+            word-break: break-all;
+            font-size: 26px;
+            color: #f94305;
+        }
+
+        .payment-result .iconfont {
+            font-size: 40px;
+            vertical-align: middle;
+        }
+
+        .payment-cause {
+            margin: 10px 15px;
+            text-align: center;
+        }
+
+        .other-payment {
+            margin: 30px 15px 0;
+            text-align: center;
+        }
+
+        .other-payment a {
+            color: #91C8EC;
+            text-decoration: none;
+        }
+
+        .official-account {
+            margin: 30px 15px 0;
+            text-align: center;
+        }
+
+        .official-account .qrcode {
+            max-width: 156px;
+        }
+
+        .sdk-footer {
+		    position: absolute;
+            bottom: 35px;
+            width: 100%;
+            margin-top: 80px;
+            text-align: center;
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+        .sdk-footer a {
+            color: #6ec37a;
+            text-decoration: none;
+        }
+    </style>
+    <!-- <script type="text/javascript">
+        $(document).ready(
+
+            )
+    </script>
+ --></head>
+<body>
+<div class="payment-result"><i class="iconfont">&#xe616;</i>支付失败</div>
+<p class="payment-cause" id="errorMsg"></p>
+
+<div class="other-payment">请选择<a id="paymentChange" href="javascript:void(0)">换卡支付</a><span id="hookOr">或</span><a href="javascript:void(0)" id="paymentOther">其他支付方式</a></div>
+<div class="official-account">
+    <div><img src="${ctx.contextPath}/npc/imagessdk/qrcode.png" class="qrcode"></div>
+    <p>扫码关注易宝客服公众号</p>
+</div>
+<footer class="sdk-footer">
+    <p>本服务由易宝支付（yeepay.com）提供</p>
+
+    <p>易宝支付客服电话：<a href="tel:4001-500-800">4001-500-800</a></p>
+</footer>
+<script>
+function none(id) {
+        /*
+         * 隐藏元素
+         * {id} id值
+         * */
+        document.querySelector("#hookOr").style.display = "none";
+        document.querySelector("#" + id).style.display = "none";
+    }
+var browser = {
+        versions: function () {
+            var u = navigator.userAgent;
+            return {
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,//火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
+                iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1, //是否web应该程序，没有头部与底部
+                weixin: u.indexOf('MicroMessenger') > -1, //是否微信
+                qq: u.match(/\sQQ/i) == " qq" //是否QQ
+            };
+        }()
+    };
+	document.querySelector("#paymentChange").addEventListener("click", function () {
+                   if (browser.versions.ios) {
+                            /*
+                             * IOS
+                             * */
+                            wapChangeCard();
+                        } else if (browser.versions.android) {
+                            /*
+                             * Android
+                             * */
+                            window.Android.wapChangeCard();
+                        }
+                });
+				document.querySelector("#paymentOther").addEventListener("click", function () {
+                   if (browser.versions.ios) {
+                            /*
+                             * IOS
+                             * */
+                            wapChangePayment();
+                        } else if (browser.versions.android) {
+                            /*
+                             * Android
+                             * */
+                            window.Android.wapChangePayment();
+                        }
+                });
+				function error(msg) {
+        document.querySelector("#errorMsg").innerHTML = msg;
+    }
+</script>
+</body>
+</html>

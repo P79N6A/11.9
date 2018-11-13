@@ -1,0 +1,33 @@
+#*
+限额
+*#
+<div class="limit">
+    <input type="checkbox" id="showLimit">
+    <label for="showLimit" class="handler">可用银行列表与限额</label>
+
+    <div class="cont">
+        <label for="showLimit" class="close icon">&#xe60e;</label>
+
+        <p class="title">支持银行列表与限额</p>
+
+        <div class="caption"><span class="bank">支持银行</span><span class="single">单笔限额（元）</span><span
+                class="day">单日限额（元）</span><span class="month">单月限额（元）</span>
+        </div>
+        <ul class="tb">
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+            <li><span class="bank"><i class="bank-logo"></i>北京银行</span><span class="single">1000</span><span
+                    class="day">2000</span><span class="month">20000</span></li>
+        </ul>
+    </div>
+</div>

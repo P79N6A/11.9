@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+	<bean id="nccashierDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>com.ibm.db2.jcc.DB2Driver</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>jdbc:db2://10.151.11.3:50009/innotest:currentSchema=NCCASHIER;</value>
+		</property>
+		<property name="user">
+			<!-- <value>mobilebe</value> -->
+			<value>ewallet</value>
+		</property>
+		<property name="password">
+			<value>ewa57lle</value>
+			<!-- <value>open2012</value> -->
+		</property>
+		<!--连接池中保留的最小连接数。 -->
+		<property name="minPoolSize">
+			<value>2</value>
+		</property>
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize">
+			<value>10</value>
+		</property>
+		<!--初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+		<property name="initialPoolSize">
+			<value>2</value>
+		</property>
+		<!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime">
+			<value>60</value>
+		</property>
+		<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+		<property name="acquireIncrement">
+			<value>5</value>
+		</property>
+		<!--每60秒检查所有连接池中的空闲连接。Default: 0 -->
+		<property name="idleConnectionTestPeriod">
+			<value>60</value>
+		</property>
+		<!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->
+		<property name="acquireRetryAttempts">
+			<value>10</value>
+		</property>
+	</bean>
+
+
+	<bean id="dalDataSource" class="com.yeepay.utils.jdbc.dal.DALDataSource"
+		init-method="afterPropertiesSet">
+		<property name="appId" value="nccashier"></property>
+		<property name="openShardsPlug" value="true"></property>
+		<property name="defaultDs" value="ds01"></property>
+		<property name="dataSourceMap">
+			<map>
+				<entry key="ds01" value-ref="nccashierDataSource"></entry>
+			</map>
+		</property>
+	</bean>
+	
+</beans>

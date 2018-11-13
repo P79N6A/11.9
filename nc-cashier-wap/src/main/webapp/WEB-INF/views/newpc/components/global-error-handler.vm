@@ -1,0 +1,8 @@
+#*
+全站通用错误信息
+错误信息包含链接
+*#
+<div class="global-error">
+    当前银行卡超出快捷支付限额，您可以尝试<a href="javascript:void(0)" class="other-bank">招商银行网银支付</a><a href="javascript:void(0)"
+                                                                                      class="change-card">换卡支付></a>
+</div>

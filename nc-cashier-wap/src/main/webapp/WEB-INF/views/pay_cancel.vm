@@ -1,0 +1,23 @@
+#parse('header.vm')
+<body>
+#parse('back.vm')
+<i class="iconfont pme-abnormal">&#xe604;</i>
+
+<p class="pme-wrapper tc pme-abl-msg">支付失败</p>
+
+<p class="pme-wrapper tc pme-light"> 失败原因：交易过有效期，支付的款项将做退款处理</p>
+#if(${repayurl})
+<div class="pme-wrapper"><a href="${merchantUrl}" class="pme-btn mt50">返回商户</a></div>
+#end
+#if(${theme.showMerchantName})
+<div class="pme-qrcode"><img src="${ctx.contextPath}/static/images/code-e412fe175e-201511031611.png"></div>
+<p class="pme-cisr tc">长按二维码，关注“易宝支付”公众号</p>
+
+<p class="pme-cisr tc">联系易宝客服查询订单</p>
+#end
+
+#if(${theme.showMerchantName} || !$notShowYeepayCompanyInfo)
+#parse('footer.vm')
+#end
+</body>
+</html>

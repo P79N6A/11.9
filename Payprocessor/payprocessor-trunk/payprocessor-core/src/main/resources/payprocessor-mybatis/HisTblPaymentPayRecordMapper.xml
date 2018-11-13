@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeepay.g3.core.payprocessor.hisDao.HisPayRecordDao">
+	<resultMap id="PayRecordMap" type="PayRecord">
+		<result column="REQUEST_ID" property="requestId" jdbcType="BIGINT" />
+		<result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+		<result column="BANK_ORDER_NO" property="bankOrderNo" jdbcType="VARCHAR" />
+		<result column="BANK_SEQ" property="bankSeq" jdbcType="VARCHAR" />
+		<result column="BANK_TRX_ID" property="bankTrxId" jdbcType="VARCHAR" />
+		<result column="PAYMENT_NO" property="paymentNo" jdbcType="VARCHAR" />
+		<result column="PLATFORM_TYPE" property="platformType"  jdbcType="VARCHAR" />
+		<result column="PAY_ORDER_TYPE" property="payOrderType" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+		<result column="COST" property="cost" jdbcType="DECIMAL" />
+		<result column="USER_FEE" property="userFee" jdbcType="DECIMAL" />
+		<result column="SMS_STATE" property="smsState" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="PAY_TIME" property="payTime" jdbcType="TIMESTAMP" />
+		<result column="BANK_ID" property="bankId" jdbcType="VARCHAR" />
+		<result column="BIND_CARD_ID" property="bindCardInfoId"
+			jdbcType="VARCHAR" />
+		<result column="FRP_CODE" property="frpCode" jdbcType="VARCHAR" />
+		<result column="CARD_TYPE" property="cardType" jdbcType="VARCHAR" />
+		<result column="CARD_ID" property="cardId" jdbcType="VARCHAR" />
+		<result column="CASHIER_VERSION" property="cashierVersion"
+			jdbcType="VARCHAR" />
+		<result column="PAY_PRODUCT" property="payProduct" jdbcType="VARCHAR" />
+		<result column="PAY_SCENE" property="payScene" jdbcType="VARCHAR" />
+		<result column="PAYER_IP" property="payerIp" jdbcType="VARCHAR" />
+		<result column="ERROR_CODE" property="errorCode" jdbcType="VARCHAR" />
+		<result column="ERROR_MSG" property="errorMsg" jdbcType="VARCHAR" />
+		<result column="REQUEST_SYSTEM" property="requestSystem" jdbcType="VARCHAR" />
+        <result column="REQUEST_SYS_ID" property="requestSysId" jdbcType="VARCHAR" />
+        <result column="BANK_ACCOUNT_TYPE" property="bankAccountType" jdbcType="VARCHAR" />
+        <result column="LOAN_COMPANY" property="loanCompany" jdbcType="VARCHAR" />
+        <result column="LOAN_TERM" property="loanTerm" jdbcType="VARCHAR" />
+        <result column="EXTENDED_INFO" property="extendedInfo" jdbcType="VARCHAR" javaType="com.yeepay.g3.core.payprocessor.entity.ExtendedInfo"/>
+        <result column="DEBIT_CUSTOMER_NO" property="debitCustomerNo" jdbcType="VARCHAR" />
+        <result column="DEBIT_ACCOUNT_NO" property="debitAccountNo" jdbcType="VARCHAR" />
+        <result column="DEBIT_USER_NAME" property="debitUserName" jdbcType="VARCHAR" />
+		<result column="RETAIL_PRODUCT_CODE" property="retailProductCode" jdbcType="VARCHAR" />
+		<result column="BASIC_PRODUCT_CODE" property="basicProductCode" jdbcType="VARCHAR" />
+		<result column="OPEN_ID" property="openId" jdbcType="VARCHAR" />
+		<result column="CFL_COUNT" property="cflCount"></result>
+		<result column="CFL_RATE" property="cflRate"></result>
+		<result column="MERCHANT_FEE_SUBSIDY" property="merchantFeeSubsidy"></result>
+		<result column="MERCHANT_AMOUNT_SUBSIDY" property="merchantAmountSubsidy"></result>
+	</resultMap>
+
+	<select id="selectByPrimaryKey" resultMap="PayRecordMap"
+		parameterType="java.lang.String">
+		select
+		*
+		from PP.TBL_PAYMENT_PAY_RECORD
+		where RECORD_NO =
+		#{recordNo,jdbcType=VARCHAR}
+	</select>
+
+
+</mapper>

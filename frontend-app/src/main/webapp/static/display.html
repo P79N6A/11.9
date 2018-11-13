@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <style>
+        html, body {
+            height: 100%;
+            background: url("/frontend-app/static/imgs/back.png") no-repeat;
+            background-size: cover;
+        }
+
+        .not-support {
+            padding: 20px 0;
+            text-align: center;
+            color: #fc3803;
+        }
+
+        table {
+            width: 100%;
+            height: calc(100% - 150px);
+            background-color: #EEC900;
+            text-align: center;
+            border-collapse: separate;
+            border-spacing: 2px;
+            font-size: 35px;
+        }
+
+        td, th {
+            background-color: #FDF5E6;
+        }
+
+        th {
+            height: 100px;
+        }
+
+        .statistic-data {
+            font-size: 4vw;
+            color: #ff082b;
+        }
+
+        h2 {
+            padding: 5vh 0;
+            text-align: center;
+            font-size: 35px;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<h2>聚合支付实时交易数据</h2>
+<table>
+    <thead>
+    <tr>
+        <th></th>
+        <th>成功笔数</th>
+        <th>成功金额</th>
+        <th>活跃商户</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>今日实时</td>
+        <td class="statistic-data" id="dailyOrderCount"></td>
+        <td class="statistic-data" id="dailyTradeAmount"></td>
+        <td class="statistic-data" id="dailyActiveMerchant"></td>
+    </tr>
+    <tr>
+        <td>昨日同期</td>
+        <td class="statistic-data" id="yesterdayOrderCount"></td>
+        <td class="statistic-data" id="yesterdayTradeAmount"></td>
+        <td class="statistic-data" id="yesterdayActiveMerchant"></td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    var dom = window.document;
+    if (typeof(EventSource) !== "undefined") {
+        var source = new EventSource("/frontend-app/datadisplay/uptonow");
+        source.onmessage = function (event) {
+            // console.log(typeof event.data);
+            var obj=JSON.parse(event.data)
+            dom.querySelector("#dailyOrderCount").textContent = obj.dailyOrderCount;
+            dom.querySelector("#dailyTradeAmount").textContent = obj.dailyTradeAmount;
+            dom.querySelector("#dailyActiveMerchant").textContent = obj.dailyActiveMerchant;
+            dom.querySelector("#yesterdayOrderCount").textContent = obj.yesterdayOrderCount;
+            dom.querySelector("#yesterdayTradeAmount").textContent = obj.yesterdayTradeAmount;
+            dom.querySelector("#yesterdayActiveMerchant").textContent = obj.yesterdayActiveMerchant;
+        };
+    }
+    else {
+        document.body.insertAdjacentHTML("afterBegin", '<div class="not-support">浏览器版本低，无法获取数据</div>')
+    }
+</script>
+</body>
+</html>

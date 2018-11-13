@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: 59.151.25.126:6330 shouyin.yeepay.com 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *">
+
+    <title>收银台</title>
+    <link rel="stylesheet" href="${ctx.contextPath}/static/css/mobile-pay-161c5cdb80.min.css">
+    <link rel="stylesheet" href="${ctx.contextPath}/static/css/20170104.css">
+    <script src="${ctx.contextPath}/static/js/jbase64.min.js"></script>
+    <script src="${ctx.contextPath}/npc/js/lister.js"></script>
+    <script src="${ctx.contextPath}/npc/js/jquery.js"></script>
+    <script>
+        document.title = sessionStorage.getItem("merchartName") ? sessionStorage.getItem("merchartName") : "收银台";
+        function encrypt(id) {
+            /*
+             * 同步提交表单加密
+             * */
+            var form = document.getElementById(id).cloneNode(true);
+            form.style.cssText = "position: absolute; left: -9999px; visibility: hidden";
+            var eles = form.elements;
+            for (var i = 0, l = eles.length; i < l; i++) {
+                if (eles[i].getAttribute("encrypt") == "true") {
+                    eles[i].value = BASE64.encoder(eles[i].value);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit();
+            return false;
+        }
+
+        function asyncEncrypt(form) {
+            /*
+            * 异步提交表单加密
+            * */
+            form = form instanceof HTMLFormElement ? form : document.getElementById(form);
+            var data = {};
+            var reg = /text|number|checkbox|hidden|tel|password|radio|time|date|month/;
+            var eles = form.elements;
+            for (var i = 0, l = eles.length; i < l; i++) {
+                if (reg.test(eles[i].type)) {
+                    data[eles[i].getAttribute("name")] = eles[i].hasAttribute("encrypt") ? BASE64.encoder(eles[i].value) : eles[i].value;
+                }
+            }
+            return data;
+        }
+    </script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?106891f095d7e69fd4140357f5c3e101";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+    </script>
+</head>

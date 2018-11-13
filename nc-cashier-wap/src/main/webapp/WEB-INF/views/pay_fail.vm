@@ -1,0 +1,55 @@
+#parse('header.vm')
+<body>
+##parse('back.vm')
+<div class="icon systemfail tc mt30">&#xe625;</div>
+
+<p class="pme-wrapper tc pme-abl-msg" style="font-size: 18px;margin-bottom: 0;">
+    #if($!{payTool} == "YSQ")<!--//预授权失败-->
+        预授权失败
+    #else
+        支付失败
+    #end
+</p>
+
+<p class="pme-wrapper tc pme-light" style="margin-top: 5px;"> 失败原因：${errormsg}</p>
+<div class="mt30 none" id="orderIdBox">
+    #if($!{orderId})
+        <p style="font-size:14px;text-align: center;" >商户订单号为：$!{orderId}</p>
+        <p style="font-size:12px;text-align: center;" >(请妥善保管)</p>
+    #end
+</div>
+#if($!{payTool} == "YSQ")  <!--//预授权失败-->
+<div class="pme-wrapper"><a class="query-result-btn" href="${ctx.contextPath}/wap/preauth/routPayway?token=${token}">重新预授权</a></div>
+#elseif(${repayurl} && ( !$!{payTool} ||  $!{payTool} != "YSQ"))
+<div class="pme-wrapper"><a href="${repayurl}" class="pme-btn mt20">重新支付</a></div>
+#end
+<div style="text-align: center;" id="qCodeBox" class="mt30">
+    <img id="qCode" src="" alt="" width="82" height="82">
+    <i class="code-text">识别左方二维码,可查询订单信息</i>
+</div>
+
+#if(!$notShowYeepayCompanyInfo)
+ <footer class="pme-footer" id="mod-footer" style="margin-bottom: 10px;">
+       <p>本服务由易宝支付（yeepay.com）提供</p>
+       <p>易宝支付客服电话：<span style="color:#6ec37a; text-decoration:none;">4001-500-800</span></p>
+  </footer>
+#end
+</body>
+<script>
+    +function(){
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/newwap/yeepay/qrcode?token=${token}&orderId=$!{orderId}&merchantNo=$!{merchantNo}",
+            async:true,
+            success: function (data) {
+                if(data == ''){
+                    document.querySelector("#qCodeBox").classList.add("none");
+                    document.querySelector("#orderIdBox").classList.remove("none");
+                }else{
+                    document.querySelector("#qCode").setAttribute("src",data)
+                }
+            }
+        })
+    }()
+</script>
+</html>

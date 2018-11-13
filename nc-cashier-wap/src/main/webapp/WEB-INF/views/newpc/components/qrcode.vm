@@ -1,0 +1,235 @@
+#*
+二维码付款
+*#
+<script>
+    function imgLoadError(self, callback) {
+        /*二维码加载失败*/
+        var src = self.src;
+        self.classList.add("none");
+        self.setAttribute("complete", "false");
+        self.parentNode.querySelector(".logo").classList.add("hidden");
+        function refresh() {
+            self.src = src;
+        }
+
+        if (self.parentNode.querySelector(".img-load-error") == null) {
+            var p = dom.createElement("p");
+            var button = dom.createElement("button");
+            p.className = "img-load-error";
+            p.innerHTML = "二维码加载失败！";
+            button.className = "refresh-qrcode";
+            button.innerHTML = "刷新";
+            p.appendChild(button);
+            button.addEventListener("click", function () {
+                self.src = src;
+            }, false);
+            self.parentNode.appendChild(p);
+        }
+        if (typeof callback == "function") {
+            callback();
+        }
+    }
+    function imgLoad(self) {
+        self.setAttribute("complete", "true");
+        self.classList.remove("none");
+        self.parentNode.querySelector(".logo").classList.remove("hidden");
+        if (self.parentNode.querySelector(".img-load-error") != null) {
+            self.parentNode.querySelector(".img-load-error").classList.add("none");
+        }
+    }
+    function fireWeixinEvent() {
+        /*
+         * 默认展示支付宝二维码，如果支付宝二维码加载失败，模拟点击微信
+         * */
+        dom.querySelector("#alipayQrcode").onerror = null;
+        dom.querySelector(".support-app .icon.weixin").click();
+    }
+</script>
+<div class="qrcode">
+    <div class="qrcode-item-wrapper">
+        #if($wechatLogo)
+        <div class="qrcode-item weixin">
+            <div class="img"><img
+                    width="156" id="weixinQrcode" complete="false"
+                    onload="imgLoad(this)" onerror="imgLoadError(this)">
+                <i class="icon logo weixin">&#xe611;</i>
+            </div>
+            <div class="tip clearfix">
+                <i class="icon">&#xead5;</i>
+
+                <p>打开微信<br>扫一扫直接付款</p>
+            </div>
+        </div>
+        #end
+        #if($alipayLogo)
+        <div class="qrcode-item alipay">
+            <div class="img"><img
+                    width="156" id="alipayQrcode" complete="false" onload="imgLoad(this)"
+                    onerror="imgLoadError(this)"><i class="icon logo alipay">&#xe6ab;</i></div>
+            <div class="tip clearfix">
+                <i class="icon">&#xead5;</i>
+
+                <p>打开支付宝<br>扫一扫直接付款</p>
+            </div>
+        </div>
+        #end
+        
+        #if($unionLogo)
+        <div class="qrcode-item union">
+            <div class="img"><img
+                    width="156" id="unionQrcode" complete="false" onload="imgLoad(this)"
+                    onerror="imgLoadError(this)"><i class="icon logo union"><img
+                    class="ver-mid" src="${ctx.contextPath}/newpc/assets/images/icon_20170424.png"></i></div>
+            <div class="tip clearfix">
+                <i class="icon">&#xead5;</i>
+
+                <p>打开银联钱包<br>扫一扫直接付款</p>
+            </div>
+        </div>
+        #end
+       #if($installment)
+        <div class="qrcode-item installment">
+            <div class="img"><img
+                    width="156" id="installmentQrcode" complete="false" onload="imgLoad(this)"
+                    onerror="imgLoadError(this)"><i class="icon logo installment"><img
+                    class="ver-mid" src="${ctx.contextPath}/newpc/assets/images/icon_20170419.png"></i></div>
+            <div class="tip clearfix">
+                <i class="icon">&#xead5;</i>
+
+                <p>扫一扫分期支付</p>
+            </div>
+        </div>
+        #end
+        #if($jdLogo)
+        <div class="qrcode-item jd">
+            <div class="img"><img
+                    width="156" complete="false" id="jdQrcode" onload="imgLoad(this)"
+                    onerror="imgLoadError(this)"><i class="icon logo jd">&#xe6a6;</i></div>
+            <div class="tip clearfix">
+                <i class="icon">&#xead5;</i>
+
+                <p>打开京东APP<br>扫一扫直接付款</p>
+            </div>
+        </div>
+        #end
+        #if($qqLogo)
+        <div class="qrcode-item qq">
+            <div class="img"><img
+                    width="156" complete="false" id="qqQrcode" onload="imgLoad(this)"
+                    onerror="imgLoadError(this)"><i class="icon logo qq"><img
+                    class="ver-mid" src="${ctx.contextPath}/newpc/assets/images/qq.png"></i></div>
+            <div class="tip clearfix">
+                <i class="icon">&#xead5;</i>
+
+                <p>打开QQ<br>扫一扫直接付款</p>
+            </div>
+        </div>
+        #end
+        #if($showSccanPay && $yjzfLogo)
+            <div class="qrcode-item yjzf">
+                <div class="img"><img
+                        width="156" complete="false" id="yjzfQrcode" onload="imgLoad(this)"
+                        onerror="imgLoadError(this)"><i class="icon logo yjzf"><img width="20" src="${ctx.contextPath}/newpc/assets/images/logo_01.png"></i></div>
+                <div class="tip clearfix">
+                    <i class="icon">&#xead5;</i>
+
+                    <p>快捷支付</p>
+                </div>
+            </div>
+        #end
+        <script>Action.getQueryStatus(parseInt(session.getItem("jsTrys")) * 3, "qrcode");</script>
+        <span class="arrow" id="hook-qrcode-app"></span>
+    </div>
+    <div class="support-app">
+        #if($wechatLogo)<i class="icon weixin" id="weixinQrIcon">&#xe611;</i>#end #if($alipayLogo)<i class="icon alipay" id="alipayQrIcon"> &#xe6ab;</i>#end #if($unionLogo)<i class="icon union border-tr " id="unionQrIcon">
+        </i>#end#if($installment)<i class="icon installment border-tr" id="installmentQrIcon"></i>#end#if($jdLogo)<i class="icon jd" id="jdQrIcon">&#xe6a6;</i>#end#if($qqLogo)<i class="icon qq border-tr" id="qqQrIcon"></i>#end
+        #if($showSccanPay && $yjzfLogo)<i class="icon" id="yjzfQrIcon"> <img width="25" src="${ctx.contextPath}/newpc/assets/images/logo_01.png"></i>#end
+    </div>
+    <script>
+        (function () {
+            function loadQrcode(id) {
+                if (dom.querySelector("#" + id).getAttribute("complete") == "true")return;
+                switch (id) {
+                    case "weixinQrcode":
+                        dom.querySelector("#weixinQrcode").src = "${ctx.contextPath}/newpc/wx/qrcode/request?token=${token}&t="+Math.random();
+                        break;
+                    case "alipayQrcode":
+                        dom.querySelector("#alipayQrcode").src = "${ctx.contextPath}/newpc/zfb/qrcode/request?token=${token}&t="+Math.random();
+                        break;
+                    case "unionQrcode":
+                        dom.querySelector("#unionQrcode").src = "${ctx.contextPath}/newpc/union/qrcode/request?token=${token}&t="+Math.random();
+                        break;
+                    case "installmentQrcode":
+                        dom.querySelector("#installmentQrcode").src = "${ctx.contextPath}/newpc/getHirePurchaseDirectQrCode?token=${token}&t="+Math.random();
+                        break;
+                    case "jdQrcode":
+                        dom.querySelector("#jdQrcode").src = "${ctx.contextPath}/newpc/jd/qrcode/request?token=${token}&t="+Math.random();
+                        break;
+                    case "qqQrcode":
+                        dom.querySelector("#qqQrcode").src = "${ctx.contextPath}/newpc/qq/qrcode/request?token=${token}&t="+Math.random();
+                        break;
+                    case "yjzfQrcode":
+                        dom.querySelector("#yjzfQrcode").src = "${ctx.contextPath}/newpc/getYJZFQrCode?token=${token}&t="+Math.random();
+                        break;
+                }
+            }
+
+
+            /*点击图标切换支付工具二维码*/
+            var qrcodeItems = Array.from(dom.querySelectorAll(".qrcode .qrcode-item"));
+            Array.from(dom.querySelectorAll(".support-app .icon")).forEach(function (icon, index) {
+                icon.addEventListener("click", function () {
+                    dom.querySelector("#hook-qrcode-app").style.left = this.offsetLeft + this.offsetWidth / 4 + "px";
+                    if (dom.querySelector(".support-app .active") != null) {
+                        dom.querySelector(".support-app .active").classList.remove("active");
+                    }
+                    if (dom.querySelector(".qrcode .qrcode-item.active") != null) {
+                        dom.querySelector(".qrcode .qrcode-item.active").classList.remove("active");
+                    }
+                    this.classList.add("active");
+                    qrcodeItems[index].classList.add("active");
+                    var id = dom.querySelectorAll(".support-app .icon")[index].id;
+                    switch (id) {
+                        case "alipayQrIcon":
+                            loadQrcode("alipayQrcode");
+                            break;
+                        case "weixinQrIcon":
+                            loadQrcode("weixinQrcode");
+                            break;
+                        case "unionQrIcon":
+                            loadQrcode("unionQrcode");
+                            break;
+                        case "installmentQrIcon":
+                            loadQrcode("installmentQrcode");
+                            break;
+                        case "jdQrIcon":
+                            loadQrcode("jdQrcode");
+                            break;
+                        case "qqQrIcon":
+                            loadQrcode("qqQrcode");
+                            break;
+                        case "yjzfQrIcon":
+                            loadQrcode("yjzfQrcode");
+                            break;
+                    }
+                }, false);
+            });
+            dom.querySelectorAll(".support-app .icon")[0].click();
+            /*点击微信调起查询结果方法*/
+            function bridgeQueryResult() {
+                dom.querySelector(".support-app .icon.weixin").removeEventListener("click", bridgeQueryResult, false);
+//                dom.querySelector("#weixinQrcode").src = "${ctx.contextPath}/newpc/wx/qrcode/request?token=${token}";
+                Action.getQueryStatus(parseInt(session.getItem("jsTrys")) * 3, "qrcode");
+            }
+
+            if (dom.querySelector(".support-app .icon.weixin") != null) {
+                dom.querySelector(".support-app .icon.weixin").addEventListener("click", bridgeQueryResult, false);
+            }
+        })();
+    </script>
+    <div class="status clearfix none"><i class="icon">&#xe66b;</i>
+
+        <p>扫描成功，请在手机上完成付款。</p></div>
+
+</div>
+

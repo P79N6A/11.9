@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <!-- 服务协议 -->
+    <dubbo:protocol name="hessianx"/>
+    <dubbo:protocol name="httpx"/>
+
+    <!-- 自动扫描并暴露服务 -->
+    <bean class="com.yeepay.g3.utils.soa.exporter.ServicePackageExporter">
+      <property name="packageName" value="com.yeepay.g3.facade.nccashier.service" />
+	</bean>
+	
+	<dubbo:annotation package="com.yeepay.g3.core.nccashier"/>
+</beans>

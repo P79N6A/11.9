@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN"
+    "http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+	<settings>
+	    <!--这个配置使全局的映射器启用或者禁用缓存,各个Mapper.xml 在默认情况下不加缓存 -->
+		<setting name="cacheEnabled" value="false" />
+		<!-- 这个配置设定全局是否启动或者禁用延迟加载（默认true） -->
+		<setting name="lazyLoadingEnabled" value="true" />
+		<!-- 当启用延迟加载时，默认为true启动即加载，false是当使用时才加载-->
+		<setting name="aggressiveLazyLoading" value="false" />
+		<!-- 是否允许多个结果集从一个单独的语句返回 默认true -->
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<!-- 使用列标签代替列名 默认为true -->
+		<setting name="useColumnLabel" value="true" />
+		<!-- 允许jdbc生成主键  默认为false-->
+		<setting name="useGeneratedKeys" value="true" />
+		<!-- 指定MyBatis如何自动映射列到字段/属性。
+			PARTIAL只会自动映射简单，没有嵌套的结果。
+			FULL会自动映射任意复杂的结果（嵌套的或其他情况）。 -->
+		<setting name="autoMappingBehavior" value="PARTIAL"/>
+		<!-- MyBatis 默认的执行器 SIMPLE 简单映射 、REUSE重用预处理语句、BATCH 重用预处理语句和批量更新-->
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<!-- 设置超时时间，它决定驱动等待一个数据库响应的时间。 -->
+		<setting name="defaultStatementTimeout" value="25000" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="PayOrder" type="com.yeepay.g3.core.frontend.entity.PayOrder"/>
+		<typeAlias alias="PayRecord" type="com.yeepay.g3.core.frontend.entity.PayRecord"/>
+		<typeAlias alias="FanRoute" type="com.yeepay.g3.core.frontend.entity.FanRoute"/>
+	</typeAliases>
+	
+	<typeHandlers>
+		<typeHandler javaType="com.yeepay.g3.common.Amount" jdbcType="DECIMAL" handler="com.yeepay.g3.utils.persistence.mybatis.AmountTypeHandler" />
+	</typeHandlers>
+	
+	<mappers>
+		<mapper resource="frontend-mybatis/TblFrontendPayOrderMapper.xml" />
+		<mapper resource="frontend-mybatis/TblFrontendPayRecordMapper.xml" />
+		<mapper resource="frontend-mybatis/TblFrontendFanRouteMapper.xml" />
+	</mappers>
+
+</configuration>

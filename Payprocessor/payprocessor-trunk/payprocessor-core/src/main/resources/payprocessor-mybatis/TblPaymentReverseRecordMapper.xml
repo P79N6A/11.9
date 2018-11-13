@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeepay.g3.core.payprocessor.dao.ReverseRecordDao" >
+  <resultMap id="ReverseRecordMap" type="ReverseRecord" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="REQUEST_ID" property="requestId" jdbcType="BIGINT" />
+    <result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+    <result column="REFUND_STATUS" property="refundStatus" jdbcType="VARCHAR" />
+    <result column="REQUEST_TIME" property="requestTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="SUCCESS_TIME" property="successTime" jdbcType="TIMESTAMP" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectByPrimaryKey" resultMap="ReverseRecordMap" parameterType="java.lang.Long" >
+    select
+    *
+    from PP.TBL_PAYMENT_REVERSE_RECORD
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <insert id="insert" parameterType="com.yeepay.g3.core.payprocessor.entity.ReverseRecord"
+          useGeneratedKeys="true" keyProperty="id" >
+    insert into PP.TBL_PAYMENT_REVERSE_RECORD (REQUEST_ID, RECORD_NO,
+      REFUND_STATUS, REQUEST_TIME,MODIFY_TIME, SUCCESS_TIME,
+      REMARK)
+    values (#{requestId,jdbcType=BIGINT}, #{recordNo,jdbcType=VARCHAR},
+      #{refundStatus,jdbcType=VARCHAR}, #{requestTime,jdbcType=TIMESTAMP},CURRENT_TIMESTAMP ,
+      #{successTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.yeepay.g3.core.payprocessor.entity.ReverseRecord" >
+    update PP.TBL_PAYMENT_REVERSE_RECORD
+    set
+      REFUND_STATUS = #{refundStatus,jdbcType=VARCHAR},
+      SUCCESS_TIME = #{successTime,jdbcType=TIMESTAMP},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="queryRecordByDate" resultMap="ReverseRecordMap" parameterType="map">
+    SELECT *
+    FROM  PP.TBL_PAYMENT_REVERSE_RECORD
+    WHERE
+      REFUND_STATUS = #{refundStatus,jdbcType=VARCHAR}
+      <![CDATA[ AND MODIFY_TIME >= #{startDate, jdbcType=TIMESTAMP}  ]]>
+      <![CDATA[ AND MODIFY_TIME <= #{endDate, jdbcType=TIMESTAMP}  ]]>
+  </select>
+  <select id="queryByRecordNo" resultMap="ReverseRecordMap" parameterType="map">
+    SELECT *
+    FROM  PP.TBL_PAYMENT_REVERSE_RECORD
+    WHERE
+      RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateRecordStatus" parameterType="map" >
+    update PP.TBL_PAYMENT_REVERSE_RECORD
+    set
+    REFUND_STATUS = #{expectStatus,jdbcType=VARCHAR},
+    MODIFY_TIME = CURRENT_TIMESTAMP
+    where ID = #{id,jdbcType=BIGINT}
+    AND REFUND_STATUS = #{orgStatus,jdbcType=VARCHAR}
+  </update>
+  <update id="updateRecordToSuccessFromCSDONE" parameterType="map" >
+    update PP.TBL_PAYMENT_REVERSE_RECORD
+    set
+    REFUND_STATUS = 'DONE',
+    MODIFY_TIME = CURRENT_TIMESTAMP,
+    SUCCESS_TIME = CURRENT_TIMESTAMP
+    where ID = #{id,jdbcType=BIGINT}
+    AND REFUND_STATUS = 'CSDONE'
+  </update>
+
+</mapper>

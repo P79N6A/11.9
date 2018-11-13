@@ -1,0 +1,126 @@
+<input type="radio" name="pay-mode-handler" checked id="payModeQuick" class="pay-mode-handler">
+<div class="quick-pay">
+    <label for="payModeQuick"><h2>银行卡快捷支付 <span>无需开通网银</span><p class="product-random-guide none">随机立减</p></h2></label>
+
+    <div class="quick-pay-main">
+        <div class="limit">
+            <input type="checkbox" id="showLimit">
+            <label for="showLimit" class="handler" onclick="Action.limit()">可用银行与限额</label>
+
+            <div class="cont">
+                <label for="showLimit" class="close icon">&#xe60e;</label>
+
+                <p class="title">可用银行与限额</p>
+
+                <div class="caption"><span class="bank">支持银行</span><span class="card-type">卡种</span><span
+                        class="single">单笔限额（元）</span><span
+                        class="day">单日限额（元）</span><span class="month">单月限额（元）</span>
+                </div>
+                <ul class="tb" id="supportBankList">
+
+                </ul>
+            </div>
+        </div>
+        #if ($isNotFirst)
+        <input type="checkbox" id="addNewCard">
+
+        <div class="select-wrapper">
+            <div class="select">
+                <div class="current-selected icon"></div>
+
+                <div class="option-wrapper">
+                    #foreach($key in $bindCards)
+                    <div id="card$!{key.bindid}" class="option" #if($key.unusableCause)data-disabled="true" #end data-bindid="$!{key.bindid}"
+                         data-phoneNo="$!{key.phoneNo}" data-ypMobile="$!{key.ypMobile}">
+                        <div class="bank"><span class="bank-logo $!{key.bankCode}"></span>$!{key.bankName}</div>
+                        <div class="card-info">************$!{key.cardlater}<span class="card-type">
+                                #if ($!{key.cardtype} == "CREDIT" )
+                                    信用卡
+                                #else
+                                    储蓄卡
+                                #end
+                            </span>
+                            #if(${key.unusableCause})
+                            <p class="excess">$!key.unusableCause</p>
+                            #end
+                        </div>
+                        #if(${unBindCard})
+                        <div class="unbind" onclick="Action.unbind.call(this,event)" data-bindid="$!{key.bindid}">解除绑定</div>
+                        #end
+                    </div>
+                    #end
+                </div>
+            </div>
+            #if($!{showChangeCard})
+            <label for="addNewCard"><span class="add-bankCard-btn"><i
+                    class="icon">&#xe62a;</i>添加银行卡</span></label>
+            #end
+            <div id="bindItemFormWrapper"></div>
+            <button type="button" id="bindPayBtn" onclick="Action.bindPay()">立即支付</button>
+        </div>
+        <script>
+            #if (!${authorized})
+            /*需要授权 声明authorized标识，提供给点击添加新卡按钮时逻辑判断
+            * false请求授权，true直接显示添加新卡
+            * */
+                var isAuthorized = false;
+            #end
+            (function () {
+                //选择绑定的卡之后重新下单
+                User.form.select(Action.bindPayPayment.bind(Action));
+                #if (${showChangeCard})
+                    function addBankCardRouter(event) {
+                        /*
+                         * 添加添加新卡需要授权弹出验证码层，否则直接显示添加新卡页面
+                         * */
+                        if (typeof isAuthorized != "undefined" && !isAuthorized) {
+                            /*需要授权弹层*/
+                            event.preventDefault();
+                            event.returnValue = false;
+                            Action.merchantAuthority();
+                        } else {
+                            /*添加新卡*/
+                            User.form.reset("#quickPayForm");
+                        }
+                    }
+                dom.querySelector(".add-bankCard-btn").addEventListener("click", addBankCardRouter, false);
+                #end
+            }());
+        </script>
+        #end
+        <form id="quickPayForm">
+            #if ($isNotFirst)
+            <label for="addNewCard" class="back-my-card" onmousedown="User.bankCard()"><i class="icon">&#xe631;</i>返回我的银行卡</label>
+            #end
+            <div class="sington"><label><span class="title">银行卡</span><input type="text" autocomplete="off"
+                                                                                  placeholder="请输入个人银行卡号"
+                                                                                  name="cardno"
+                                                                                  maxlength="23" encrypt="true" autofocus><img
+                    src="../assets/images/loading.gif" width="24" class="loading none"> </label>
+            </div>
+            <div id="addItemWrapper"></div>
+            <button type="button" class="fn-btn">下一步</button>
+        </form>
+    </div>
+    <script>
+        (function () {
+            /*表单绑定校验*/
+            User.form.validate("#quickPayForm");
+            dom.querySelector("label[for=payModeQuick]").addEventListener("mousedown", function () {
+                dom.querySelector("#payModeQuick").checked = true;
+                User.form.reset("#quickPayForm");
+            }, false);
+            /**/
+            dom.querySelector(".fn-btn").addEventListener("click", Action.getAddItem.bind(dom.querySelector(".fn-btn"), "manual"), false);
+            dom.querySelector("#quickPayForm").cardno.addEventListener("keyup", function () {
+                var value = this.value;
+                this.value = Util.format(value);
+                dom.querySelector("#addItemWrapper").innerHTML = "";
+                dom.querySelector(".fn-btn").classList.remove("none");
+                if (User.form.strategy.bankCardNo(this.value)) {
+                    Action.getAddItem.call(dom.querySelector(".fn-btn"));
+                }
+            }, false);
+        }());
+    </script>
+</div>

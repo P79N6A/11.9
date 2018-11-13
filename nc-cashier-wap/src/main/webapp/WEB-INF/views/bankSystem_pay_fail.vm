@@ -1,0 +1,16 @@
+#parse('header.vm')
+<body>
+<div class="icon systemfail tc mt30">&#xe625;</div>
+<p class="pme-wrapper tc pme-abl-msg c333 fs18">支付失败</p>
+
+<p class="mt10 c999 fs14 tc">目前无法获取到支付结果，请前往商户网站查询</p>
+
+## #if(${theme.showMerchantName})
+ <footer class="pme-footer" id="mod-footer" style="margin-bottom: 10px;">
+       <p>本服务由易宝支付（yeepay.com）提供</p>
+       <p>易宝支付客服电话：<span style="color:#6ec37a; text-decoration:none;">4001-500-800</span></p>
+  </footer>
+## #end
+</body>
+
+</html>

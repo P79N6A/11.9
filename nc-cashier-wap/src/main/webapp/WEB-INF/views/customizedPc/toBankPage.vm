@@ -1,0 +1,14 @@
+<!--#parse("mock/data.vm")-->
+<html>
+#parse("customizedPc/header.vm")
+<body>
+    <div id="bankPay"></div>
+</body>
+<script>
+    var ebankUrlInfo = $!{ebankUrlInfo};
+//    Controller.setForm({"url":"https://www.baidu.com/","charset":"utf-8","method":"get","params":{"01":"001","02":"002","03":"003"}})
+    Controller.setForm(ebankUrlInfo,false)
+</script>
+</html>
+
+

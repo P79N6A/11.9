@@ -1,0 +1,933 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <title>一键支付</title>
+    <link rel="stylesheet" href="${ctx.contextPath}/npc/css/mobile-pay-161c5cdb80.min.css">
+    <link type="text/css" href="${ctx.contextPath}/npc/css/base.css" rel="stylesheet"/>
+    <link type="text/css" href="${ctx.contextPath}/npc/css/keyPay.css" rel="stylesheet"/>
+    <link type="text/css" href="${ctx.contextPath}/npc/css/form.css" rel="stylesheet"/>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/yeepay-1.0-min.js"></script>
+
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/getuserinfo.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/jbase64.min.js"></script>
+    <script>
+        function encrypt(id) {
+            /*
+             * 同步提交表单加密
+             * */
+            var form = document.getElementById(id).cloneNode(true);
+            form.style.cssText = "position: absolute; left: -9999px; visibility: hidden";
+            var eles = form.elements;
+            for (var i = 0, l = eles.length; i < l; i++) {
+                if (eles[i].getAttribute("encrypt") == "true") {
+                    eles[i].value = BASE64.encoder(eles[i].value);
+                }
+            }
+            document.body.appendChild(form);
+            form.submit();
+            return false;
+        }
+    </script>
+</head>
+
+<body>
+<!--头部-->
+<div class="header">
+    <div class="layout clearfix zoom">
+        <h1 class="fl mt15 logo"><a href="http://www.yeepay.com/" target="_blank" class="fl">易宝支付</a><span
+                class="fl viceLogo">一键支付</span></h1>
+
+        <!--<p class="fr servicePhone">7x24小时客服电话：4001-500-800</p>-->
+    </div>
+</div>
+<!--头部结束-->
+<!--主要内容-->
+<div class="layout mainWrap clearfix zoom">
+    <div class="fl orderInfo">
+        <h2>我的订单</h2>
+        <dl class="infoList firstInfoList mt15 clearfix zoom">
+            <dt>金　额：</dt>
+            <dd><span class="sum fa">${amount}</span>元</dd>
+            <dt>商　品：</dt>
+            <dd>${productname}</dd>
+            <dt>商　户：</dt>
+            <dd>${companyname}</dd>
+        </dl>
+        <dl class="infoList mt15 clearfix zoom">
+            <dt>订单号：</dt>
+            <dd><span class="fa">${orderid}</span></dd>
+            <dt>日　期：</dt>
+            <dd><span class="fa">${transtime}</span></dd>
+        </dl>
+    </div>
+    <div class="fl rightContainer">
+        <ul class="tagWrap clearfix zoom">
+            <li>银行卡支付<p class="product-random-guide">随机立减</p></li>
+        </ul>
+        <div class="contWrap">
+            <!--<div class="error" id="errorMsg"></div>-->
+            <form id="bindCardInfo" name="bindCardInfo" action="${ctx.contextPath}/pc/pay/bind" method="POST">
+                <div class="bindList clearfix zoom">
+                    <div id="J-binkWrap" class="bankLiWrap" status="off">
+                        #foreach( $key in $bindCards )
+
+                           
+                        <div class="outerLi clearfix zoom">
+
+                            <div class="bankLi" bindID="$key.bindid">
+
+                                <input type="radio" name="RadioGroup1" value="$key.bankName"/>
+                                <span class="card $key.bankCode"></span> <span class="cardNo">
+                                         ******$key.cardlater 
+                                              #if ("$!{key.cardtype}" == "CREDIT" )
+                                                 （信用卡）
+                                              #else
+                                                 （储蓄卡）
+                                              #end
+                                        </span>
+                                <!--补充项-->
+                                <div class="addItem">
+
+                                </div>
+                                <!--补充项结束-->
+                            </div>
+
+
+                            <div class="payLimitWrap none">支付限额
+                                <div class="popTxt"><span class="arrow"></span>$!{key.bankName}
+                                    #if ("$!{key.cardtype}" == "CREDIT" )
+                                    信用卡
+                                    #else
+                                    储蓄卡
+                                    #end
+                                    默认单笔限额5000元，单日限额5000元，单月限额20000元，实际限额以银行卡设置为准。
+                                </div>
+                            </div>
+                        </div>
+                        #end
+                    </div>
+                    <div class="bindMore mt10"><span id="J-moreBank">更多</span></div>
+                    #if(!${bindTouchuanIsCardNo} && ${showChangeCard})<!--是否是透传卡号,透传有卡号，不允许使用其他卡支付-->
+                    <label>
+                        <div class="bankLi otherBank">
+                            <input type="radio" name="RadioGroup1" value="其他卡支付" id="OtherCardRadioGroup"
+                                   class="J-otherPayRadio"/>
+                            <span class="ml10 mt10">其他卡支付</span>
+                            <input class="wcn" placeholder="请输入个人银行卡号" encrypt="true" rule="otherCardNo" onfocus="hiddenError()"
+                                   id="J-otherPay" type="text" name="cardNo" onkeyup="checkCardNo()" data-format="true"
+                                   value="$!{cardNo}"/>
+                        </div>
+                    </label>
+                    #else
+                    <label>
+                        <div style="display:none" class="bankLi otherBank">
+                            <input type="hidden" name="RadioGroup1" value="其他卡支付" id="OtherCardRadioGroup"
+                                   class="J-otherPayRadio"/>
+                            <span class="ml10 mt10">其他卡支付</span>
+                            <input class="wcn" type="hidden" placeholder="请输入个人银行卡号" rule="otherCardNo"
+                                   onfocus="hiddenError()" id="J-otherPay" encrypt="true" name="cardNo" onkeyup="checkCardNo()"
+                                   data-format="true" value="$!{cardNo}"/>
+                        </div>
+                    </label>
+                    #end
+                </div>
+                <input id="check-token" type="hidden" name="token" value="$!{token}"/>
+                <input id="bindId" type="hidden" name="bindId" value="$!{bindid}"/>
+                <input type="hidden" id="reqSmsSendTypeEnum" name="reqSmsSendTypeEnum" value="$!{smsType}"/>
+                <input type="hidden" id="verifycodeHidden" name="verifycode" value=""/>
+            </form>
+            <p class="error" id="cardNoErrorMsg"></p>
+
+            <p class="none" id="successMsg" style="color:#5AC66F;"></p>
+
+            <div class="mt5"><a href="javascript:void(0)" id="submitBtn" class="greenBtn mb10"><i
+                    class="leftBorder"></i>确认支付</a>
+
+                <div class="error mb100" id="errorMsg"></div>
+            </div>
+            <script>
+                var path = "${ctx.contextPath}/npc";
+            </script>
+            <script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+            <script type="text/javascript" src="${ctx.contextPath}/npc/js/form-min.js"></script>
+            <script type="text/javascript">
+                var needSMSTypeSend = null;
+                #if ("$!sendSMSNo" != "")
+                    var sendSMSNo = $!sendSMSNo;
+                #else
+                var sendSMSNo = null;
+                #end
+                var isAddItem = true;
+                function isChildren(elem) {
+                    var len = jQuery(elem).children(".addItem").children().length;
+                    len ? isAddItem = true : isAddItem = false;
+                }
+
+                //第一次发送成功的记录值
+                var SucesmsStatus = null;
+                //第一次发送失败的记录值
+                var FailsmsStatus = null;
+
+                //下单是否成功
+                var requestPayment = null;
+                //下单返回的短验类型
+                var smsType = null;
+                //下单返回的补充项
+                //                var needBankCardDTO = null;
+                //是否需要发短验
+                var needSms = false;
+                var storageSelectBank = {
+                    bank: null
+                };
+                (function () { //选择已绑定的银行
+                    var bankWrap = YEEPAY.getElementByClass("bindList")[0],
+                            bankLis = YEEPAY.getElementByClass("bankLi", bankWrap, "div"),
+                            payLimits = YEEPAY.getElementByClass("payLimitWrap", bankWrap, "div");
+                    var RadioGroups = document.getElementsByName("RadioGroup1");
+
+                    //请求补充项和返回的短信类型
+                    function requestAddItem(root) {
+                        var html = "";
+                        jQuery.ajax({
+                            url: "${ctx.contextPath}/pc/ajax/requestPayment",
+                            data: {token: "${token}", bindId: document.getElementById("bindId").value},
+                            success: function (data) {
+                                var result = JSON.parse(data);
+                                needSMSTypeSend = JSON.parse(data);
+                                var error = result.msg;
+                                if (result.status == "success") {
+                                    requestPayment = true;//下单成功
+                                    if (result.smsType) {
+                                        document.getElementById("reqSmsSendTypeEnum").value = result.smsType
+                                        smsType = result.smsType;
+                                        needSms = true;
+                                    }
+
+                                    if (result.needBankCardDTO) {
+//                                        needBankCardDTO = result.needBankCardDTO;
+                                        if (result.needBankCardDTO.needSurportDTO) {
+                                            if (result.needBankCardDTO.needSurportDTO.cardnoIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.cardno != "undefined") {
+                                                    html += '<div><label><span class="mark">卡号：</span><input type="text" addItem="true" rule="cardNo" encrypt="true" name="cardno" onkeyup="onlyNumber(this)" readonly value="' + result.needBankCardDTO.cardno + '"/></label></div>'
+                                                } else {
+
+                                                    html += '<div><label><span class="mark">卡号：</span><input type="text" addItem="true" rule="cardNo" encrypt="true" name="cardno" onkeyup="onlyNumber(this)" /></label></div>'
+                                                }
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.ownerIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.owner != "undefined") {
+                                                    html += '<div><label><span class="mark">姓名：</span><input type="text" addItem="true" encrypt="true" rule="name" name="owner" readonly value="' + result.needBankCardDTO.owner + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">姓名：</span><input type="text" addItem="true" encrypt="true" rule="name" name="owner" /></label></div>'
+                                                }
+
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.ypMobileIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.ypMobile != "undefined") {
+                                                    html += '<div><label><span class="mark">易宝预留手机号：</span><input type="text" addItem="true" encrypt="true" rule="phoneNo" name="ypMobile" readonly value="' + result.needBankCardDTO.ypMobile + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">易宝预留手机号：</span><input type="text" addItem="true" encrypt="true" rule="phoneNo" name="ypMobile" /></label></div>'
+                                                }
+
+
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.idnoIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.idno != "undefined") {
+                                                    html += '<div><label><span class="mark">证件号：</span><input type="text" rule="idno" addItem="true" encrypt="true" name="idno" readonly value="' + result.needBankCardDTO.idno + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">证件号：</span><input type="text" rule="idno" addItem="true" encrypt="true" name="idno" /></label></div>'
+                                                }
+
+
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.phoneNoIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.phoneNo != "undefined") {
+                                                    html += '<div><label><span class="mark">手机号：</span><input id="phoneNo" encrypt="true" type="text" rule="phoneNo" readonly addItem="true" name="phoneNo" value= "' + result.needBankCardDTO.phoneNo + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">手机号：</span><input type="text" id="phoneNo" encrypt="true" rule="phoneNo" addItem="true" name="phoneNo" /></label></div>'
+                                                }
+
+
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.avlidDateIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.avlidDate != "undefined") {
+                                                    html += '<div><label><span class="mark">有效期：</span><input type="text" rule="valid" addItem="true" encrypt="true" name="avlidDate" readonly value="' + result.needBankCardDTO.avlidDate + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">有效期：</span><input type="text" rule="valid" addItem="true" encrypt="true" name="avlidDate" /></label></div>'
+                                                }
+
+
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.cvvIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.cvv != "undefined") {
+                                                    html += '<div><label><span class="mark">C V V 2：</span><input type="password" rule="cvv2" encrypt="true" addItem="true" name="cvv" readonly value="' + result.needBankCardDTO.cvv + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">C V V 2：</span><input type="password" rule="cvv2" encrypt="true" addItem="true" name="cvv"/></label></div>'
+                                                }
+
+
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.idCardTypeIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.idCardType != "undefined") {
+                                                    html += '<div><label><span class="mark">证件类型：</span><input type="text" rule="name" addItem="true" readonly name="idCardType" value= "' + result.needBankCardDTO.idCardType + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">证件类型：</span><input type="text" rule="name" addItem="true" name="idCardType" /></label></div>'
+
+                                                }
+                                            }
+                                            if (result.needBankCardDTO.needSurportDTO.bankPWDIsNeed) {
+
+                                                if (typeof result.needBankCardDTO.bankPWD != "undefined") {
+                                                    html += '<div><label><span class="mark">取款密码：</span><input type="password" rule="pass" encrypt="true" addItem="true" name="bankPWD" readonly value="' + result.needBankCardDTO.bankPWD + '"/></label></div>'
+                                                } else {
+                                                    html += '<div><label><span class="mark">取款密码：</span><input type="password" rule="pass" encrypt="true" addItem="true" name="bankPWD" /></label></div>'
+                                                }
+
+
+                                            }
+                                            if (jQuery(root).children(".addItem:eq(0)").children("div").size() == 0) {
+                                                jQuery(root).children(".addItem:eq(0)").html(html);
+                                            }
+                                        }
+                                    }
+                                }
+                                if (result.status == "failed") {
+                                    jQuery("#errorMsg").attr("class", "error");
+                                    jQuery("#errorMsg").html(error);
+                                }
+                            }
+
+                        });
+
+                    }
+
+                    function checked(event) {
+                        var target = YEEPAY.getTarget(event);
+                        var errorMsg = document.getElementById("errorMsg");
+                        var bindId = document.getElementById("bindId");
+                        for (var i = 0, l = bankLis.length; i < l; i++) {
+                            YEEPAY.removeClass(bankLis[i], "curBank");
+                            var addItem = YEEPAY.getElementByClass("addItem", bankLis[i], "div")[0];
+                            if (addItem) {
+                                YEEPAY.addClass(addItem, "none");
+                            }
+                        }
+                        for (var i = 0, l = bankLis.length; i < l; i++) {
+                            if (bankLis[i].contains(target)) {
+                                YEEPAY.addClass(bankLis[i], "curBank");
+                                storageSelectBank.bank = bankLis[i];
+                                RadioGroups[i].checked = true;
+                                errorMsg.innerHTML = "";
+                                bindId.value = bankLis[i].getAttribute("bindId");
+                                if (bankLis[i].className.indexOf("otherBank") == -1) {
+                                    requestAddItem(bankLis[i]);
+                                }
+                                isChildren(bankLis[i]);
+                                var addItem = YEEPAY.getElementByClass("addItem", bankLis[i], "div")[0];
+                                if (addItem) {
+                                    YEEPAY.removeClass(addItem, "none");
+                                }
+                                break;
+                            }
+                        }
+
+                        for (var i = 0, l = payLimits.length; i < l; i++) {
+                            YEEPAY.addClass(payLimits[i], "none");
+                        }
+                        var curBank = YEEPAY.getElementByClass("curBank", bankWrap, "div")[0];
+                        if (typeof payLimits[curBank._index] != "undefined") {
+                            YEEPAY.removeClass(payLimits[curBank._index], "none");
+                        }
+                    }
+
+                    for (var i = 0, l = bankLis.length; i < l; i++) {
+                        (function (i) {
+                            bankLis[i]._index = i;
+                            YEEPAY.addHandler(bankLis[i], "click", function (event) {
+                                var target = YEEPAY.getTarget(event);
+                                if (bankLis[i].contains(target)) {
+                                    if (!/curBank/g.test(bankLis[i].className)) {
+                                        checked(event);
+                                    }
+                                }
+                            });
+                        })(i);
+                    }
+                    bankLis[0].click();   //默认第一张绑卡下单
+                })();
+
+                //更多绑定银行开始展示
+                (function () { //更多绑定银行
+                    var moreBank = YEEPAY.get("J-moreBank"),
+                            binkWrap = YEEPAY.get("J-binkWrap"),
+                            bankLis = YEEPAY.getElementByClass("outerLi", binkWrap);
+                    var num = YEEPAY.getElementByClass("outerLi", binkWrap).length;
+                    for (var i = 3, l = num; i < l; i++) {
+                        bankLis[i].style.display = "none";
+                    }
+                    if (num <= 3) {
+                        YEEPAY.addClass(moreBank, "none");
+                    }
+
+                    function toggle() {
+                        var text = "更多",
+                                text2 = "";
+                        var status = binkWrap.getAttribute("status");
+                        if (status == "off") {
+                            binkWrap.setAttribute("status", "on");
+                            moreBank.innerHTML = text2;
+                            moreBank.style.backgroundPosition = "28px -471px";
+                            for (var i = 3, l = num; i < l; i++) {
+                                bankLis[i].style.display = "block";
+                            }
+                        } else {
+                            binkWrap.setAttribute("status", "off");
+                            moreBank.innerHTML = text;
+                            moreBank.style.backgroundPosition = "28px -438px";
+                            for (var i = 3, l = num; i < l; i++) {
+                                bankLis[i].style.display = "none";
+                            }
+                        }
+                    }
+
+                    YEEPAY.addHandler(moreBank, "click", toggle);
+
+                    YEEPAY.addHandler(document.getElementById("J-otherPay"), "focus", function () {
+                        var otherRadio = YEEPAY.getElementByClass("J-otherPayRadio")[0];
+                        otherRadio.checked = true;
+                    });
+                    YEEPAY.addHandler(YEEPAY.getElementByClass("J-otherPayRadio")[0], "click", function () {
+                        var otherInput = document.getElementById("J-otherPay");
+                        otherInput.focus();
+                    });
+
+                    //确认支付按钮需加上其他卡支付时跳转到卡信息页
+                    function submitBtn() {
+                        var result = bindValidate();
+                        if (result !== false) {
+                            //李勇代码
+                            var checked = document.getElementById("OtherCardRadioGroup").checked;
+                            if (checked) {//如果选中其他卡
+                                //校验卡号是否正确、是否在支持的银行卡列表中
+                                var cardNo = jQuery("#J-otherPay").val().replace(/\s/g, '');
+                                var token = jQuery("#check-token").val();
+                                jQuery.post("${ctx.contextPath}/pc/ajax/check", {
+                                    token: token,
+                                    cardno: BASE64.encoder(cardNo)
+                                }, function (response) {
+                                    var result = JSON.parse(response);
+                                    var error = result.msg;
+                                    var status = result.status;
+                                    if (status == "success") {// 校验成功
+                                        jQuery("#successMsg").attr("class", "success");
+                                        jQuery("#successMsg").html("卡号正确,自动跳转至卡信息填写页面");
+                                        //则其他卡支付，即绑卡的首次支付，跳转到卡信息页
+                                        bindCardInfo.action = "${ctx.contextPath}/pc/first/cardinfo?isChangeCard=changCard&isBindPay=bindPay";
+                                        return encrypt("bindCardInfo");
+                                    } else {// 校验错误
+                                        jQuery("#cardNoErrorMsg").attr("class", "error");
+                                        jQuery("#cardNoErrorMsg").html(error);
+                                        document.getElementById("cardNoErrorMsg").style.display = "block";
+                                    }
+                                });
+
+                            } else {//未选中其他卡支付的情况
+                                //则为绑卡支付
+                                if (requestPayment) {
+                                    //下单成功
+                                    if (needSms) {//需要发短验
+                                        //展示短验框
+                                        popup(7);
+                                    } else {
+                                        //不需要发短信
+                                        //则直接调用绑卡确认支付接口
+                                        //document.getElementById("bindCardInfo").submit();
+                                        jQuery.ajax({
+                                            url: "${ctx.contextPath}/pc/ajax/bindPay",
+                                            data: {
+                                                bankCode: jQuery("#bindCardInfo .curBank input[name=bankCode]").val(),
+                                                cardno: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=cardno]").val()),
+                                                cardType: jQuery("#bindCardInfo .curBank input[name=cardType]").val(),
+                                                bankName: jQuery("#bindCardInfo .curBank input[name=bankName]").val(),
+                                                owner: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=owner]").val()),
+                                                idno: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=idno]").val()),
+                                                avlidDate: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=avlidDate]").val()),
+                                                cvv: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=cvv]").val()),
+                                                bankPWD: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=bankPWD]").val()),
+                                                phoneNo: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=phoneNo]").val()),
+                                                ypMobile: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=ypMobile]").val()),
+                                                token: jQuery("input[name=token]").val(),
+                                                bindId: jQuery("input[name=bindId]").val(),
+                                                reqSmsSendTypeEnum: jQuery("input[name=reqSmsSendTypeEnum]").val()
+                                            },
+                                            method: "POST",
+                                            success: function (data) {
+                                                var result = JSON.parse(data);
+                                                var error = result.msg;
+                                                if (result.status == "success") {
+                                                    window.location.href = '${ctx.contextPath}/pc/query/result?token=${token}';
+                                                }
+                                                if (result.status == "failed") {
+                                                    jQuery("#errorMsg").attr("class", "error");
+                                                    jQuery("#errorMsg").html(error);
+                                                }
+                                            }
+                                        })
+
+                                    }
+                                    //以上是未选中其他卡支付的情况
+                                } else {
+                                    //下单不成功
+                                    var errorPayment = "此绑卡下单不成功，请稍后重新下单或选择其他卡支付！";
+                                    jQuery("#errorMsg").attr("class", "error");
+                                    jQuery("#errorMsg").html(errorPayment);
+                                }
+                            }
+                        }
+                    }//提交支付按钮函数结束
+
+                    YEEPAY.addHandler(document.getElementById("submitBtn"), "click", submitBtn);
+
+                    function validate() {
+                        var errorMsg = document.getElementById("errorMsg");
+                        var cardNoErrorMsg = document.getElementById("cardNoErrorMsg");
+                        if (this.getAttribute("rule") == "name") {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "姓名不能为空";
+                                return false;
+                            }
+                            if (!/^[\u4E00-\u9FA5·.]+$/.test(this.value)) {
+                                errorMsg.innerHTML = "姓名只能为中文";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "idno") {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "身份证号不能为空";
+                                return false;
+                            } else if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(this.value)) {
+                                errorMsg.innerHTML = "身份证号码格式错误";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "phoneNo" && !this.readOnly) {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "手机号不能为空";
+                                return false;
+                            } else if (/[^\d]/.test(this.value)) {
+                                errorMsg.innerHTML = "手机号必须是数字";
+                                return false;
+                            } else if (/^[^1]/.test(this.value)) {
+                                errorMsg.innerHTML = "手机号格式不正确";
+                                return false;
+                            } else if (!/[\d]{11}/.test(this.value)) {
+                                errorMsg.innerHTML = "手机号必须是11位数字";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "valid") {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "有效期不能为空";
+                                return false;
+                            } else if (/[^\d]/.test(this.value)) {
+                                errorMsg.innerHTML = "有效期必须是数字";
+                                return false;
+                            } else if (this.value.length < 4) {
+                                errorMsg.innerHTML = "有效期必须是四位数字";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "cvv2") {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "CVV2不能为空";
+                                return false;
+                            } else if (/[^\d]/.test(this.value)) {
+                                errorMsg.innerHTML = "CVV2必须是数字";
+                                return false;
+                            }
+                            else if (this.value.length < 3) {
+                                errorMsg.innerHTML = "CVV2必须是三位数字";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "pass") {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "取款密码不能为空";
+                                return false;
+                            } else if (/[^\d]/.test(this.value)) {
+                                errorMsg.innerHTML = "取款密码必须是数字";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "cardNo") {
+                            if (this.value == "") {
+                                errorMsg.innerHTML = "卡号不能为空，请输入正确卡号";
+                                return false;
+                            }
+                        }
+                        if (this.getAttribute("rule") == "otherCardNo") {
+                            if (this.value == "") {
+                                cardNoErrorMsg.innerHTML = "卡号不能为空，请输入正确卡号";
+                                document.getElementById("cardNoErrorMsg").style.display = "block";
+                                return false;
+                            }
+                        }
+                    }
+
+                    function bindValidate() {//绑定校验
+                        var baseElement = storageSelectBank.bank;
+                        var inputs = baseElement.querySelectorAll("input[type=text],input[type=password]");
+                        for (var i = 0, l = inputs.length; i < l; i++) {
+                            if (!(inputs[i].readonly)) {
+                                var result = validate.call(inputs[i]);
+                                if (result == false) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                })();
+                //更多绑定银行展示结束
+
+                Form.formatBankCard("J-otherPay");
+                YEEPAY.addHandler(document.getElementById("submitBtn"), "click", submitBtn);
+
+
+                function requestSms() {//获取验证码
+                    var curBank = jQuery("#bindCardInfo .curBank").find("input").serialize(),
+                            checkToken = $("#check-token").serialize(),
+                            bindId = $("#bindId").serialize(),
+                            reqSmsSendTypeEnum = $("#reqSmsSendTypeEnum").serialize(),
+                            dataInfo = curBank + "&" + checkToken + "&" + bindId + "&" + reqSmsSendTypeEnum;
+//                   if (!bindValidate()) return;
+
+                    jQuery.ajax({
+                        url: "${ctx.contextPath}/pc/ajax/bindSmsSend",
+                        data: {
+                            bankCode: jQuery("#bindCardInfo .curBank input[name=bankCode]").val(),
+                            cardno: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=cardno]").val()),
+                            cardType: jQuery("#bindCardInfo .curBank input[name=cardType]").val(),
+                            bankName: jQuery("#bindCardInfo .curBank input[name=bankName]").val(),
+                            owner: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=owner]").val()),
+                            idno: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=idno]").val()),
+                            avlidDate: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=avlidDate]").val()),
+                            cvv: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=cvv]").val()),
+                            bankPWD: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=bankPWD]").val()),
+                            phoneNo: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=phoneNo]").val()),
+                            ypMobile: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=ypMobile]").val()),
+                            token: jQuery("input[name=token]").val(),
+                            bindId: jQuery("input[name=bindId]").val(),
+                            reqSmsSendTypeEnum: jQuery("input[name=reqSmsSendTypeEnum]").val()
+                        },
+                        method: "POST",
+                        success: function (data) {
+                            var result = JSON.parse(data);
+                            var jumpTargett = result.jumpTarget;
+                            var jumpTarget = jumpTargett;
+                            var errormsg = result.msg;
+                            if (result.status == "success") {
+                                document.getElementById("verifycode").readOnly = false;
+                                document.getElementById("reSmsVerifycodeFail").style.display = "none";//如果是重新获取短验，把之前获取短验错误的提示隐藏
+                                var addItem = document.querySelector(".curBank").querySelectorAll("input[addItem=true]");
+                                for (var _i = 0, l = addItem.length; _i < l; _i++) {
+                                    addItem[_i].readOnly = true;
+                                }
+                                if (smsType == "YEEPAY") {
+                                    if (typeof needSMSTypeSend.needBankCardDTO != "undefined") {
+                                        if (typeof needSMSTypeSend.needBankCardDTO.phoneNo != "undefined") {
+                                            var ybNum = needSMSTypeSend.needBankCardDTO.phoneNo;
+                                            var ybNum1 = ybNum.toString();
+                                            var ybVal = ybNum1.replace(ybNum1.substring(3, 7), "****");
+                                            document.getElementById("statement").style.display = "block";
+                                            document.getElementById("statement").innerHTML = "已向您的手机号" + ybVal + "发送了手机验证码，请查收";
+                                            document.getElementById("errorverifycode").style.display = "none";
+                                        } else if (typeof needSMSTypeSend.needBankCardDTO.needSurportDTO != "undefined") {
+                                            var bankNum = document.querySelector(".curBank").querySelector("#phoneNo").value;
+                                            var bankNum1 = bankNum.toString();
+                                            var bankVal = bankNum1.replace(bankNum1.substring(3, 7), "****");
+                                            document.getElementById("statement").style.display = "block";
+                                            document.getElementById("statement").innerHTML = "已向您的手机号" + bankVal + "发送了手机验证码，请查收";
+                                            document.getElementById("errorverifycode").style.display = "none";
+
+                                        } else if (typeof needSMSTypeSend.needBankCardDTO.ypMobile != "undefined") {
+                                            var ybNum = needSMSTypeSend.needBankCardDTO.ypMobile;
+                                            var ybNum1 = ybNum.toString();
+                                            var ybVal = ybNum1.replace(ybNum1.substring(3, 7), "****");
+                                            document.getElementById("statement").style.display = "block";
+                                            document.getElementById("statement").innerHTML = "已向您的手机号" + ybVal + "发送了手机验证码，请查收";
+                                            document.getElementById("errorverifycode").style.display = "none";
+                                        }
+                                    }
+                                } else if (smsType == "VOICE") {
+                                    document.getElementById("statement").style.display = "block";
+                                    if (sendSMSNo != null) {
+                                        document.getElementById("statement").innerHTML = "<span style='color: #0073C7;'>" + sendSMSNo + "</span>" + "为您播报语音验证码";
+                                    } else {
+                                        document.getElementById("statement").innerHTML = "<span style='color: #0073C7;'>语音</span>验证码播报中，请注意接听";
+                                    }
+                                    document.getElementById("errorverifycode").style.display = "none";
+                                }
+                            }
+                            if (result.status == "failed") {
+                                if (jumpTarget == "pay_fail") {//jumpTarget为failed表示短信验证码发送次数超限异常，跳转到支付失败页，提示用户重新支付，即重新下单。
+                                    window.location.href = '${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg=' + errormsg;
+                                } else {
+                                    document.getElementById("reSmsVerifycodeFail").innerHTML = errormsg;
+                                    document.getElementById("reSmsVerifycodeFail").style.display = "block";
+                                }
+                            }
+                        }
+                    })
+                }
+
+
+                //弹框的确认支付按钮
+                function popupSubmitBtn() {
+                    var popupSubmitBtn = document.getElementById("popupSubmitBtn");//确认支付按钮只允许点击一次
+                    var disabled = popupSubmitBtn.getAttribute("click-on");
+                    var verifycode = document.getElementById("verifycode").value;
+                    if (disabled == "false") {
+                        if (verifycode) {
+                            popupSubmitBtn.setAttribute("click-on", "true");//确认支付按钮只允许点击一次
+                            document.getElementById("verifycodeHidden").value = verifycode;
+                            //document.getElementById("bindCardInfo").submit();
+                            var curBank = jQuery("#bindCardInfo .curBank").find("input").serialize(),
+                                    checkToken = $("#check-token").serialize(),
+                                    bindId = $("#bindId").serialize(),
+                                    reqSmsSendTypeEnum = $("#reqSmsSendTypeEnum").serialize(),
+                                    verifycodeHidden = $("#verifycodeHidden").serialize(),
+                                    dataInfo = curBank + "&" + checkToken + "&" + bindId + "&" + reqSmsSendTypeEnum + "&" + verifycodeHidden;
+                            //alert (dataInfo);
+
+                            jQuery.ajax({
+                                url: "${ctx.contextPath}/pc/ajax/bindPay",
+                                data: {
+                                    bankCode: jQuery("#bindCardInfo .curBank input[name=bankCode]").val(),
+                                    cardno: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=cardno]").val()),
+                                    cardType: jQuery("#bindCardInfo .curBank input[name=cardType]").val(),
+                                    bankName: jQuery("#bindCardInfo .curBank input[name=bankName]").val(),
+                                    owner: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=owner]").val()),
+                                    idno: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=idno]").val()),
+                                    avlidDate: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=avlidDate]").val()),
+                                    cvv: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=cvv]").val()),
+                                    bankPWD: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=bankPWD]").val()),
+                                    phoneNo: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=phoneNo]").val()),
+                                    ypMobile: BASE64.encoder(jQuery("#bindCardInfo .curBank input[name=ypMobile]").val()),
+                                    token: jQuery("input[name=token]").val(),
+                                    bindId: jQuery("input[name=bindId]").val(),
+                                    reqSmsSendTypeEnum: jQuery("input[name=reqSmsSendTypeEnum]").val(),
+                                    verifycode:jQuery("#verifycode").val()
+                                },
+                                method: "POST",
+                                success: function (data) {
+                                    var result = JSON.parse(data);
+                                    var error = result.msg;
+                                    var jumpTargett = result.jumpTarget;
+                                    var jumpTarget = jumpTargett;
+                                    if (result.status == "success") {
+                                        window.location.href = '${ctx.contextPath}/pc/query/result?token=${token}';
+                                    }
+                                    if (result.status == "failed") {
+                                        if (jumpTarget == "popup") {//jumpTarget为popup表示验证码错误，验证码错误在短验框下提示用户验证码错误；如果不是则跳转到支付失败页，提示错误信息。
+                                            popupSubmitBtn.setAttribute("click-on", "false");//确认支付按钮只允许点击一次,但如果是验证码错误，则可以再次点击确认支付
+                                            jQuery("#confirmPayVerifycodeError").attr("class", "error");
+                                            jQuery("#confirmPayVerifycodeError").html(error);
+                                            document.getElementById("confirmPayVerifycodeError").style.display = "block";
+                                        } else {
+                                            window.location.href = '${ctx.contextPath}/pc/pay/fail?token=${token}&errormsg=' + error;
+                                        }
+                                    }
+                                },
+                                error: function () {
+                                    popupSubmitBtn.setAttribute("click-on", "false");//确认支付按钮只允许点击一次,但如果是请求超时，则可以再次点击确认支付
+                                    var error1 = "请求超时，请稍后重试！";
+                                    jQuery("#confirmPayVerifycodeError").attr("class", "error");
+                                    jQuery("#confirmPayVerifycodeError").html(error1);
+                                }
+                            })
+                        } else {
+                            if (verifycode == "") {
+                                document.getElementById("errorverifycode").style.display = "block";
+                            } else {
+                                document.getElementById("errorverifycode").style.display = "none";
+                            }
+                        }
+                    }
+                }
+
+                function hideCodeMsg() {//光标定位到短信输入框时，隐藏错误提示信息
+                    document.getElementById("confirmPayVerifycodeError").style.display = "none";
+                    document.getElementById("errorverifycode").style.display = "none";
+                }
+
+                function hiddenError() {//光标定位到卡号输入框时，隐藏错误提示信息
+                    document.getElementById("cardNoErrorMsg").style.display = "none";
+                }
+
+                function onlyNumber(obj) {//仅输入数字
+                    var val = obj.value;
+                    var reg = /\D/g;
+                    obj.value = val.replace(reg.exec(val), "");
+                }
+
+                //当卡号大于16位时，自动触发校验，如果校验通过自动跳转到卡信息页
+                function checkCardNo() {
+                    var length = jQuery("#J-otherPay").val().replace(/\s/g, '').length;
+                    if (length >= 16) {
+                        var cardNo = jQuery("#J-otherPay").val().replace(/\s/g, '');
+                        var token = jQuery("#check-token").val();
+                        jQuery.post("${ctx.contextPath}/pc/ajax/check", {
+                            token: token,
+                            cardno: BASE64.encoder(cardNo)
+                        }, function (response) {
+                            var result = JSON.parse(response);
+                            var error = null;
+                            if (result.msg) {
+                                error = result.msg;
+                            } else {
+                                error = result.error;
+                            }
+                            var status = result.status;
+                            if (status == "success") {// 校验成功
+                                jQuery("#successMsg").removeClass("none");
+                                jQuery("#successMsg").html("卡号正确,自动跳转至卡信息填写页面");
+                                document.getElementById("successMsg").style.display = "block";
+                                bindCardInfo.action = "${ctx.contextPath}/pc/first/cardinfo?isChangeCard=changCard&isBindPay=bindPay";
+                                setTimeout(function () {
+                                    return encrypt("bindCardInfo");
+                                }, 2500);
+                            } else {// 校验错误
+                                if (length >= 19) {
+                                    jQuery("#cardNoErrorMsg").attr("class", "error");
+                                    jQuery("#cardNoErrorMsg").html(error);
+                                    document.getElementById("cardNoErrorMsg").style.display = "block";
+                                }
+                            }
+
+                        });
+
+
+                    }
+                }
+            </script>
+        </div>
+    </div>
+</div>
+<!--主要内容结束-->
+<!--支持银行-->
+<div class="layout supportBankWrap">
+    <h2 class="mt20">支持银行</h2>
+    #if($creditList)
+    <div class="bankCardWrap mt20"><span class="sign">信用卡</span>
+
+        <div class="clearfix zoom bankLogoOuter">
+            #foreach( $key in $creditList )
+            <span class="${key.bankCode}2"></span>
+            #end
+        </div>
+    </div>
+    #end
+    #if($debitList)
+    <div class="bankCardWrap"><span class="sign">储蓄卡</span>
+
+        <div class="clearfix zoom bankLogoOuter">
+            #foreach( $key in $debitList )
+            <span class="${key.bankCode}2"></span>
+            #end
+        </div>
+    </div>
+    #end
+    <p class="mt5"><span class="more none" id="moreBankBtn">更多银行</span></p>
+</div>
+<script type="text/javascript">
+    (function () {
+        var text = "收起",
+                text2 = "更多银行";
+        var bankCardWrap = YEEPAY.getElementByClass("bankCardWrap"),
+                bankLogoOuter = YEEPAY.getElementByClass("bankLogoOuter"),
+                moreBankBtn = YEEPAY.get("moreBankBtn"),
+                bankCards = 0;
+        var status = "";
+        for (var i = 0, l = bankLogoOuter.length; i < l; i++) {
+            if (bankLogoOuter[i].getElementsByTagName("span").length > 9) {
+                bankCardWrap[i].setAttribute("status", "off");
+                bankCards = bankLogoOuter[i].getElementsByTagName("span").length;
+            }
+        }
+        ;
+        bankCards > 0 ? YEEPAY.removeClass(moreBankBtn, "none") : YEEPAY.addClass(moreBankBtn, "none");
+        function toggle() {
+            for (var i = 0, l = bankLogoOuter.length; i < l; i++) {
+                status = bankCardWrap[i].getAttribute("status");
+                if (status == "off") {
+                    bankCardWrap[i].style.height = "auto";
+                    moreBankBtn.innerHTML = text;
+                    moreBankBtn.style.backgroundPosition = "25px -471px";
+                    moreBankBtn.style.marginLeft = "895px";
+                    bankCardWrap[i].setAttribute("status", "on");
+                } else if (status == "on") {
+                    bankCardWrap[i].style.height = "33px";
+                    moreBankBtn.innerHTML = text2;
+                    moreBankBtn.style.backgroundPosition = "50px -438px";
+                    moreBankBtn.style.marginLeft = "870px";
+                    bankCardWrap[i].setAttribute("status", "off");
+                }
+            }
+        }
+
+        YEEPAY.addHandler(moreBankBtn, "click", toggle);
+    })();
+    +function marketinginfo() {
+        /*获取营销立减活动信息*/
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/market/info",
+            data: {token: "${token}"},
+            dataType: "json"
+        }).done(function (data) {
+            if (data.doMarketActivity == "Y") {
+                if (data.activityCopyWrites.hasOwnProperty("ALL")) {
+                /*所有支付方式都支持做营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.ALL.copyWrite);
+                }
+                if (data.activityCopyWrites.hasOwnProperty("NCPAY")) {
+                    /*一键支付支持营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.NCPAY.copyWrite);
+                }
+            }
+        });
+    }();
+</script>
+<!--支持银行结束-->
+<!--版权-->
+<div class="layout copyright">本支付由易宝支付提供，易宝支付版权所有 &copy; 2003-2014 京ICP备08100193号</div>
+<!--版权结束-->
+<!--底部-->
+<div class="footer">
+    <div class="layout"><a href="http://www.yeepay.com/article?type=wireless&aid=991" target="_blank"><img
+            src="${ctx.contextPath}/npc/images/f_03.gif"/></a> <a
+            href="http://www.yeepay.com/article?type=wireless&aid=990"
+            target="_blank"><img src="${ctx.contextPath}/npc/images/f_05.gif"/></a> <a
+            href="http://www.yeepay.com/article?type=wireless&aid=992" target="_blank"><img
+            src="${ctx.contextPath}/npc/images/f_11.gif"/></a>
+        <a href="http://www.visa.com.cn/index.shtml" target="_blank"><img src="${ctx.contextPath}/npc/images/f_07.gif"/></a>
+        <a
+                href="https://sealinfo.verisign.com/splash?form_file=fdf/splash.fdf&dn=*.yeepay.com&lang=en"
+                target="_blank"><img src="${ctx.contextPath}/npc/images/f_10.gif"/></a></div>
+</div>
+<!--底部结束-->
+</body>
+</html>

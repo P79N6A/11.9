@@ -1,0 +1,133 @@
+<input type="radio" name="pay-mode-handler" checked id="payModeQuick" class="pay-mode-handler">
+
+<div class="quick-pay">
+    <label for="payModeQuick"><h2>银行卡快捷支付 无需开通网银</h2></label>
+
+    <div class="quick-pay-main">
+        <div class="limit">
+            <input type="checkbox" id="showLimit">
+            <label for="showLimit" class="handler" onclick="Action.limit()">可用银行与限额</label>
+
+            <div class="cont">
+                <label for="showLimit" class="close icon">&#xe60e;</label>
+
+                <p class="title">可用银行与限额</p>
+
+                <div class="caption"><span class="bank">支持银行</span><span class="card-type">卡种</span><span
+                        class="single">单笔限额（元）</span><span
+                        class="day">单日限额（元）</span><span class="month">单月限额（元）</span>
+                </div>
+                <ul class="tb" id="supportBankList">
+
+                </ul>
+            </div>
+        </div>
+        <form id="quickPayForm">
+            <!--<div class="sington"><label><span class="title">银行卡</span><input type="text"
+                                                                                  placeholder="请输入个人信用卡或储蓄卡卡号"
+                                                                                  name="cardno"
+                                                                                  maxlength="23" value="$!{cardNo}"
+                                                                                  readonly></label>
+            </div>-->
+            <div class="card-bin-wrapper pass-card-bin clearfix">
+                <span class="title">银行卡</span>
+
+                <div class="card-bin">
+                    <div class="bank"><span class="bank-logo $!{bankCode}"></span>$!{bankName}</div>
+                    <div class="bank-info">
+                        **********$!{cardlater}<span class="card-type">
+                    #if ($!{cardtype} == "CREDIT")
+                        信用卡
+                    #else
+                        储蓄卡
+                    #end
+                </span>
+                    </div>
+                </div>
+            </div>
+            #if(${merchantSamePersonConf})
+            <p class="prompt">请使用<span class="emp">本人信息</span>进行支付，支付成功后不可更改</p>
+            #end
+            #if($!{needname})
+            <div class="sington"><label><span class="title">姓名</span><input type="text" autocomplete="off"
+                                                                                 placeholder="请输入您的真实姓名"
+                                                                                 name="name" encrypt="true"
+                                                                                 maxlength="16" value="$!{owner}"
+                                                                                 #if(${owner})readonly#end></label>
+            </div>
+            #end
+            #if($!{needidno})
+            <div class="sington"><label><span class="title">身份证号</span><input type="text" autocomplete="off"
+                                                                                   placeholder="请输入您的身份证号"
+                                                                                   name="idno" encrypt="true"
+                                                                                   maxlength="18" value="$!{idno}"
+                                                                                   #if(${idno})readonly#end></label>
+            </div>
+            #end
+            #if($!{needvalid})
+            <div class="sington"><label><span class="title">有效期</span><input type="text" autocomplete="off"
+                                                                                  placeholder="如：09/15 请输入0915"
+                                                                                  name="valid" encrypt="true"
+                                                                                  maxlength="4"></label>
+            </div>
+            #end
+            #if($!{needcvv})
+            <div class="sington"><label><span class="title">C V V</span><input type="password" autocomplete="off"
+                                                                                    placeholder="信用卡背面后三位数字"
+                                                                                    name="cvv2" encrypt="true"
+                                                                                    maxlength="3"></label>
+            </div>
+            #end
+            #if($!{needpass})
+            <div class="sington"><label><span class="title">取款密码</span><input type="password" autocomplete="off"
+                                                                                   placeholder="请输入取款密码"
+                                                                                   name="pass" encrypt="true"
+                                                                                   maxlength="6"></label>
+            </div>
+            #end
+            #if($!{needmobile})
+            <div class="sington"><label><span class="title">手机号</span><input type="text" autocomplete="off"
+                                                                                  placeholder="此卡在银行的预留手机号"
+                                                                                  name="phone" encrypt="true"
+                                                                                  maxlength="11"
+                                                                                  value="$!{phoneNo}"
+                                                                                  #if(${phoneNo})readonly#end></label>
+            </div>
+            #end
+
+            <input type="hidden" id="bankCode" value="$!{bankCode}" readonly name="bankCode">
+            <input type="hidden" value="$!{cardtype}" readonly name="cardType">
+            <input type="hidden" value="$!{bankName}" readonly name="bankName">
+            <input type="hidden" value="$!{cardNo}" encrypt="true" readonly name="cardno">
+
+            <div><label><input type="checkbox" name="agreement" id="agreement" checked><span
+                    class="checkbox icon"></span>#if($autoBindTip)${autoBindTip}#end同意</label><a
+                    href="javascript:void(0)" onclick="Util.popup('',User.template.agreement)">《服务协议》</a><span class="china-bank-agree none">和<a
+                    href="javascript:void(0)" onclick="Util.popup('',User.template.chinaBankAgreement)">《中国银行快捷支付服务协议》</a></span>
+            </div>
+            <button type="button" id="firstPayBtn" class="pass-fn-btn" onclick="Action.firstPay()">下一步</button>
+            #*
+            <div class="limit-tip">招商银行信用卡默认单笔限额为 200元/笔；单日限额为 500元/日； 单月限额为 1000元/月；<br>
+                实际限额以您在银行的设置为准。
+            </div>
+            *#
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+    (function () {
+        User.form.validate("#quickPayForm", "cardno");
+        dom.querySelector("label[for=payModeQuick]").addEventListener("mousedown", function () {
+            dom.querySelector("#payModeQuick").checked = true;
+            User.form.reset("#quickPayForm");
+        }, false);
+        dom.querySelector("#agreement").addEventListener("click", function () {
+            this.checked ? User.form.enabledSubmit("#firstPayBtn") : User.form.disabledSubmit("#firstPayBtn");
+        }, false);
+        if(dom.querySelector("#bankCode").value == "BOC"){
+            dom.querySelector(".china-bank-agree").classList.remove("none");
+        }
+    }());
+</script>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<memcached>
+	<!-- name：Cache的唯一标识;socketpool：关联到后面的socketpool配置;errorHandler：可选,用来处理出错情况-->
+	<client name="defaultClient" compressEnable="true" defaultEncoding="UTF-8" socketpool="defaultPool">
+		<errorHandler>com.alisoft.xplatform.asf.cache.memcached.MemcachedErrorHandler</errorHandler>
+	</client>
+	
+	<!-- 
+		failover:设置故障转移 ;maintSleep:后台线程管理SocketIO池的检查间隔时间，如果设置为0，则表明不需要后台线程维护SocketIO线程池，默认需要管理
+		socketTO:Socket操作超时配置，单位ms;aliveCheck:表示在使用Socket以前是否先检查Socket状态
+	-->
+	<socketpool name="defaultPool" failover="true" initConn="1" minConn="1" maxConn="10" maintSleep="30000"
+		nagle="false" socketTO="3000" aliveCheck="true">
+			<servers>cache.bass.3g:12801</servers>
+	</socketpool>
+</memcached>

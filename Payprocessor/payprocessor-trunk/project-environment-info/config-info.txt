@@ -1,0 +1,12 @@
+线上的各个地方的配置信息：
+1，统一配置
+boss后台[系统]-[查询配置信息]，命名空间default，配置类型config_type_sys，配置键：
+
+2，mq
+QA   http://172.17.102.171:15672
+内测  http://59.151.25.126:6353
+生产 http://59.151.25.126:6304/#/
+
+"rabbitmq.bass.3g" username="yjzf" password="1qaz2wsx" port="5672" virtual-host=“yjzf"
+
+3，错误码系统

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>易宝支付收银台</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <meta name="author" content="ying.xia@yeepay.com">
+    <meta name="description"
+          content="易宝支付（YeePay.com)是中国行业支付的开创者和领导者。易宝支付于2003年8月成立，总部位于北京，现有上千名员工，在上海、广东、江苏、福建、广西、天津、云南、四川、浙江、山东、陕西等设有31家分公司。自公司成立以来，易宝支付秉承成就客户、极致服务、实事求是、开放分享的核心价值观，以交易服务改变生活为使命，致力成为世界一流的交易服务平台，领跑电子支付、移动互联和互联网金融。">
+    <meta name="Keywords" content="易宝支付,收银台,支付，网银，快捷，一键支付，扫描支付">
+    <link rel="shortcut icon" href="${ctx.contextPath}/customizedPc/assets/images/favicon.ico"/>
+    <link rel="stylesheet" href="${ctx.contextPath}/customizedPc/assets/css/reset.min.css">
+    <link rel="stylesheet/less" href="${ctx.contextPath}/customizedPc/assets/less/base.less">
+    <link rel="stylesheet/less" href="${ctx.contextPath}/customizedPc/assets/less/pc_bind_pay.less">
+    <script>
+        var session = window.sessionStorage;
+        session.setItem("contextUrl", "${ctx.contextPath}");
+        session.setItem("token", "$!{token}");
+        var skin = {
+            /*
+             * 整站主色和配色
+             * */
+            mainColor: "$!{mainColor}" || "#6dca90",
+            fontColor: "$!{fontColor}" || "#ff4f01"
+        };
+        var  orderInfo=$!{bindCardMerchantRequest}
+    </script>
+    <script src="${ctx.contextPath}/customizedPc/assets/js/less.min-2.5.3.js"></script>
+    <script src="${ctx.contextPath}/customizedPc/assets/js/polyfill.min.js"></script>
+    <script src="${ctx.contextPath}/customizedPc/assets/js/pc-shouyin-2e4c8c9e77.js"></script>
+    <script src="${ctx.contextPath}/customizedPc/assets/js/jbase64.min.js"></script>
+</head>
+<body>
+<header id="header">
+    <div class="top-wrapper clearfix">
+        <div class="logo"><img src="${ctx.contextPath}/customizedPc/assets/images/logo.png" alt="易宝支付"><span class="sign">收银台</span></div>
+        <div class="service-phone">7X24小时客服电话：4001-500-800</div>
+    </div>
+</header>
+<div class="container clearfix">
+    <!--是否展示客服-->
+    #if($!{needCustomService})
+    #parse("fixed_tools.vm")
+    #end
+    <!--是否展示客服结束-->
+    <!--流程引导-->
+    <div class="guidance">
+        <h2 class="title icon">添加银行卡</h2>
+
+        <div class="progress-bar">
+            <div class="bar"></div>
+            <div class="bar-darken"></div>
+            <div class="step current">
+                <p>输入银行卡卡号</p>
+
+                <p class="circle">
+                    <span>1</span>
+                </p>
+            </div>
+            <div class="step">
+                <p>输入持卡人信息</p>
+
+                <p class="circle">
+                    <span>2</span>
+                </p>
+            </div>
+            <div class="step">
+                <p>添加银行卡成功</p>
+
+                <p class="circle">
+                    <span>3</span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!--流程引导结束-->
+    <div id="bindCardInfo">
+
+    </div>
+</div>
+<footer id="footer">本支付由易宝支付提供，易宝支付版权所有 © 2003-2017 京ICP备08100193号</footer>
+<script>
+    var Progress = function () {
+        /*
+         * 进度条控制
+         * */
+        var dom = window.document;
+        var bar = dom.querySelector(".progress-bar .bar-darken");//进度条
+        var steps = array(dom.querySelectorAll(".progress-bar .step"));
+
+        function step(num) {
+            /*
+             * 设置进度
+             * num:数字，设置当前进度
+             * */
+            var _num = num - 1;
+            bar.style.width = _num * 275 + "px";
+            steps.map(function (element, index) {
+                index <= _num ? element.classList.add("current") : element.classList.remove("current");
+            });
+        }
+
+        return {
+            step: step
+        }
+    }();
+    #if("${bizStatus}" == "failed")
+        document.querySelector("#bindCardInfo").insertAdjacentHTML("beforeend", Cashier.applyComponent(Cashier.Components.BIND_CARD_FAIL,{errorcode:"${errorcode}",errormsg:"${errormsg}"}));
+    #else
+    document.querySelector("#bindCardInfo").insertAdjacentHTML("beforeend", Cashier.applyComponent(Cashier.Components.BIND_CARD));
+    Cashier.events();
+    #end
+</script>
+</body>
+</html>

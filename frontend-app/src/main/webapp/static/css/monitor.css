@@ -1,0 +1,117 @@
+body{
+    background-image: url("../imgs/ReportServer.jpg");
+}
+
+.header, .main_nav{
+    display: none;
+}
+/**
+*---------------realtimeCount.jsp
+**/
+.monitor .index li{
+    float: left;
+    width: 200px;
+}
+
+.data{
+    width: 80%;
+    float: left;
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 10px 5px 20px 15px;
+    background-color: #FFFFFF;
+    min-width: 700px;
+}
+.data-title{
+    width: 100%;
+    text-align: center;
+    height: 35px;
+    line-height: 35px;
+    font-size: 20px;
+    font-family: "Courier New";
+}
+.data ul{
+    width: 100%;
+    float: left;
+}
+.data ul li{
+    float: left;
+    width: 11%;
+    height: 35px;
+    line-height: 35px;
+    border-bottom: 1px #F0F5F6 solid;
+}
+.data .head li{
+    font-size: 20px;
+    height: 40px;
+    line-height: 40px;
+    border-top: 1px #F0F5F6 solid;
+}
+.colorup li{
+    color: red;
+}
+.colordw li{
+    color: green;
+}
+.gradual li{
+    background-color: #F0F5F6;
+}
+
+.linkedTitle{
+    width: 100%;
+    text-align: center;
+    color: #FFFFFF;
+}
+.linkedTitle a{
+    color: #FFFFFF;
+}
+.linkedTitle a :hover{
+    background-color: #295A94;/*#295A94 7792BA**/
+}
+.monitor{
+    width: 100%;
+}
+.monitorLi{
+    float: left;
+    width: 20%;
+    height: 56px;
+    line-height: 56px;
+    font-size: 25px;
+}
+.adjust_pd{
+    padding: 0 10%;
+}
+/****realTimeCount.jsp****/
+.container{
+    width: 100%;
+    height: 100%;
+    float: left;
+    padding-top: 10px;
+}
+.chart{
+    min-width:690px;
+    height:400px;
+    float: left;
+    margin:10px;
+}
+#dataTable{
+    background-color: #FFFFFF;
+    min-width:1400px;
+    height:800px;
+    float: left;
+    margin: 10px 10px;
+}
+.table_row{
+    width: 120px;
+    float: left;
+}
+.table_row li{
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px #F0F5F6 solid;
+}
+.row_header{
+    padding: 10px 0px;
+    font-size: 18px;
+}

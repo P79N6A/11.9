@@ -1,0 +1,27 @@
+#parse('header.vm')
+<body>
+<style>
+    .query-btn{
+        display: block;
+        background-color: #22ac38;
+        width: 100%;
+        height: 45px;
+        line-height: 45px;
+        font-size: 18px;
+        border-radius: 6px;
+        color: #ffffff;
+        text-align: center;
+        text-decoration: none;
+    }
+</style>
+<div class="icon systemfail tc mt30">&#xe625;</div>
+    #if("$!{bizStatus}" == "success")
+    <div class="tc">
+        <p>订单状态更新中，请稍候重试</p>
+        <a href="$!{frontUrl}" target="_self" class="query-btn">重试</a>
+    </div>
+    #else
+    <p class="tc"> $!{errorMsg}（$!{errorCode}）</p>
+    #end
+</body>
+</html>

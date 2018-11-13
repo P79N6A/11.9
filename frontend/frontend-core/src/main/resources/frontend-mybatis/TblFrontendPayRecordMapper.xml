@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="PayRecord" >
+  <resultMap id="PayRecordMap" type="PayRecord" >
+      <id column="ID" property="id" jdbcType="BIGINT" />
+      <result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+      <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+      <result column="REQUEST_ID" property="requestId" jdbcType="VARCHAR" />
+      <result column="REQUEST_SYSTEM" property="requestSystem" jdbcType="VARCHAR" />
+      <result column="CUSTOMER_NUMBER" property="customerNumber" jdbcType="VARCHAR" />
+      <result column="OUT_TRADE_NO" property="outTradeNo" jdbcType="VARCHAR" />
+      <result column="PLATFORM_TYPE" property="platformType" jdbcType="VARCHAR" />
+      <result column="TOTAL_AMOUNT" property="totalAmount" jdbcType="DECIMAL" />
+      <result column="RESPONSE_CODE" property="responseCode" jdbcType="VARCHAR" />
+      <result column="RESPONSE_MSG" property="responseMsg" jdbcType="VARCHAR" />
+      <result column="NOCARD_CODE" property="nocardCode" jdbcType="VARCHAR" />
+      <result column="NOCARD_MSG" property="nocardMsg" jdbcType="VARCHAR" />
+      <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+      <result column="FRONT_VALUE" property="frontValue" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    ID,RECORD_NO,ORDER_NO,REQUEST_ID,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,
+    PLATFORM_TYPE,TOTAL_AMOUNT,RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,
+    CREATE_TIME,FRONT_VALUE
+  </sql>
+  
+   <!-- <select id="get" resultMap="PayRecordMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from FRONTEND.TBL_FRONTEND_PAY_RECORD
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="queryByRecordNo" resultMap="PayRecordMap" parameterType="string" >
+    select
+    <include refid="Base_Column_List" />
+    from FRONTEND.TBL_FRONTEND_PAY_RECORD
+    where RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+  </select> -->
+
+  <select id="queryByOrderNo" resultMap="PayRecordMap" parameterType="string" >
+    SELECT
+      <include refid="Base_Column_List" />
+    FROM FRONTEND.TBL_FRONTEND_PAY_RECORD
+    WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    WITH UR
+  </select> 
+  
+
+  <select id="countRecordByOrderNo" resultType="java.lang.Integer" parameterType="string" >
+    SELECT COUNT(0) as counts
+    FROM FRONTEND.TBL_FRONTEND_PAY_RECORD
+    WHERE ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    WITH UR
+  </select>
+  
+  
+  	<!-- self-define -->
+	<select id="nextValueSeq" parameterType="map" resultType="long">
+		select NEXTVAL FOR FRONTEND.TBL_FRONTEND_PAY_RECORD_SEQ  as id  FROM  SYSIBM.SYSDUMMY1
+	</select>
+  
+  <insert id="insert" parameterType="PayRecord"  keyProperty="id" useGeneratedKeys="true" >
+    INSERT INTO FRONTEND.TBL_FRONTEND_PAY_RECORD (RECORD_NO,ORDER_NO,REQUEST_ID,
+      REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+      RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE)
+    VALUES (
+        #{recordNo,jdbcType=VARCHAR},
+        #{orderNo,jdbcType=VARCHAR},
+        #{requestId,jdbcType=VARCHAR},
+        #{requestSystem,jdbcType=VARCHAR},
+        #{customerNumber,jdbcType=VARCHAR},
+        #{outTradeNo,jdbcType=VARCHAR},
+        #{platformType,jdbcType=VARCHAR},
+        #{totalAmount,jdbcType=DECIMAL},
+        #{responseCode,jdbcType=VARCHAR},
+        #{responseMsg,jdbcType=VARCHAR},
+        #{nocardCode,jdbcType=VARCHAR},
+        #{nocardMsg,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{frontValue,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+
+ <update id="update" parameterType="PayRecord" >
+    UPDATE FRONTEND.TBL_FRONTEND_PAY_RECORD
+    <set >
+        <if test = "responseCode!=null" >
+            RESPONSE_CODE = #{responseCode,jdbcType=VARCHAR},
+        </if>
+        <if test = "responseMsg!=null" >
+            RESPONSE_MSG = #{responseMsg,jdbcType=VARCHAR},
+        </if>
+        <if test = "nocardCode!=null" >
+            NOCARD_CODE = #{nocardCode,jdbcType=VARCHAR},
+        </if>
+        <if test = "nocardMsg!=null" >
+            NOCARD_MSG = #{nocardMsg,jdbcType=VARCHAR},
+        </if>
+        <if test = "frontValue!=null" >
+            FRONT_VALUE = #{frontValue,jdbcType=VARCHAR},
+        </if>
+    </set>
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </update>  
+   
+  
+</mapper>

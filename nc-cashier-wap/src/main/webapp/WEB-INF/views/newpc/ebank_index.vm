@@ -1,0 +1,63 @@
+<input type="radio" name="pay-mode-handler" id="payModeBank" class="pay-mode-handler">
+<div class="bank-pay">
+    <label for="payModeBank"><h2>网银支付 <span>请选择银行</span><p class="product-random-guide none">个人支付随机立减</p></h2></label>
+
+    <div class="bank-container">
+        <div class="tab-wrapper">
+            #if($!response.b2cBanks)<span class="tab">个人支付</span>#end
+            #if($!response.b2bBanks)<span class="tab" id="b2bTab">企业支付</span>#end
+        </div>
+        <div class="tab-content-wrapper">
+            #if($!response.b2cBanks)
+            <ul class="tab-content bank-list clearfix active">
+                #foreach($key in $response.b2cBanks)
+                <li #if($velocityCount== 1)class="active" #end bankAccountType="B2C" bankCode="$key.bankCode"
+                    bankName="$key.bankName">
+                    <span class="bank-logo $key.bankCode"></span>$key.bankName
+                    <p class="card-type">
+                        #if($key.cardType=="ONLYBY")
+                        <span>储蓄卡</span>
+                        #elseif($key.cardType=="ONLOAN")
+                        <span>储蓄卡</span><span>信用卡</span>
+                        #else
+                        <span>信用卡</span>
+                        #end
+                    </p>
+                </li>
+                #end
+            </ul>
+            #end
+            #if($!response.b2bBanks)
+            <ul class="tab-content bank-list clearfix">
+                #foreach($key in $response.b2bBanks)
+                <li #if($velocityCount== 1)class="active" #end bankAccountType="B2B" isNeedClient="$key.needClient"
+                    bankCode="$key.bankCode" bankName="$key.bankName">
+                    <span class="bank-logo $key.bankCode"></span>$key.bankName
+                    <p class="card-type">
+                        #if($key.cardType=="ONLYBY")
+                        <span>储蓄卡</span>
+                        #elseif($key.cardType=="ONLOAN")
+                        <span>储蓄卡</span><span>信用卡</span>
+                        #else
+                        <span>信用卡</span>
+                        #end
+                    </p>
+                </li>
+                #end
+            </ul>
+            #end
+        </div>
+        <div class="error-wrapper"></div>
+        <button type="button" onclick="Action.eBankPayRoute()">下一步</button>
+    </div>
+    #if($showNcPay)
+    <script>
+        (function () {
+            dom.querySelector("label[for=payModeBank]").addEventListener("mousedown", function () {
+                dom.querySelector("#payModeBank").checked = true;
+
+            }, false);
+        }());
+    </script>
+    #end
+</div>

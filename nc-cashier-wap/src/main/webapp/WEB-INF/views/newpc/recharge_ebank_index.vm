@@ -1,0 +1,70 @@
+#if($type=="NET")
+<input type="radio" name="pay-mode-handler" id="payModeBank" class="pay-mode-handler">
+#else
+<input type="radio" name="pay-mode-handler" id="netPayModeBank" class="pay-mode-handler">
+#end
+<div class="bank-pay">
+    #if($type=="NET")
+        <label for="payModeBank"><h2>网银支付 <span>请选择银行</span></h2></label>
+    #else
+        <label for="netPayModeBank"><h2>代付汇入支付 <span>需提前开通网银，充值成功可立即出款</span></h2></label>
+    #end
+    <div class="bank-container">
+        <div class="tab-wrapper">
+            #if($!response.b2cBanks)<span class="tab">#if($type=="NET")个人支付 #else 对私代付汇入#end</span>#end
+            #if($!response.b2bBanks)<span class="tab">#if($type=="NET")企业支付 #else 对公代付汇入#end</span>#end
+        </div>
+        <div class="tab-content-wrapper">
+            #if($!response.b2cBanks)
+                <ul class="tab-content bank-list clearfix active">
+                    #foreach($key in $response.b2cBanks)
+                        <li #if($velocityCount== 1)class="active" #end payScene="$response.b2cPayScene" bankAccountType="#if($type=="NET")B2C_NET #else B2C_REMIT#end" bankCode="$key.bankCode"
+                            bankName="$key.bankName">
+                            <span class="bank-logo $key.bankCode"></span>$key.bankName
+                            <p class="card-type">
+                                #if($key.cardType=="ONLYBY")
+                                    <span>储蓄卡</span>
+                                #elseif($key.cardType=="ONLOAN")
+                                    <span>储蓄卡</span><span>信用卡</span>
+                                #else
+                                    <span>信用卡</span>
+                                #end
+                            </p>
+                        </li>
+                    #end
+                </ul>
+            #end
+            #if($!response.b2bBanks)
+                <ul class="tab-content bank-list clearfix">
+                    #foreach($key in $response.b2bBanks)
+                        <li #if($velocityCount== 1)class="active" #end payScene="$response.b2bPayScene" bankAccountType="#if($type=="NET")B2B_NET #else B2B_REMIT#end"
+                            isNeedClient="$key.needClient"
+                            bankCode="$key.bankCode" bankName="$key.bankName">
+                            <span class="bank-logo $key.bankCode"></span>$key.bankName
+                            <p class="card-type">
+                                #if($key.cardType=="ONLYBY")
+                                    <span>储蓄卡</span>
+                                #elseif($key.cardType=="ONLOAN")
+                                    <span>储蓄卡</span><span>信用卡</span>
+                                #else
+                                    <span>信用卡</span>
+                                #end
+                            </p>
+                        </li>
+                    #end
+                </ul>
+            #end
+        </div>
+        <div class="error-wrapper"></div>
+        <button type="button" onclick="Action.eBankPayRoute('recharge','$type')">下一步</button>
+    </div>
+    #if($showNcPay)
+        <script>
+            (function () {
+                dom.querySelector("label[for=payModeBank]").addEventListener("mousedown", function () {
+                    dom.querySelector("#payModeBank").checked = true;
+                }, false);
+            }());
+        </script>
+    #end
+</div>

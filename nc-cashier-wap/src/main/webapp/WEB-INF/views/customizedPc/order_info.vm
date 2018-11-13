@@ -1,0 +1,39 @@
+<!--支付有效期-->
+<div class="expire-time none" id="expireTime" events="{auto:Controller.expireTime}">请在<span
+        class="emp">$!{expireTime}</span>之前完成支付
+</div>
+<!--支付有效期结束-->
+<!--订单信息-->
+<div class="order-info clearfix">
+    <div class="merchant-info-wrapper">
+        <div class="merchant-info"><p><span class="title">购买商品：</span><span>$!{productName}</span></p>
+
+            <p><span class="title">订单号：</span><span title="$!{orderId}">$!{orderId}</span></p></div>
+        <input type="checkbox" id="order-details-handler">
+
+        <div class="merchant-info details"><p><span class="title">收款商家：</span><span>$!{companyName}</span></p>
+
+            <p><span
+                    class="title">交易时间：</span><span>$!{tradeTime}</span></p></div>
+        <label for="order-details-handler"><span class="order-details-trigger icon"><i
+                class="br-hack">详情</i></span></label>
+    </div>
+    <div class="amount"><span class="title">订单总额：</span><span class="money"
+                                                              title="$!{amount}">$!{amount}</span>元#if(${fee})
+        （包含手续费<span class="fee">$!{fee}</span>元）#end
+    </div>
+</div>
+<!--订单信息结束-->
+<!--北京银行扒鸡活动-->
+#if($showActivity.showActivity)
+<script>
+    (function () {
+        if (payToolsOrder.indexOf("NCPAY") != -1 || payToolsOrder.indexOf("EANK") != -1) {
+            var el = '<div style="padding:12px 0;text-align: center; background-color: #fff6e6;"><img' +
+                    '        src="${ctx.contextPath}/customizedPc/assets/images/paji_20180416.png" style="vertical-align: middle"></div>';
+            dom.querySelector(".order-info").insertAdjacentHTML("afterEnd", el);
+        }
+    })();
+</script>
+#end
+<!--北京银行扒鸡活动结束-->

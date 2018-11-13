@@ -1,0 +1,60 @@
+#*
+分期付款
+*#
+<div class="instalment">
+    <button class="insm-btn">分期支付 点击获取二维码</button>
+    <div class="info-box none">
+        <span class="close icon">&#xe60e;</span>
+
+        <div class="img"><img src="${ctx.contextPath}/newpc/getHirePurchaseDirectQrCode?token=${token}" width="156">
+        </div>
+        <div class="tip clearfix">
+            <i class="icon">&#xead5;</i>
+
+            <p>扫描上面二维码<br>在手机完成分期支付</p>
+        </div>
+        <div class="status clearfix none"><i class="icon">&#xe66b;</i>
+
+            <p>扫描成功，请在手机上继续完成付款。</p></div>
+    </div>
+</div>
+<script>
+    (function () {
+        function showQrCode() {
+            /*
+             * 显示二维码
+             * */
+            dom.querySelector(".instalment .info-box").classList.remove("none");
+        }
+
+        function hideQrCode() {
+            /*
+             * 隐藏二维码
+             * */
+            dom.querySelector(".instalment .info-box").classList.add("none");
+        }
+
+        dom.querySelector(".instalment .insm-btn").addEventListener("click", function () {
+            /*
+             * 点击按钮显示二维码
+             * 调用轮询方法
+             * */
+            User.form.disabledSubmit(this);
+//            pollingController.abort();
+            this.classList.add("active");
+            dom.querySelector(".qrcode-wrapper").classList.add("hidden");
+            showQrCode();
+            Action.getQueryQrCode("isInstallment");
+        }, false);
+        dom.querySelector(".instalment .close").addEventListener("click", function () {
+            /*
+             * 点击关闭按钮隐藏二维码
+             * */
+            User.form.enabledSubmit(".instalment .insm-btn");
+//            pollingController.abort();
+            dom.querySelector(".instalment .insm-btn").classList.remove("active");
+            dom.querySelector(".qrcode-wrapper").classList.remove("hidden");
+            hideQrCode();
+        }, false);
+    })();
+</script>

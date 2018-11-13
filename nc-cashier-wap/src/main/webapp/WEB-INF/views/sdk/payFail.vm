@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <meta name="format-detection" content="telephone=no">
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            position: relative;
+            background-color: #f7f7f7;
+            font-size: 14px;
+        }
+
+        body, div, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        @font-face {
+            font-family: 'iconfont';
+            src: url('${ctx.contextPath}/npc/iconfontsdk/iconfont.eot');
+            src: url('${ctx.contextPath}/npc/iconfontsdk/iconfont.eot?#iefix') format('embedded-opentype'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.woff') format('woff'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.ttf') format('truetype'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.svg#iconfont') format('svg');
+        }
+
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .sdk-pay-status {
+            margin: 30px 15px 0;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .sdk-pay-status.fail {
+            color: #f94305;
+        }
+
+        .sdk-pay-status .iconfont {
+            display: block;
+            margin-top: 10px;
+            font-size: 75px;
+        }
+
+        .sdk-footer {
+		   position: absolute;
+            bottom: 35px;
+            width: 100%;
+            margin-top: 80px;
+            text-align: center;
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+        .sdk-footer a {
+            color: #6ec37a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="sdk-pay-status fail">
+    <p>支付失败</p>
+
+    <i class="iconfont">&#xe6bc;</i>
+</div>
+<footer class="sdk-footer">
+    <p>本服务由易宝支付（yeepay.com）提供</p>
+
+    <p>易宝支付客服电话：<a href="tel:4001-500-800">4001-500-800</a></p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title>支持银行与限额</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <link rel="stylesheet" href="${ctx.contextPath}/static/css/mobile-pay-161c5cdb80.min.css">
+    <script src="${ctx.contextPath}/npc/js/jquery.js"></script>
+    <style>
+        body{
+            background-color: #ffffff;
+        }
+        body, div, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .hidden {
+            visibility: hidden;
+        }
+
+        .head {
+            padding-left: 10px;
+            height: 50px;
+            background-color: #6dca90;
+            color: #ffffff;
+            line-height: 50px;
+            font-size: 14px;
+        }
+
+        .head span, .bank-list span {
+            margin-right: 10px;
+            display: inline-block;
+            width: 14.5%;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .head span.bank-name, .bank-list span.bank-name {
+            width: 25%;
+        }
+        .bank-list span.bank-name{
+            display: inline-flex;
+            align-items: center;
+            white-space: normal;
+            line-height: 20px;
+        }
+        .bank-list {
+            padding-left: 10px;
+            font-size: 12px;
+        }
+
+        .bank-list .item {
+            height: 50px;
+            line-height: 50px;
+            border-bottom: #e2e2e2 solid 1px;
+        }
+
+        .bank-list .item .logo {
+            margin-right: 5px;
+            vertical-align: middle;
+            width: 30px;
+        }
+
+        .bank-list .item.vertical .bank-name {
+            position: relative;
+            top: 22px;
+            background-color: #ffffff;
+        }
+        .pme-go-back{
+            position: static;
+            color: #ffffff;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="head">
+    <span class="bank-name">#parse('back.vm')银行卡名称</span><span>卡种</span><span>单笔</span><span>单日</span><span>单月</span>
+</div>
+<ul class="bank-list" id="supportBank">
+</ul>
+<script>
+    jQuery.ajax({
+        method: "POST",
+        dataType: "json",
+        url: '${ctx.contextPath}/newwap/supportbanklist',
+        data: {
+            token: "$!{token}"
+        },
+        success: function (data) {
+            var lis = "";
+            for (var key in data.supportBanklist) {
+                data.supportBanklist[key].forEach(function (bank, index) {
+                    lis += '<li class="item' + (data.supportBanklist[key].length == 2 ? ' vertical' : '') + '"><span class="bank-name' + (index == 1 ? ' hidden' : '') + '"><img align="left" src="${ctx.contextPath}/static/images/' + bank.bankCode + '.png" class="logo">' + bank.bankName + '</span><span class="card-type">' + (bank.debit == 'DEBIT' ? '储蓄卡' : '信用卡') + '</span><span class="single">' + (bank.limitOfBill == -1 ? '-' : bank.limitOfBill) + '</span><span class="day">' + (bank.limitOfDay == -1 ? '-' : bank.limitOfDay) + '</span><span class="month">' + (bank.limitOfMonth == -1 ? '-' : bank.limitOfMonth) + '</span></li>';
+                });
+            }
+            document.querySelector("#supportBank").insertAdjacentHTML("beforeEnd", lis);
+        }
+    });
+</script>
+</body>
+</html>

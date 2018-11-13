@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<artifactId>yeepay3g-parent</artifactId>
+		<groupId>yeepay3g</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	
+	<groupId>com.yeepay.g3.frontend</groupId>
+	<artifactId>frontend-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>frontend-parent</name>
+	<url>http://maven.apache.org</url>
+	
+	<modules>
+		<module>frontend-facade</module>
+		<module>frontend-core</module>
+		<module>frontend-hessian</module>
+	</modules>
+	
+	<properties>
+		<config.namespace>default</config.namespace>
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.common</groupId>
+			<artifactId>yeepay-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.utils</groupId>
+			<artifactId>yeepay-config</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.utils</groupId>
+			<artifactId>yeepay-soa</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.riskcontrol</groupId>
+			<artifactId>riskcontrol-facade</artifactId>
+			<version>1.6.9</version>
+		</dependency>
+	</dependencies>
+	
+</project>

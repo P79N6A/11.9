@@ -1,0 +1,58 @@
+#parse('header.vm')
+<body>
+##parse('back.vm')
+#if($!{payTool} == "YSQ")<!--//预授权成功-->
+    <i class="iconfont pme-success">&#xe708;</i>
+    <p class="pme-wrapper tc  " style="margin-bottom: 5px;">预授权处理中</p>
+    <p class="pme-wrapper tc pme-abl-msg" style="font-size:14px; color:#9f9f9f;margin-top: 0px;">若您已完成预授权，请点击查询结果</p>
+    <a class="query-result-btn" href="${ctx.contextPath}/wap/query/result?token=${token}&isRequery=requery">查询预授权结果</a>
+    <a class="pay-btn" href="${ctx.contextPath}/wap/preauth/routPayway?token=${token}">重新预授权</a>
+#else
+    <i class="iconfont pme-abnormal">&#xe604;</i>
+    <p class="pme-wrapper tc pme-abl-msg" style="margin-bottom: 5px;">暂未查询到支付结果</p>
+    <p class="pme-wrapper tc pme-abl-msg" style="font-size:14px; color:#9f9f9f;margin-top: 0px;">若您已完成支付，请查询支付结果</p>
+    <a class="query-result-btn" href="${ctx.contextPath}/wap/query/result?token=${token}&isRequery=requery">查询支付结果</a>
+    <a class="pay-btn" href="${ctx.contextPath}/wap/wapRePay?token=${token}">继续发起支付</a>
+#end
+
+<div style="text-align: center;" id="qCodeBox" class="mt30">
+    <img id="qCode" src="" alt="" width="82" height="82">
+    <i class="code-text">识别左方二维码,可查询订单信息</i>
+</div>
+<div class="mt30 none" id="orderIdBox">
+    #if($!{orderId})
+        <p style="font-size:14px;text-align: center;" >商户订单号为：$!{orderId}</p>
+        <p style="font-size:12px;text-align: center;" >(请妥善保管)</p>
+    #end
+</div>
+#if(!$notShowYeepayCompanyInfo)
+ <footer class="pme-footer" id="mod-footer" style="margin-bottom: 10px;">
+      <p>本服务由易宝支付（yeepay.com）提供</p>
+      <p>易宝支付客服电话：<span style="color:#6ec37a; text-decoration:none;">4001-500-800</span></p>
+ </footer>
+#end
+<script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+#if ($promptmsg)
+<script>
+    To.Popup.alert("$promptmsg");
+</script>
+#end
+<script>
+    (function(){
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/newwap/yeepay/qrcode?token=${token}&orderId=$!{orderId}&merchantNo=$!{merchantNo}",
+            async:true,
+            success: function (data) {
+                if(data == ''){
+                    document.querySelector("#qCodeBox").classList.add("none");
+                    document.querySelector("#orderIdBox").classList.remove("none");
+                }else{
+                    document.querySelector("#qCode").setAttribute("src",data)
+                }
+            }
+        })
+    })();
+</script>
+</body>
+</html>

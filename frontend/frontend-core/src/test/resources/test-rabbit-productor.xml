@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context.xsd
+      http://www.springframework.org/schema/integration/ip
+      http://www.springframework.org/schema/integration/ip/spring-integration-ip-2.0.xsd
+      http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+      http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/rabbit
+      http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
+
+    <rabbit:connection-factory id="connectionFactory"
+                               host="rabbitmq.bass.3g" username="yjzf" password="1qaz2wsx" port="5672" virtual-host="yjzf" />
+
+    <!-- queue 队列声明 -->
+    <rabbit:queue id="frontend_notify_nctrade" durable="true" auto-delete="false"
+                  exclusive="false" name="frontend_notify_nctrade" />
+    <rabbit:queue id="frontend_notify_nccashier" durable="true" auto-delete="false"
+                  exclusive="false" name="frontend_notify_nccashier" />
+    <rabbit:queue id="frontend_notify_payprocessor" durable="true" auto-delete="false"
+                  exclusive="false" name="frontend_notify_payprocessor" />
+    <rabbit:queue id="frontend_notify_payprocessor.delay.main" durable="true" auto-delete="false"
+                  exclusive="false" name="frontend_notify_payprocessor.delay.main" />
+
+    <!-- exchange queue binging key 绑定 -->
+    <rabbit:direct-exchange name="frontend-notify-exchange" durable="true" auto-delete="false" id="frontend-notify-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="frontend_notify_nctrade" key="FRONTEND_NOTIFY_QUEUE_NCTRADE"/>
+            <rabbit:binding queue="frontend_notify_nccashier" key="FRONTEND_NOTIFY_QUEUE_NCCASHIER"/>
+            <rabbit:binding queue="frontend_notify_payprocessor" key="FRONTEND_NOTIFY_QUEUE_PAYPROCESSOR"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+    <rabbit:direct-exchange name="frontend-notify-delay-exchange" durable="true" auto-delete="false" id="frontend-notify-delay-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="frontend_notify_payprocessor.delay.main" key="FRONTEND_NOTIFY_QUEUE_PAYPROCESSOR"/>
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+
+    <bean id="jsonMessageConverter" class="com.yeepay.g3.core.frontend.common.FastJsonMessageConverter"></bean>
+
+    <!-- spring template声明-->
+    <rabbit:template exchange="frontend-notify-exchange" id="amqpTemplate"
+                     connection-factory="connectionFactory" message-converter="jsonMessageConverter" />
+    <rabbit:template exchange="frontend-notify-delay-exchange" id="delayAmqpTemplate"
+                     connection-factory="connectionFactory" message-converter="jsonMessageConverter" />
+</beans>

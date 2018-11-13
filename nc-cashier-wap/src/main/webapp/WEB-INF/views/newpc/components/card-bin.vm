@@ -1,0 +1,9 @@
+#*
+卡bin信息
+*#
+<div class="card-bin">
+    <div class="bank"><span class="bank-logo"></span>北京银行</div>
+    <div class="bank-info">
+        **********1234<span class="card-type">信用卡</span>
+    </div>
+</div>

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<title>一键支付</title>
+<link rel="stylesheet" href="${ctx.contextPath}/npc/css/mobile-pay-161c5cdb80.min.css">
+<link type="text/css" href="${ctx.contextPath}/npc/css/base.css" rel="stylesheet" />
+<link type="text/css" href="${ctx.contextPath}/npc/css/keyPay.css" rel="stylesheet" />
+<link type="text/css" href="${ctx.contextPath}/npc/css/form.css" rel="stylesheet" />
+
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/getuserinfo.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/yeepay-1.0-min.js"></script>
+	<script type="text/javascript" src="${ctx.contextPath}/npc/js/jbase64.min.js"></script>
+	<script>
+		function encrypt(id) {
+			/*
+			 * 同步提交表单加密
+			 * */
+			var form = document.getElementById(id).cloneNode(true);
+			form.style.cssText = "position: absolute; left: -9999px; visibility: hidden";
+			var eles = form.elements;
+			for (var i = 0, l = eles.length; i < l; i++) {
+				if (eles[i].getAttribute("encrypt") == "true") {
+					eles[i].value = BASE64.encoder(eles[i].value);
+				}
+			}
+			document.body.appendChild(form);
+			form.submit();
+			return false;
+		}
+	</script>
+</head>
+
+<body>
+<!--头部-->
+<div class="header">
+  <div class="layout clearfix zoom">
+    <h1 class="fl mt15 logo"><a href="http://www.yeepay.com/" target="_blank" class="fl">易宝支付</a><span class="fl viceLogo">一键支付</span></h1>
+    <!--<p class="fr servicePhone">7x24小时客服电话：4001-500-800</p>--> 
+  </div>
+</div>
+<!--头部结束--> 
+<!--公告-->
+<!--<div class="layout notice"> <span class="closeNotice" title="关闭" onclick="this.parentNode.style.display='none'"></span>
+  <ul class="noticeList">
+    <li>23号23:00-23:45系统维护升级，暂停支付交易请谅解!</li>
+  </ul>
+</div>-->
+<!--公告结束--> 
+<!--主要内容-->
+<div class="layout mainWrap clearfix zoom">
+  <div class="fl orderInfo">
+    <h2>我的订单</h2>
+    <dl class="infoList firstInfoList mt15 clearfix zoom">
+      <dt>金　额：</dt>
+      <dd><span class="sum fa">${amount}</span>元</dd>
+      <dt>商　品：</dt>
+      <dd>${productname}</dd>
+      <dt>商　户：</dt>
+      <dd>${companyname}</dd>
+    </dl>
+    <dl class="infoList mt15 clearfix zoom">
+      <dt>订单号：</dt>
+      <dd><span class="fa">${orderid}</span></dd>
+      <dt>日　期：</dt>
+      <dd><span class="fa">${transtime}</span></dd>
+    </dl>
+  </div>
+  <div class="fl rightContainer">
+    <ul class="tagWrap clearfix zoom">
+            <li>银行卡支付<p class="product-random-guide">随机立减</p></li>
+    </ul>
+    <div class="contWrap">
+      <p class="ftx"><b>无需登录，有卡就能付，</b><span>支持多家银行卡</span></p>
+      <form id="form1" action="${ctx.contextPath}/pc/first/cardinfo" method="POST">
+        <input type="text" placeholder="请输入个人银行卡号" encrypt="true" class="cardNumInp mt20 fa" id="J-cardNmu" name="cardNo" onkeyup="checkCardNo()" data-format="true" value="$!{cardNo}" />
+        <p class="error none" id="errorMsg"></p>
+        <p class="none" id="successMsg" style="color:#5AC66F;"></p>
+        <!--隐藏错误提示时,class添加none即可-->
+        <input type="hidden" id="token" name="token" value="${token}" />
+        <input type="hidden" id="systemType" name="systemType" value="" />
+        
+        <p><a href="javascript:void(0)" class="greenBtn mb100" id="next"><i class="leftBorder"></i>下一步</a></p>
+      </form>
+      <script>
+        var path="${ctx.contextPath}/npc";
+      </script>
+      <script type="text/javascript" src="${ctx.contextPath}/npc/js/form-min.js"></script> 
+      <script type="text/javascript">
+      Form.formatBankCard("J-cardNmu");
+      </script> 
+    </div>
+  </div>
+</div>
+<!--主要内容结束--> 
+<!--支持银行-->
+<div class="layout supportBankWrap">
+  <h2 class="mt20">支持银行</h2>
+  #if($creditList)
+  <div class="bankCardWrap mt20"><span class="sign">信用卡</span>
+    <div class="clearfix zoom bankLogoOuter">
+    #foreach( $key in $creditList )
+       <span class="${key.bankCode}2"></span>
+    #end
+    </div>
+  </div>
+  #end
+  #if($debitList)
+  <div class="bankCardWrap"><span class="sign">储蓄卡</span>
+    <div class="clearfix zoom bankLogoOuter">
+    #foreach( $key in $debitList )
+           <span class="${key.bankCode}2"></span>
+        #end
+    </div>
+  </div>
+  #end
+  <p class="mt5"><span class="more none" id="moreBankBtn">更多银行</span></p>
+</div>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+<script type="text/javascript">
+(function () {
+    var text = "收起",
+    text2 = "更多银行";
+		var bankCardWrap = YEEPAY.getElementByClass("bankCardWrap"),
+				bankLogoOuter = YEEPAY.getElementByClass("bankLogoOuter"),
+				moreBankBtn = YEEPAY.get("moreBankBtn"),
+				bankCards = 0;
+		var status = "";
+		for (var i = 0, l = bankLogoOuter.length; i < l; i++) {
+				if (bankLogoOuter[i].getElementsByTagName("span").length > 9) {
+						bankCardWrap[i].setAttribute("status", "off");
+						bankCards = bankLogoOuter[i].getElementsByTagName("span").length;
+				}
+		};
+		bankCards > 0 ? YEEPAY.removeClass(moreBankBtn, "none") : YEEPAY.addClass(moreBankBtn, "none");
+		function toggle() {
+				for (var i = 0, l = bankLogoOuter.length; i < l; i++) {
+						status = bankCardWrap[i].getAttribute("status");
+						if (status == "off" ) {
+								bankCardWrap[i].style.height = "auto";
+								moreBankBtn.innerHTML = text;
+								moreBankBtn.style.backgroundPosition = "25px -471px";
+								moreBankBtn.style.marginLeft = "895px";
+								bankCardWrap[i].setAttribute("status", "on");
+						} else if(status == "on") {
+								bankCardWrap[i].style.height = "33px";
+								moreBankBtn.innerHTML = text2;
+								moreBankBtn.style.backgroundPosition = "50px -438px";
+								moreBankBtn.style.marginLeft = "870px";
+								bankCardWrap[i].setAttribute("status", "off");
+						}
+				}
+		}
+		YEEPAY.addHandler(moreBankBtn, "click", toggle);
+})();
+
+jQuery("#next").click(function() {
+	if (jQuery("#J-cardNmu").val() == "") {
+		jQuery("#errorMsg").attr("class", "error");
+		jQuery("#errorMsg").html('卡号不能为空，请输入正确卡号');
+	} else {
+		if (isNaN(jQuery("#J-cardNmu").val().replace(/\s/g, ''))) {
+			jQuery("#errorMsg").attr("class", "error");
+			jQuery("#errorMsg").html('卡号格式错误，请输入正确卡号');
+		} else {
+			var length = jQuery("#J-cardNmu").val().replace(/\s/g, '').length;
+			if (length < 14 || length > 19) {
+				jQuery("#errorMsg").attr("class", "error");
+				jQuery("#errorMsg").html('请输入正确的银行卡号');
+			} else {
+				var cardNo = jQuery("#J-cardNmu").val().replace(/\s/g, '');
+				var token = jQuery("#token").val();
+				jQuery.post("${ctx.contextPath}/pc/ajax/check", {
+					token : token,
+					cardno : BASE64.encoder(cardNo)
+				}, function(response) {
+					//var result = eval('(' + response + ')');
+				    var result = JSON.parse(response);
+				    var error = null;
+				    if(result.msg){
+					 error = result.msg;
+					}else{
+					 error = result.error;
+					}
+					var status = result.status;
+					if (status == "success") {// 校验成功
+					    document.getElementById("errorMsg").style.display="none";
+						jQuery("#successMsg").attr("class", "success");
+						jQuery("#successMsg").html("卡号正确,自动跳转至卡信息填写页面");
+						return encrypt("form1");
+					} else {// 校验错误
+						jQuery("#errorMsg").attr("class", "error");
+						jQuery("#errorMsg").html(error);
+					}
+
+				});
+
+			}
+		}
+	}
+});
+
+         YEEPAY.addHandler(document.getElementById("J-cardNmu"), "focus", function(){
+            YEEPAY.addClass(document.getElementById("errorMsg"), "none");
+        });
+        
+         //当卡号大于16位时，自动触发校验，如果校验通过自动跳转到卡信息页
+        function checkCardNo(){
+            var length = jQuery("#J-cardNmu").val().replace(/\s/g, '').length;
+            if(length >= 16){
+                var cardNo = jQuery("#J-cardNmu").val().replace(/\s/g, '');
+				var token = jQuery("#token").val();
+				jQuery.post("${ctx.contextPath}/pc/ajax/check", {
+					token : token,
+					cardno : BASE64.encoder(cardNo)
+				}, function(response) {
+				    var result = JSON.parse(response);
+				    var error = null;
+				    if(result.msg){
+					 error = result.msg;
+					}else{
+					 error = result.error;
+					}
+					var status = result.status;
+					if (status == "success") {// 校验成功
+						jQuery("#successMsg").removeClass("none");
+						jQuery("#successMsg").html("卡号正确,自动跳转至卡信息填写页面");
+						setTimeout(function(){
+							return encrypt("form1");
+						},2500);
+					} else {// 校验错误
+					    if(length >= 19){
+						jQuery("#errorMsg").attr("class", "error");
+						jQuery("#errorMsg").html(error);
+						}
+					}
+
+				});
+            
+            }
+        }
+
+    +function marketinginfo() {
+        /*获取营销立减活动信息*/
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/market/info",
+            data: {token: "${token}"},
+            dataType: "json"
+        }).done(function (data) {
+            if (data.doMarketActivity == "Y") {
+                if (data.activityCopyWrites.hasOwnProperty("ALL")) {
+                    /*所有支付方式都支持做营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.ALL.copyWrite);
+                }
+                if (data.activityCopyWrites.hasOwnProperty("NCPAY")) {
+                    /*一键支付支持营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.NCPAY.copyWrite);
+                }
+            }
+        });
+    }();
+</script>
+<!--支持银行结束--> 
+<!--版权-->
+<div class="layout copyright">本支付由易宝支付提供，易宝支付版权所有 &copy; 2003-2014  京ICP备08100193号</div>
+<!--版权结束--> 
+<!--底部-->
+<div class="footer">
+  <div class="layout"> <a href="http://www.yeepay.com/article?type=wireless&aid=991" target="_blank"><img src="${ctx.contextPath}/npc/images/f_03.gif" /></a> <a href="http://www.yeepay.com/article?type=wireless&aid=990" target="_blank"><img src="${ctx.contextPath}/npc/images/f_05.gif" /></a> <a href="http://www.yeepay.com/article?type=wireless&aid=992" target="_blank"><img src="${ctx.contextPath}/npc/images/f_11.gif" /></a> <a href="http://www.visa.com.cn/index.shtml" target="_blank"><img src="${ctx.contextPath}/npc/images/f_07.gif" /></a> <a href="https://sealinfo.verisign.com/splash?form_file=fdf/splash.fdf&dn=*.yeepay.com&lang=en" target="_blank"><img src="${ctx.contextPath}/npc/images/f_10.gif" /></a> </div>
+</div>
+<!--底部结束-->
+</body>
+</html>

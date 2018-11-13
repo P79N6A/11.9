@@ -1,0 +1,68 @@
+<div class="global-error over-limit none">
+    当前交易额较大 已为你选择网银支付方式
+</div>
+<div class="bank-pay">
+    <h2>网银支付 <span>/ 请选择银行</span></h2>
+
+    <div class="bank-container">
+        <div class="tab-wrapper">
+            #if(!$null.isNull($response.b2cBanks))<span class="tab active">个人支付</span>#end
+            #if($!response.b2bBanks)<span class="tab">企业支付</span>#end
+        </div>
+        <div class="tab-content-wrapper">
+            #if(!$null.isNull($response.b2cBanks))
+            <ul class="tab-content bank-list clearfix active">
+                #foreach($key in $response.b2cBanks)
+                <li #if($velocityCount== 1)class="active" #end bankAccountType="B2C" bankCode="$key.bankCode"
+                    bankName="$key.bankName">
+                    <span class="bank-logo $key.bankCode"></span>$key.bankName
+                    <p class="card-type">
+                        #if($key.cardType=="ONLYBY")
+                        <span>储蓄卡</span>
+                        #elseif($key.cardType=="ONLOAN")
+                        <span>储蓄卡</span><span>信用卡</span>
+                        #else
+                        <span>信用卡</span>
+                        #end
+                    </p>
+                </li>
+                #end
+            </ul>
+            #end
+            #if($!response.b2bBanks)
+            <ul class="tab-content bank-list clearfix">
+                #foreach($key in $response.b2bBanks)
+                <li #if($velocityCount== 1)class="active" #end bankAccountType="B2B"
+                    isNeedClient="$key.needClient"
+                    bankCode="$key.bankCode" bankName="$key.bankName">
+                    <span class="bank-logo $key.bankCode"></span>$key.bankName
+                    <p class="card-type">
+                        #if($key.cardType=="ONLYBY")
+                        <span>储蓄卡</span>
+                        #elseif($key.cardType=="ONLOAN")
+                        <span>储蓄卡</span><span>信用卡</span>
+                        #else
+                        <span>信用卡</span>
+                        #end
+                    </p>
+                </li>
+                #end
+            </ul>
+            #end
+        </div>
+        <div class="error-wrapper"></div>
+        <button type="button">下一步</button>
+    </div>
+</div>
+<script>
+    jQuery(".tab-wrapper .tab").on("click", function () {
+        jQuery(this).addClass("active").siblings().removeClass("active");
+        jQuery(".tab-content-wrapper .tab-content").eq(jQuery(this).index()).addClass("active").siblings().removeClass("active");
+    });
+    jQuery(".bank-list li").on("click", function () {
+        jQuery(this).addClass("active").siblings().removeClass("active");
+    });
+    jQuery(".bank-container button").on("click",function(){
+        eBankPayRoute();
+    });
+</script>

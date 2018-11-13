@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: url("${ctx.contextPath}/static/images/loading2.gif") center no-repeat;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+</body>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+<script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+<script>
+    var browser = {
+        versions: function () {
+            var u = navigator.userAgent;
+            return {
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,//火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
+                iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1, //是否web应该程序，没有头部与底部
+                weixin: u.indexOf('MicroMessenger') > -1, //是否微信
+                qq: u.match(/\sQQ/i) == " qq" //是否QQ
+            };
+        }()
+    };
+
+    window.onload=setTimeout('notifySdkApp()', 500);
+
+    function notifySdkApp(){
+        try {
+            if (browser.versions.ios) {
+                /*
+                 * IOS
+                 * */
+                ypConfirmPayment(${paymentRequestId},${paymentRecordId});
+            } else if (browser.versions.android) {
+                /*
+                 * Android
+                 * */
+                window.Android.ypConfirmPayment(${paymentRequestId},${paymentRecordId});
+            }
+        }catch(error){
+            setTimeout('notifySdkApp()',500);
+        }
+    }
+
+</script>
+
+</html>
+
+
+
+

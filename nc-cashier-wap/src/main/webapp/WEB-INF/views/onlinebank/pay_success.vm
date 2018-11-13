@@ -1,0 +1,378 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<title>一键支付</title>
+<link rel="stylesheet" href="${ctx.contextPath}/npc/css/mobile-pay-161c5cdb80.min.css">
+<link rel="stylesheet" href="${ctx.contextPath}/npc/css/pc_identity.css">
+<link type="text/css" href="${ctx.contextPath}/npc/css/base.css" rel="stylesheet" />
+<link type="text/css" href="${ctx.contextPath}/npc/css/keyPay.css" rel="stylesheet" />
+<link type="text/css" href="${ctx.contextPath}/npc/css/form.css" rel="stylesheet" />
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/yeepay-1.0-min.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/getuserinfo.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <title>一键支付</title>
+    <link rel="stylesheet" href="${ctx.contextPath}/npc/css/mobile-pay-161c5cdb80.min.css">
+    <link type="text/css" href="${ctx.contextPath}/npc/css/base.css" rel="stylesheet"/>
+    <link type="text/css" href="${ctx.contextPath}/npc/css/keyPay.css" rel="stylesheet"/>
+    <link type="text/css" href="${ctx.contextPath}/npc/css/form.css" rel="stylesheet"/>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/yeepay-1.0-min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/jquery.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/getuserinfo.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/npc/js/popup.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/compatible.js"></script>
+<script type="text/javascript" src="${ctx.contextPath}/npc/js/identity.js"></script>
+</head>
+
+<body>
+<!--头部-->
+<div class="header">
+    <div class="layout clearfix zoom">
+        <h1 class="fl mt15 logo"><a href="http://www.yeepay.com/" target="_blank" class="fl">易宝支付</a><span
+                class="fl viceLogo">一键支付</span></h1>
+        <!--<p class="fr servicePhone">7x24小时客服电话：4001-500-800</p>-->
+    </div>
+</div>
+<!--头部结束-->
+<!--主要内容-->
+<div class="layout mainWrap clearfix zoom">
+    <div class="fl orderInfo">
+        <h2>我的订单</h2>
+        <dl class="infoList firstInfoList mt15 clearfix zoom">
+            <dt>金　额：</dt>
+            <dd>
+				#if(${actualAmount})
+                    <span class="sum fa">$!{actualAmount}</span>元 <span
+                        style="margin: 0 10px; text-decoration: line-through; color: #999999;vertical-align: bottom;">${amount}</span>
+				#else
+                    <span class="sum fa">$!{amount}</span>元
+				#end
+			</dd>
+            <dt>商　品：</dt>
+            <dd>${productname}</dd>
+            <dt>商　户：</dt>
+            <dd>${companyname}</dd>
+        </dl>
+        <dl class="infoList mt15 clearfix zoom">
+            <dt>订单号：</dt>
+            <dd><span class="fa">${orderid}</span></dd>
+            <dt>日　期：</dt>
+            <dd><span class="fa">${transtime}</span></dd>
+        </dl>
+    </div>
+    <div class="fl rightContainer clearfix">
+        <div class="fl">
+            <div class="result sucRes pl50"><span class="fb">恭喜，您已付款成功！</span></div>
+            #if(${merchantUrl})
+            <p class="againPayBtn"><a href="${merchantUrl}" class="greenBtn"><i class="leftBorder"></i>返回商户</a></p>
+            #else
+            <p class="againPayBtn"><a href="#" class="greenBtn"><i class="leftBorder"></i>返回商户</a></p>
+            #end
+        </div>
+        #if(${showCarnival}==true)
+        <div class="fr" style="margin: 25px "><a href="${carnivalUrl}"> <img
+                src="${ctx.contextPath}/npc/images/dc.jpg"
+                style="max-width: 100%;"></a>
+        </div>
+        #end
+    </div>
+</div>
+
+<div class="identity-box" style="display:none;">
+	<div class="identity">
+		<div class="select-identity block">
+			<div class="identity-head">
+				<div class="identity-title">
+					<h3><span class="explain iconfont">&#xe73d;</span>支付已完成</h3>
+					<a class="title-close iconfont">&#xe603;</a>
+				</div>
+				<div class="identity-explain">
+					为保证资金安全，请选择身份信息完成实名认证。实名用户只能使用本人的卡，请谨慎选择。详情咨询4001-500-800。
+				</div>
+			</div>
+			<div class="identity-content">
+				<ul class="identity-list"><div class="use-other">使用其他身份<span class="iconfont">&#xe615;</span></div></ul>
+				<div class="none" id="identity-list">${cardOwnerConfirmResDTO}</div>
+				<div class="none" id="token">${token}</div>
+			</div>
+			<div class="btn-box">
+				<a class="sure-btn">确定并返回商户</a>
+			</div>
+		</div>
+		<div class="add-identity">
+			<div class="identity-head">
+				<div class="identity-title">
+					<h3>添加身份</h3>
+					<a class="title-back iconfont">&#xe600;</a>
+					<a class="title-close iconfont">&#xe603;</a>
+				</div>
+			</div>
+			<form class="identity-form">
+				<div class="form-child">
+					<label for="name">姓名：</label>
+					<input class="input-text" id="name" type="text" placeholder="请输入真实姓名">
+				</div>
+				<div class="form-child">
+					<label for="idNumber">身份证号：</label>
+					<input class="input-text" id="idNumber" type="tel" placeholder="请输入身份证号">
+				</div>
+				<div class="form-err">输入信息有误，请核对后从新输入</div>
+			</form>
+			<div class="btn-box">
+				<a class="finish-btn">确定并返回商户</a>
+			</div>
+		</div>
+	</div>
+<!--主要内容结束-->
+<script type="text/javascript">
+	+function(){//页面显示
+		var dom = document;
+		var Pop = {
+			show : function(){
+				if(!dom.querySelector("#mask")){
+					var div = dom.createElement("div");
+					div.id = "mask";
+					dom.querySelector("body").appendChild(div);
+					dom.querySelector(".identity-box").style.display = "block";
+					this.setTop(dom.querySelector(".identity-box"))
+				}
+			},
+			hide : function(){
+				if(dom.querySelector("#mask")){
+					var mask = dom.querySelector("#mask");
+					dom.querySelector("body").removeChild(mask);
+					dom.querySelector(".identity-box").style.display = "none";
+				}
+			},
+			setTop : function (ele){
+				var vH = document.documentElement.clientHeight || document.body.clientHeight ,
+					eH = ele.offsetHeight;
+				ele.style.top = vH/2 - eH/2 + "px";
+			}
+		};
+		var token = dom.querySelector("#token").textContent;
+		var text = dom.querySelector("#identity-list").textContent;
+		var data = JSON.parse(text);
+		showHtml(data);
+		function showHtml(data){//根据请求返回数据显示相应html
+			data = data || {};
+			data.needChooseCardOwner = data.needChooseCardOwner || false;
+			data.showTimes = data.showTimes || 1;
+			data.persons = data.persons || {};
+			if(data.needChooseCardOwner === false || data.showTimes > 3){return;}//已实名返回
+			if(data.showTimes === 3){//次数大于3次
+				var fragment = document.createDocumentFragment();
+				for(var i=0, l=data.persons.length; i<l; i++){
+					var li = dom.createElement("li");
+					li.id = data.persons[i].bindId;
+					li.innerHTML = '<div class="li-t">'+
+					data.persons[i].realName + ' / ' + data.persons[i].idCardNo +'<span class="check iconfont icon-not_selected"></span>'+
+					'</div>'+
+					'<div class="li-b">'+
+					'<i class="horn iconfont">&#xe61b;</i>'+
+					'<span>您的实名身份将为' + data.persons[i].realName + '。</span>以后只能使用' + data.persons[i].realName + '的卡。详情咨询4001-500-800。'+
+					'</div>';
+					fragment.appendChild(li);
+				}
+				dom.querySelector(".identity-list").insertBefore(fragment,dom.querySelector(".identity-list .use-other"));
+				controlElement(dom.querySelectorAll(".identity-explain"));
+				controlElement(dom.querySelectorAll(".title-close"));
+			}else if(data.showTimes < 3){
+				if(data.persons.length > 0){//次数小于3次并且有实名信息
+				var fragment = document.createDocumentFragment();
+					for(var i=0, l=data.persons.length; i<l; i++){
+						var li = dom.createElement("li");
+						li.id = data.persons[i].bindId;
+						li.innerHTML =  '<div class="li-t">'+
+						data.persons[i].realName + ' / ' + data.persons[i].idCardNo +'<span class="check iconfont icon-not_selected"></span>'+
+						'</div>';
+						fragment.appendChild(li);
+					}
+					dom.querySelector(".identity-list").insertBefore(fragment,dom.querySelector(".identity-list .use-other"));
+				}else{//次数小于3次并且没有实名信息
+					dom.querySelector(".add-identity").classList.add("block");
+					controlElement(dom.querySelectorAll(".title-back"));
+					controlElement(dom.querySelectorAll(".select-identity"))
+				}
+			}
+			Pop.show();//未实名显示实名模块
+			selectIdentity();
+		}
+		function controlElement(element){
+			if(element){
+				for(var i=0, l=element.length; i<l; i++){
+					element[i].parentNode.removeChild(element[i]);
+				}
+			}
+		}
+		function selectIdentity(){//初始化默认选中以及点击切换选中方法
+			var list = dom.querySelector(".identity-list");
+			if(list){
+				var childs = list.querySelectorAll("li");
+				t(childs , "0");
+				for(var i=0, l=childs.length; i<l; i++){
+					childs[i].addEventListener("click" , function(){
+						t.call(this,childs);
+					} , false)
+				}
+			}
+			function t(eleArr , num){
+				if(num){
+					eleArr[parseInt(num)].classList.add("active");
+					eleArr[parseInt(num)].querySelector(".check").classList.remove("icon-not_selected");
+					eleArr[parseInt(num)].querySelector(".check").classList.add("icon-xuanzhong");
+				}else{
+					for(var i=0, l=eleArr.length; i<l; i++){
+						eleArr[i].classList.remove("active");
+						eleArr[i].querySelector(".check").classList.remove("icon-xuanzhong");
+						eleArr[i].querySelector(".check").classList.add("icon-not_selected");
+					}
+					this.classList.add("active");
+					this.querySelector(".check").classList.remove("icon-not_selected");
+					this.querySelector(".check").classList.add("icon-xuanzhong");
+				}
+			}
+		}
+		+function(){//页面交互元素交互效果监听
+			var identity = dom.querySelector(".identity"),
+					explain = dom.querySelector(".explain"),
+					titleBack = dom.querySelector(".title-back"),
+					identityExplain = dom.querySelector(".identity-explain"),
+					useOther = dom.querySelector(".use-other"),
+					sureBtn = dom.querySelector(".sure-btn"),
+					finishBtn = dom.querySelector(".finish-btn"),
+					closeBtn = dom.querySelectorAll(".title-close"),
+					inputs = dom.querySelectorAll(".input-text");
+			var Listener = {
+				slideLeft : function(){
+					dom.querySelector(".select-identity").classList.add("block");
+					dom.querySelector(".add-identity").classList.remove("block");
+				},
+				slideRight : function(){
+					dom.querySelector(".add-identity").classList.add("block");
+					dom.querySelector(".select-identity").classList.remove("block");
+				},
+				toggle : function(){
+					if(explain.classList.contains("show")){
+						explain.classList.remove("show");
+						identityExplain.style.display = "none";
+					}else{
+						explain.classList.add("show");
+						identityExplain.style.display = "block";
+					}
+				},
+				closeModule : function(){
+					for(var i=0, l=closeBtn.length; i<l; i++){
+						closeBtn[i].addEventListener("click" , Pop.hide , false)
+					}
+				},
+				errHide : function(){
+					for(var i=0, l=inputs.length; i<l; i++){
+						inputs[i].addEventListener("focus" , function(){
+							dom.querySelector(".form-err").style.display = "none";
+						}, false)
+					}
+				},
+				submitSelect : function(){//提交身份选择
+					var bindId = dom.querySelector(".active").getAttribute("id");
+					console.log(bindId);
+					ajax({
+						url : "${ctx.contextPath}/wap/ajax/setCardOwner",
+						type : "POST",
+						data : {bindId : bindId , token : token},
+						dataType : "json",
+						success : function(response){
+							if(dom.querySelector(".pme-btn")){
+								location.href = dom.querySelector(".pme-btn").href;
+							}else{
+								Pop.hide();
+							}
+						},
+						fail : function(status){
+
+						}
+					})
+				},
+				submitIdentity : function(){//提交新添加身份
+					var nameVal = dom.querySelector("#name").value;
+					var idNumberVal = dom.querySelector("#idNumber").value;
+					var nameReg = /[\u4E00-\u9FA5]{2,5}(?:·[\u4E00-\u9FA5]{2,5})*/;
+					var idNumReg = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+					/*if(nameVal === "" || !nameReg.test(nameVal) || idNumberVal === "" || !idNumReg.test(idNumberVal)){
+					 dom.querySelector(".form-err").style.display = "block";
+					 return
+					 }*/
+					if(nameVal === ""){
+						dom.querySelector(".form-err").innerHTML="姓名不能为空";
+						dom.querySelector(".form-err").style.display = "block";
+						return
+					}else if(!nameReg.test(nameVal)){
+						dom.querySelector(".form-err").innerHTML="姓名格式不正确";
+						dom.querySelector(".form-err").style.display = "block";
+						return
+					}else if(idNumberVal === ""){
+						dom.querySelector(".form-err").innerHTML="身份证号不能为空";
+						dom.querySelector(".form-err").style.display = "block";
+						return
+					}else if(!idNumReg.test(idNumberVal)){
+						dom.querySelector(".form-err").innerHTML="身份证号格式不正确";
+						dom.querySelector(".form-err").style.display = "block";
+						return
+					}
+					ajax({
+						url : "${ctx.contextPath}/wap/ajax/setCardOwner",
+						type : "POST",
+						data : {name : nameVal , idCardNo : idNumberVal , token : token},
+						dataType : "json",
+						success : function(response){
+							if(dom.querySelector(".pme-btn")){
+								location.href = dom.querySelector(".pme-btn").href;
+							}else{
+								Pop.hide();
+							}
+						},
+						fail : function(status){
+
+						}
+					})
+				},
+				init : function(){
+					if(useOther){useOther.addEventListener("click" , this.slideRight , false)}
+					if(titleBack){titleBack.addEventListener("click" , this.slideLeft , false)}
+					if(explain){explain.addEventListener("click" , this.toggle , false)}
+					if(closeBtn){this.closeModule()}
+					if(inputs){this.errHide()}
+					if(sureBtn){sureBtn.addEventListener("click" , this.submitSelect , false)}
+					if(finishBtn){finishBtn.addEventListener("click" , this.submitIdentity , false)}
+				}
+			};
+			Listener.init();
+		}();
+	}();
+</script>
+<!--主要内容结束--> 
+<!--版权-->
+<div class="layout copyright">本支付由易宝支付提供，易宝支付版权所有 &copy; 2003-2014 京ICP备08100193号</div>
+<!--版权结束-->
+<!--底部-->
+<div class="footer">
+    <div class="layout"><a href="http://www.yeepay.com/article?type=wireless&aid=991" target="_blank"><img
+            src="${ctx.contextPath}/npc/images/f_03.gif"/></a> <a
+            href="http://www.yeepay.com/article?type=wireless&aid=990" target="_blank"><img
+            src="${ctx.contextPath}/npc/images/f_05.gif"/></a> <a
+            href="http://www.yeepay.com/article?type=wireless&aid=992" target="_blank"><img
+            src="${ctx.contextPath}/npc/images/f_11.gif"/></a> <a href="http://www.visa.com.cn/index.shtml"
+                                                                  target="_blank"><img
+            src="${ctx.contextPath}/npc/images/f_07.gif"/></a> <a
+            href="https://sealinfo.verisign.com/splash?form_file=fdf/splash.fdf&dn=*.yeepay.com&lang=en"
+            target="_blank"><img src="${ctx.contextPath}/npc/images/f_10.gif"/></a></div>
+</div>
+<!--底部结束-->
+</body>
+</html>

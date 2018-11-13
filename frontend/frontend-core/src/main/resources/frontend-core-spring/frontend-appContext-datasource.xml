@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- <bean id="dataSource"
+		class="com.yeepay.g3.utils.common.datasource.DataSourceFactoryBean">
+		<property name="name">
+			<value>FRONTEND</value>
+		</property>
+	</bean>  -->
+    
+    <bean id="dataSourceOrg" class="com.yeepay.g3.utils.common.datasource.DataSourceFactoryBean">
+       <property name="name">
+           <value>FRONTEND</value>
+       </property>
+    </bean>
+
+    <bean id="dataSource" class="com.yeepay.utils.jdbc.dal.DALDataSource" init-method="afterPropertiesSet">
+        <property name="appId" value="frontend"></property>
+        <property name="openShardsPlug" value="true"></property>
+        <property name="dataSourceMap">
+            <map>
+                <entry key="frontendDs" value-ref="dataSourceOrg"></entry>
+            </map>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,45 @@
+.query_block{
+    width: 270px;
+    float: left;
+}
+.operation{
+    float: left;
+    margin: 0px 30px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+}
+.operation .batch{
+    width: 120px;
+    height: 30px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.operation ul li{
+    /*margin-right: 10px;*/
+}
+
+#repair,#notify,#refund,#monitor{
+    margin-right: 10px;
+    float: left;
+    color: white;
+}
+#repair{
+    background-color: #4285F4;
+}
+#notify{
+    background-color: #34A853;
+}
+#refund{
+    background-color: #FF6600;
+}
+#monitor{
+    background-color: #212121;
+}
+.input_text{
+    margin-left: 11px;
+}
+.search_con ul li label.text_tit{
+    width: 110px;
+}

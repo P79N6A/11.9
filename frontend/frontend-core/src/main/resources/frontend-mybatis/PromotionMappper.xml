@@ -1,0 +1,101 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD iBatis Mapper 3.0 //EN"-->
+        <!--"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">-->
+<!--<mapper namespace="com.yeepay.g3.core.frontend.entity.Promotion">-->
+    <!--<resultMap id="bankPromotionInfoResultMap" type="Promotion">-->
+        <!--<id column="ID" property="id" javaType="java.lang.Long"/>-->
+        <!--<result column="PAY_INTERFACE" property="payInterface"/>-->
+        <!--<result column="PAY_ORDER_NO" property="payOrderNo"/>-->
+        <!--<result column="TRADE_TYPE" property="tradeType"/>-->
+        <!--<result column="PROMOTION_ID" property="promotionId"/>-->
+        <!--<result column="PROMOTION_NAME" property="promotionName"/>-->
+        <!--<result column="PROMOTION_SCOPE" property="promotionScope"/>-->
+        <!--<result column="PROMOTION_TYPE" property="promotionType"/>-->
+        <!--<result column="MEMO" property="memo"/>-->
+        <!--<result column="AMOUNT" property="amount" jdbcType="DECIMAL" javaType="com.yeepay.g3.common.Amount"/>-->
+        <!--<result column="AMOUNT_REFUND" property="amountRefund" jdbcType="DECIMAL"-->
+                <!--javaType="com.yeepay.g3.common.Amount"/>-->
+        <!--<result column="ACTIVITY_ID" property="activityId"/>-->
+        <!--<result column="CHANNEL_CONTRIBUTE" property="channelContribute" jdbcType="DECIMAL"-->
+                <!--javaType="com.yeepay.g3.common.Amount"/>-->
+        <!--<result column="MERCHANT_CONTRIBUTE" property="merchantContribute" jdbcType="DECIMAL"-->
+                <!--javaType="com.yeepay.g3.common.Amount"/>-->
+        <!--<result column="OTHER_CONTRIBUTE" property="otherContribute" jdbcType="DECIMAL"-->
+                <!--javaType="com.yeepay.g3.common.Amount"/>-->
+        <!--<result column="CREATE_TIME" property="createTime"/>-->
+        <!--<result column="ORDER_TIME" property="orderTime"/>-->
+    <!--</resultMap>-->
+
+    <!--<sql id="bankPromotionInfoColumns">-->
+		<!--ID, PAY_INTERFACE, PAY_ORDER_NO, TRADE_TYPE, PROMOTION_ID, PROMOTION_NAME, PROMOTION_SCOPE, PROMOTION_TYPE, MEMO,AMOUNT, AMOUNT_REFUND, ACTIVITY_ID, CHANNEL_CONTRIBUTE, MERCHANT_CONTRIBUTE, OTHER_CONTRIBUTE, CREATE_TIME, ORDER_TIME-->
+	<!--</sql>-->
+
+    <!--<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="BankPromotionInfo">-->
+		<!--insert into TBL_BANK_PROMOTION_INFO-->
+		<!--(-->
+		<!--PAY_INTERFACE, PAY_ORDER_NO, TRADE_TYPE, PROMOTION_ID, PROMOTION_NAME, PROMOTION_SCOPE, PROMOTION_TYPE, MEMO,AMOUNT, AMOUNT_REFUND, ACTIVITY_ID, CHANNEL_CONTRIBUTE, MERCHANT_CONTRIBUTE, OTHER_CONTRIBUTE, ORDER_TIME,CREATE_TIME-->
+		<!--)-->
+		<!--values-->
+		<!--(-->
+		<!--#{payInterface,jdbcType=VARCHAR},-->
+		<!--#{payOrderNo,jdbcType=VARCHAR},-->
+		<!--#{tradeType,jdbcType=VARCHAR},-->
+		<!--#{promotionId,jdbcType=VARCHAR},-->
+		<!--#{promotionName,jdbcType=VARCHAR},-->
+		<!--#{promotionScope,jdbcType=VARCHAR},-->
+		<!--#{promotionType,jdbcType=VARCHAR},-->
+		<!--#{memo,jdbcType=VARCHAR},-->
+		<!--#{amount,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+        <!--#{amountRefund,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+		<!--#{activityId,jdbcType=VARCHAR},-->
+        <!--#{channelContribute,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+        <!--#{merchantContribute,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+        <!--#{otherContribute,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+		<!--#{orderTime,jdbcType=TIMESTAMP},-->
+		<!--current_timestamp-->
+		<!--)-->
+	<!--</insert>-->
+
+    <!--<insert id="batchInsert" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">-->
+        <!--insert into TBL_BANK_PROMOTION_INFO-->
+        <!--(-->
+        <!--PAY_INTERFACE, PAY_ORDER_NO, TRADE_TYPE, PROMOTION_ID, PROMOTION_NAME, PROMOTION_SCOPE, PROMOTION_TYPE,MEMO, AMOUNT,-->
+        <!--AMOUNT_REFUND, ACTIVITY_ID, CHANNEL_CONTRIBUTE, MERCHANT_CONTRIBUTE, OTHER_CONTRIBUTE,-->
+        <!--ORDER_TIME,CREATE_TIME-->
+        <!--)-->
+        <!--values-->
+        <!--<foreach collection="list" item="item" index="index" separator=",">-->
+            <!--(-->
+            <!--#{item.payInterface,jdbcType=VARCHAR},-->
+            <!--#{item.payOrderNo,jdbcType=VARCHAR},-->
+            <!--#{item.tradeType,jdbcType=VARCHAR},-->
+            <!--#{item.promotionId,jdbcType=VARCHAR},-->
+            <!--#{item.promotionName,jdbcType=VARCHAR},-->
+            <!--#{item.promotionScope,jdbcType=VARCHAR},-->
+            <!--#{item.promotionType,jdbcType=VARCHAR},-->
+            <!--#{item.meomo,jdbcType=VARCHAR},-->
+            <!--#{item.amount,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+            <!--#{item.amountRefund,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+            <!--#{item.activityId,jdbcType=VARCHAR},-->
+            <!--#{item.channelContribute,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+            <!--#{item.merchantContribute,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+            <!--#{item.otherContribute,jdbcType=DECIMAL,javaType=com.yeepay.g3.common.Amount},-->
+            <!--#{item.orderTime,jdbcType=TIMESTAMP},-->
+            <!--current_timestamp-->
+            <!--)-->
+        <!--</foreach>-->
+    <!--</insert>-->
+
+    <!--<select id="selectByBankOrderNoAndPayInterfaceAndTime" parameterType="hashmap"-->
+            <!--resultMap="bankPromotionInfoResultMap">-->
+        <!--select-->
+        <!--<include refid="bankPromotionInfoColumns"/>-->
+        <!--from-->
+        <!--TBL_BANK_PROMOTION_INFO-->
+        <!--where-->
+        <!--PAY_ORDER_NO = #{payOrderNo,jdbcType=VARCHAR}-->
+        <!--<if test="payInterface != null">and PAY_INTERFACE = #{payInterface,jdbcType=VARCHAR}</if>-->
+        <!--<if test="startTime != null">and CREATE_TIME >= #{startTime,jdbcType=VARCHAR}</if>-->
+        <!--<if test="endTime != null">and CREATE_TIME &lt;= #{endTime,jdbcType=VARCHAR}</if>-->
+    <!--</select>-->
+<!--</mapper>-->

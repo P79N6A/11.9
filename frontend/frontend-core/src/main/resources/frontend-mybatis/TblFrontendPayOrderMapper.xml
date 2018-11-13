@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="PayOrder" >
+  <resultMap id="PayOrderMap" type="PayOrder" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="PLATFORM_TYPE" property="platformType" jdbcType="VARCHAR"/>
+    <result column="ORDER_TYPE" property="orderType" jdbcType="VARCHAR"/>
+    <result column="REQUEST_SYSTEM" property="requestSystem" jdbcType="VARCHAR"/>
+    <result column="CUSTOMER_NUMBER" property="customerNumber" jdbcType="VARCHAR"/>
+    <result column="OUT_TRADE_NO" property="outTradeNo" jdbcType="VARCHAR"/>
+    <result column="REQUEST_ID" property="requestId" jdbcType="VARCHAR"/>
+    <result column="REPORT_ID" property="reportId" jdbcType="VARCHAR"/>
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR"/>
+    <result column="BANK_TRADE_ID" property="bankTradeId" jdbcType="VARCHAR"/>
+    <result column="TRANSACTION_ID" property="transactionId" jdbcType="VARCHAR"/>
+    <result column="PAY_STATUS" property="payStatus" jdbcType="VARCHAR"/>
+    <result column="NOTIFY_STATUS" property="notifyStatus" jdbcType="VARCHAR"/>
+    <result column="OPEN_ID" property="openId" jdbcType="VARCHAR"/>
+    <result column="YEEPAY_OPEN_ID" property="yeepayOpenId" jdbcType="VARCHAR"/>
+    <result column="PAY_BANK" property="payBank" jdbcType="VARCHAR"/>
+    <result column="PAY_BANKCARD_TYPE" property="payBankcardType" jdbcType="VARCHAR"/>
+    <result column="PAY_INTERFACE" property="payInterface" jdbcType="VARCHAR"/>
+    <result column="TOTAL_AMOUNT" property="totalAmount" jdbcType="DECIMAL"/>
+    <result column="BANK_TOTAL_COST" property="bankTotalCost" jdbcType="DECIMAL"/>
+    <result column="GOODS_DESCRIPTION" property="goodsDescription" jdbcType="VARCHAR"/>
+    <result column="DEVICE_INFO" property="deviceInfo" jdbcType="VARCHAR"/>
+    <result column="PAGE_CALL_BACK" property="pageCallBack" jdbcType="VARCHAR"/>
+    <result column="PAYER_IP" property="payerIp" jdbcType="VARCHAR"/>
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP"/>
+    <result column="EXPIRE_TIME" property="expireTime" jdbcType="TIMESTAMP"/>
+    <result column="BANK_SUCCESS_TIME" property="bankSuccessTime" jdbcType="TIMESTAMP"/>
+    <result column="PAY_SUCCESS_TIME" property="paySuccessTime" jdbcType="TIMESTAMP"/>
+    <result column="REFUND_DATE" property="refundDate" jdbcType="TIMESTAMP"/>
+    <result column="REFUND_STATUS" property="refundStatus" jdbcType="VARCHAR"/>
+    <result column="REFUND_TYPE" property="refundType" jdbcType="VARCHAR"/>
+    <result column="PAY_LIMIT_TYPE" property="payLimitType" jdbcType="VARCHAR"/>
+    <result column="ORDER_SYSTEM" property="orderSystem" jdbcType="VARCHAR"/>
+    <result column="DEAL_UNIQUE_SERIALNO" property="dealUniqueSerialNo" jdbcType="VARCHAR"/>
+    <result column="PAYMENT_PRODUCT" property="paymentProduct" jdbcType="VARCHAR"/>
+    <result column="RETAIL_PRODUCT_CODE" property="retailProductCode" jdbcType="VARCHAR"/>
+    <result column="BASIC_PRODUCT_CODE" property="basicProductCode" jdbcType="VARCHAR"/>
+    <result column="EXT_PARAM" property="extParam" jdbcType="VARCHAR"/>
+    <result column="PAY_ORDER_NO" property="payOrderNo" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,REPORT_ID,ORDER_NO,YEEPAY_OPEN_ID,BANK_TRADE_ID,
+    TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+    BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+    BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,ORDER_SYSTEM,
+    DEAL_UNIQUE_SERIALNO,PAYMENT_PRODUCT,RETAIL_PRODUCT_CODE,BASIC_PRODUCT_CODE,EXT_PARAM,PAY_ORDER_NO
+  </sql>
+
+
+  <select id="queryBySystemAndRequestId" resultMap="PayOrderMap" parameterType="map" >
+    select
+    <include refid="Base_Column_List" />
+    from FRONTEND.TBL_FRONTEND_PAY_ORDER
+    where
+    REQUEST_SYSTEM =#{requestSystem,jdbcType=VARCHAR}
+    and REQUEST_ID =#{requestId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryUnRefundByDate" resultMap="PayOrderMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FRONTEND.TBL_FRONTEND_PAY_ORDER
+    WHERE
+    <![CDATA[ REFUND_DATE >= #{refundDateStart,jdbcType=TIMESTAMP}  ]]>
+    <![CDATA[ AND REFUND_DATE <= #{refundDateEnd,jdbcType=TIMESTAMP}  ]]>
+    AND REFUND_STATUS = #{refundStatus,jdbyType=VARCHAR}
+  </select>
+
+  <select id="queryUnSuccessByDate" resultMap="PayOrderMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FRONTEND.TBL_FRONTEND_PAY_ORDER
+    WHERE
+    <![CDATA[ CREATE_TIME >= #{createTimeStart,jdbcType=TIMESTAMP}  ]]>
+    <![CDATA[ AND CREATE_TIME <= #{createTimeEnd,jdbcType=TIMESTAMP}  ]]>
+    AND PAY_STATUS = #{payStatus,jdbyType=VARCHAR}
+    WITH UR
+  </select>
+
+  <select id="queryUnNotifyByDate" resultMap="PayOrderMap" parameterType="map">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FRONTEND.TBL_FRONTEND_PAY_ORDER
+    WHERE
+    <![CDATA[ MODIFY_TIME >= #{modifyTimeStart,jdbcType=TIMESTAMP}  ]]>
+    <![CDATA[ AND MODIFY_TIME <= #{modifyTimeEnd,jdbcType=TIMESTAMP}  ]]>
+    AND PAY_STATUS = #{payStatus,jdbyType=VARCHAR}
+    AND NOTIFY_STATUS = #{notifyStatus,jdbyType=VARCHAR}
+    WITH UR
+  </select>
+
+  <select id="queryByOrderNo" resultMap="PayOrderMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FRONTEND.TBL_FRONTEND_PAY_ORDER
+    WHERE
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    WITH UR
+  </select>
+
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from FRONTEND.TBL_FRONTEND_PAY_ORDER
+    where ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+  </delete>
+
+
+  <insert id="insert" parameterType="PayOrder"  keyProperty="id" useGeneratedKeys="true" >
+    INSERT INTO FRONTEND.TBL_FRONTEND_PAY_ORDER (PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,
+    OUT_TRADE_NO,REQUEST_ID,REPORT_ID,ORDER_NO,BANK_TRADE_ID,TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,
+    PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,
+    PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,
+    REFUND_TYPE,PAY_LIMIT_TYPE,ORDER_SYSTEM,DEAL_UNIQUE_SERIALNO,PAYMENT_PRODUCT,RETAIL_PRODUCT_CODE,BASIC_PRODUCT_CODE,
+    EXT_PARAM,PAY_ORDER_NO)
+    VALUES (
+    #{platformType,jdbcType=VARCHAR},
+    #{orderType,jdbcType=VARCHAR},
+    #{requestSystem,jdbcType=VARCHAR},
+    #{customerNumber,jdbcType=VARCHAR},
+    #{outTradeNo,jdbcType=VARCHAR},
+    #{requestId,jdbcType=VARCHAR},
+    #{reportId,jdbcType=VARCHAR},
+    #{orderNo,jdbcType=VARCHAR},
+    #{bankTradeId,jdbcType=VARCHAR},
+    #{transactionId,jdbcType=VARCHAR},
+    #{payStatus,jdbcType=VARCHAR},
+    #{notifyStatus,jdbcType=VARCHAR},
+    #{openId,jdbcType=VARCHAR},
+    #{payBank,jdbcType=VARCHAR},
+    #{payBankcardType,jdbcType=VARCHAR},
+    #{payInterface,jdbcType=VARCHAR},
+    #{totalAmount,jdbcType=DECIMAL},
+    #{bankTotalCost,jdbcType=DECIMAL},
+    #{goodsDescription,jdbcType=VARCHAR},
+    #{deviceInfo,jdbcType=VARCHAR},
+    #{pageCallBack,jdbcType=VARCHAR},
+    #{payerIp,jdbcType=VARCHAR},
+    #{createTime,jdbcType=TIMESTAMP},
+    #{modifyTime,jdbcType=TIMESTAMP},
+    #{expireTime,jdbcType=TIMESTAMP},
+    #{bankSuccessTime,jdbcType=TIMESTAMP},
+    #{paySuccessTime,jdbcType=TIMESTAMP},
+    #{refundDate,jdbcType=TIMESTAMP},
+    #{refundStatus,jdbcType=VARCHAR},
+    #{refundType,jdbcType=VARCHAR},
+    #{payLimitType,jdbcType=VARCHAR},
+    #{orderSystem,jdbcType=VARCHAR},
+    #{dealUniqueSerialNo,jdbcType=VARCHAR},
+    #{paymentProduct,jdbcType=VARCHAR},
+    #{retailProductCode,jdbcType=VARCHAR},
+    #{basicProductCode,jdbcType=VARCHAR},
+    #{extParam,jdbcType=VARCHAR},
+    #{payOrderNo,jdbcType=VARCHAR}
+    )
+  </insert>
+
+
+  <update id="update" parameterType="PayOrder" >
+    UPDATE FRONTEND.TBL_FRONTEND_PAY_ORDER
+    <set >
+      <if test="bankTradeId !=null" >
+        BANK_TRADE_ID = #{bankTradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId !=null" >
+        TRANSACTION_ID = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="payStatus !=null" >
+        PAY_STATUS = #{payStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyStatus !=null" >
+        NOTIFY_STATUS = #{notifyStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="payBank !=null" >
+        PAY_BANK = #{payBank,jdbcType=VARCHAR},
+      </if>
+      <if test="payBankcardType !=null" >
+        PAY_BANKCARD_TYPE = #{payBankcardType,jdbcType=VARCHAR},
+      </if>
+      <if test="payInterface !=null" >
+        PAY_INTERFACE = #{payInterface,jdbcType=VARCHAR},
+      </if>
+      <if test="bankTotalCost !=null" >
+        BANK_TOTAL_COST = #{bankTotalCost,jdbcType=DECIMAL},
+      </if>
+      <if test="bankSuccessTime !=null" >
+        BANK_SUCCESS_TIME = #{bankSuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paySuccessTime !=null" >
+        PAY_SUCCESS_TIME = #{paySuccessTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundDate !=null" >
+        REFUND_DATE = #{refundDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="refundStatus !=null" >
+        REFUND_STATUS = #{refundStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="refundType !=null" >
+        REFUND_TYPE = #{refundType,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime !=null" >
+        MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retailProductCode !=null" >
+        RETAIL_PRODUCT_CODE = #{retailProductCode,jdbcType=VARCHAR},
+      </if>
+      <if test="basicProductCode !=null" >
+        BASIC_PRODUCT_CODE = #{basicProductCode,jdbcType=VARCHAR},
+      </if>
+      <if test="openId !=null">
+        OPEN_ID = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="yeepayOpenId !=null">
+        YEEPAY_OPEN_ID = #{yeepayOpenId,jdbcType=VARCHAR},
+      </if>
+      <if test="reportId !=null">
+        REPORT_ID = #{reportId,jdbcType=VARCHAR},
+      </if>
+      <if test="extParam !=null">
+        EXT_PARAM = #{extParam,jdbcType=VARCHAR},
+      </if>
+      <if test="payOrderNo !=null">
+        PAY_ORDER_NO = #{payOrderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo !=null">
+        ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="listByPayOrderNo" resultMap="PayOrderMap" parameterType="map" >
+    select
+    <include refid="Base_Column_List" />
+    from FRONTEND.TBL_FRONTEND_PAY_ORDER
+    where
+    PAY_ORDER_NO =#{payOrderNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

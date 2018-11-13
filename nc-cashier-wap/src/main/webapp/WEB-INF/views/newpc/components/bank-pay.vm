@@ -1,0 +1,202 @@
+#*
+网银支付
+*#
+<div class="bank-container">
+    <div class="tab-wrapper">
+        <span class="tab active">个人支付</span>
+        <span class="tab">企业支付</span>
+    </div>
+    <div class="tab-content-wrapper">
+        <ul class="tab-content bank-list clearfix active">
+            <li class="active">
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li><p class="card-type"><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+        </ul>
+        <ul class="tab-content bank-list clearfix">
+            <li>
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li class="active"><p class="card-type"><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li><p class="card-type"><span>储蓄卡</span><span>信用卡</span></p></li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+            <li>
+                <span class="bank-logo"></span>北京银行
+                <p class="card-type"><span>储蓄卡</span><span>信用卡</span></p>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    (function (global) {
+        'use strict';
+        var dom = global.document;
+        var array = Array.from;
+        /*
+         * tab切换
+         * */
+        var Tab = {
+            factory: {
+                /*
+                 * 保存tab和每个tab对应的tabContent
+                 * 为了可以复用，保存tab和tabContent时要基于不同的根元素分别存放到数组
+                 * */
+                tabs: array(dom.querySelectorAll(".tab-wrapper")).map(function (root) {
+                    return array(root.querySelectorAll(".tab"));
+                }),
+                tabContents: array(dom.querySelectorAll(".tab-content-wrapper")).map(function (root) {
+                    return array(root.querySelectorAll(".tab-content"));
+                })
+            },
+            removeActive: function (elem) {
+                /*
+                 * 重置当前活动tab或tabContent为默认状态
+                 * */
+                if (elem.classList.contains("active")) {
+                    elem.classList.remove("active");
+                }
+            },
+            toggle: function (ind, index) {
+                Tab.factory.tabs[ind].forEach(Tab.removeActive);
+                Tab.factory.tabContents[ind].forEach(Tab.removeActive);
+                this.classList.add("active");
+                Tab.factory.tabContents[ind][index].classList.add("active");
+            },
+            bind: function () {
+                this.factory.tabs.forEach(function (tabs, ind) {
+                    tabs.forEach(function (tab, index) {
+                        tab.addEventListener("click", function () {
+                            Tab.toggle.call(this, ind, index)
+                        }, false);
+                    });
+                });
+            }
+        };
+        Tab.bind();
+
+        var Bank = function () {
+            var uls = array(dom.querySelectorAll(".bank-container .bank-list")),
+                    liBox = uls.map(function (ul) {
+                        return array(ul.querySelectorAll("li"));
+                    });//把所有银行存到数组
+            var max = 12;//默认显示银行个数
+            var text = "显示更多银行";
+            var cache = [];//存储隐藏的银行
+            function select() {
+                /*
+                 * 选择银行卡
+                 * */
+                uls.forEach(function (ul) {
+                    ul.addEventListener("click", function (event) {
+                        var target = event.target;
+                        if (target.nodeName.toLowerCase() == "li" && !target.classList.contains("more-handler")) {
+                            this.querySelector(".active").classList.remove("active");
+                            target.classList.add("active");
+                        }
+                    }, false);
+                });
+                return this;
+            }
+
+            function more() {
+                /*
+                 * 银行12个以上时显示更多银行按钮
+                 * */
+                var handler = '<li class="more-handler">' + text + '</li>';//显示更多银行按钮
+                function hide() {
+                    /*
+                     * 隐藏第12个以后的银行，把隐藏的银行存入数组
+                     * */
+
+                    cache.push(this.slice(max - 1));
+                    cache.forEach(function (lis) {
+                        lis.forEach(function (li) {
+                            li.classList.add("none");
+                        });
+                    });
+                }
+
+                function show(index) {
+                    /*
+                     * 显示第12个以后的银行
+                     * */
+                    cache[index].forEach(function (li) {
+                        li.classList.remove("none");
+                    });
+                }
+
+                liBox.forEach(function (lis, index) {
+                    /*
+                     * 判断每一组的银行个数
+                     * 如果大于max值隐藏max值以后的银行
+                     * 插入更多银行按钮并绑定点击隐藏事件
+                     * */
+                    if (lis.length > max) {
+                        uls[index].insertAdjacentHTML("beforeEnd", handler);
+                        hide.call(lis);
+                        uls[index].querySelector(".more-handler").addEventListener("click", function () {
+                            this.classList.add("none");
+                            show(index);
+                        }, false);
+                    }
+                });
+                return this;
+            }
+
+            return {
+                select: select,
+                more: more
+            }
+        }();
+        Bank.select().more();
+    })(window);
+</script>

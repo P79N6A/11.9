@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeepay.g3.core.payprocessor.dao.CombPayRecordDao">
+	<resultMap id="CombPayRecordMap" type="CombPayRecord">
+		<id column="ID" property="id" jdbcType="BIGINT" />
+		<result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+		<result column="PAY_ORDER_TYPE" property="payOrderType" jdbcType="VARCHAR" />
+		<result column="MARKETING_NO" property="marketingNo" jdbcType="VARCHAR" />
+		<result column="PAY_ORDER_NO" property="payOrderNo" jdbcType="VARCHAR" />
+		<result column="BANK_ORDER_NO" property="bankOrderNo" jdbcType="VARCHAR" />
+		<result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+		<result column="PAY_PRODUCT" property="payProduct" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="PAY_TIME" property="payTime" jdbcType="TIMESTAMP" />
+		<result column="FRP_CODE" property="frpCode" jdbcType="VARCHAR" />
+		<result column="ERROR_CODE" property="errorCode" jdbcType="VARCHAR" />
+		<result column="ERROR_MSG" property="errorMsg" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="selectByRecordNo" resultMap="CombPayRecordMap"
+		parameterType="java.lang.String">
+		select
+		ID, RECORD_NO, PAY_ORDER_TYPE, MARKETING_NO, PAY_ORDER_NO, BANK_ORDER_NO, AMOUNT, PAY_PRODUCT, STATUS, CREATE_TIME, UPDATE_TIME,
+		PAY_TIME, FRP_CODE, ERROR_CODE, ERROR_MSG
+		from PP.TBL_PAYMENT_COMB_PAY_RECORD
+		where RECORD_NO =
+		#{recordNo,jdbcType=VARCHAR}
+	</select>
+
+
+	<insert id="insert" parameterType="com.yeepay.g3.core.payprocessor.entity.CombPayRecord" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		PP.TBL_PAYMENT_COMB_PAY_RECORD (RECORD_NO,
+		PAY_ORDER_TYPE, MARKETING_NO, PAY_ORDER_NO,
+		BANK_ORDER_NO, AMOUNT, PAY_PRODUCT, STATUS,
+		CREATE_TIME, UPDATE_TIME,
+		PAY_TIME, FRP_CODE, ERROR_CODE, ERROR_MSG)
+		values
+		(#{recordNo,jdbcType=VARCHAR},
+		#{payOrderType,jdbcType=VARCHAR},
+		#{marketingNo,jdbcType=VARCHAR},
+		#{payOrderNo,jdbcType=VARCHAR},
+		#{bankOrderNo,jdbcType=VARCHAR},
+		#{amount,jdbcType=DECIMAL},
+		#{payProduct,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{payTime,jdbcType=TIMESTAMP},
+		#{frpCode,jdbcType=VARCHAR},
+		#{errorCode,jdbcType=VARCHAR},
+		#{errorMsg,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateToFail" parameterType="com.yeepay.g3.core.payprocessor.entity.CombPayRecord">
+		update
+		PP.TBL_PAYMENT_COMB_PAY_RECORD
+		set
+		STATUS = 'FAILURE',
+		<if test="errorCode != null">
+			ERROR_CODE = #{errorCode,jdbcType=VARCHAR},
+		</if>
+		<if test="errorMsg != null">
+			ERROR_MSG = #{errorMsg,jdbcType=VARCHAR},
+		</if>
+		UPDATE_TIME = CURRENT_TIMESTAMP
+		where RECORD_NO =#{recordNo,jdbcType=VARCHAR}
+		and (STATUS = 'DEPOSIT' OR STATUS = 'DOING')
+	</update>
+
+	<update id="updateToDeposit" parameterType="com.yeepay.g3.core.payprocessor.entity.CombPayRecord">
+		update PP.TBL_PAYMENT_COMB_PAY_RECORD
+		<set>
+			<if test="payOrderNo != null">
+				PAY_ORDER_NO = #{payOrderNo,jdbcType=VARCHAR},
+			</if>
+			<if test="amount != null">
+				AMOUNT = #{amount,jdbcType=DECIMAL},
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			STATUS = 'DEPOSIT'
+		</set>
+		where RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+		and STATUS ='DOING'
+	</update>
+
+	<update id="updateToSuccess" parameterType="com.yeepay.g3.core.payprocessor.entity.CombPayRecord">
+		update
+		PP.TBL_PAYMENT_COMB_PAY_RECORD
+		set
+		<if test="bankOrderNo != null">
+			BANK_ORDER_NO = #{bankOrderNo,jdbcType=VARCHAR},
+		</if>
+		<if test="payTime != null">
+			PAY_TIME = #{payTime,jdbcType=TIMESTAMP},
+		</if>
+		<if test="frpCode != null">
+			FRP_CODE = #{frpCode,jdbcType=VARCHAR},
+		</if>
+		STATUS = 'SUCCESS'
+		where RECORD_NO =#{recordNo,jdbcType=VARCHAR}
+		and STATUS ='DEPOSIT'
+	</update>
+
+	<update id="updateToReverse" parameterType="com.yeepay.g3.core.payprocessor.entity.CombPayRecord">
+		update
+		PP.TBL_PAYMENT_COMB_PAY_RECORD
+		set
+		STATUS = 'REVERSE',
+		UPDATE_TIME = CURRENT_TIMESTAMP
+		where RECORD_NO =#{recordNo,jdbcType=VARCHAR}
+		AND
+		STATUS = #{status,jdbcType=VARCHAR}
+	</update>
+
+	<update id="updateToFailByRecordNo" parameterType="java.lang.String">
+		update
+		PP.TBL_PAYMENT_COMB_PAY_RECORD
+		set
+		STATUS = 'FAILURE',
+		<if test="errorCode != null">
+			ERROR_CODE = #{errorCode,jdbcType=VARCHAR},
+		</if>
+		<if test="errorMsg != null">
+			ERROR_MSG = #{errorMsg,jdbcType=VARCHAR},
+		</if>
+		UPDATE_TIME = CURRENT_TIMESTAMP
+		where RECORD_NO =#{recordNo,jdbcType=VARCHAR}
+		and STATUS ='DOING'
+	</update>
+
+
+	<select id="selectByDeposit" resultMap="CombPayRecordMap"
+			parameterType="java.util.Map">
+		select
+		ID, RECORD_NO, PAY_ORDER_TYPE, MARKETING_NO, PAY_ORDER_NO, BANK_ORDER_NO, AMOUNT, PAY_PRODUCT, STATUS, CREATE_TIME, UPDATE_TIME,
+		PAY_TIME, FRP_CODE, ERROR_CODE, ERROR_MSG
+		from PP.TBL_PAYMENT_COMB_PAY_RECORD
+		where
+		STATUS ='DEPOSIT'
+        <![CDATA[ AND UPDATE_TIME >= #{startDate, jdbcType=TIMESTAMP}  ]]>
+        <![CDATA[ AND UPDATE_TIME <= #{endDate, jdbcType=TIMESTAMP}  ]]>
+        fetch first ${maxRowCount} rows only
+	</select>
+
+</mapper>

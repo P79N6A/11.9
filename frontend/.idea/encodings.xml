@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/../Payprocessor/payprocessor-trunk" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../Payprocessor/payprocessor-trunk/payprocessor-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../Payprocessor/payprocessor-trunk/payprocessor-facade" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../Payprocessor/payprocessor-trunk/payprocessor-hessian" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../frontend-app" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/frontend-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/frontend-facade" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/frontend-hessian" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../nc-cashier" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../nc-cashier-wap" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../nc-cashier/nc-cashier-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../nc-cashier/nc-cashier-facade" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../nc-cashier/nc-cashier-hessian" charset="UTF-8" />
+  </component>
+</project>

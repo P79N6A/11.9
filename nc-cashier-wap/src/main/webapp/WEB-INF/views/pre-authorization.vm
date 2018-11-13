@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no"><title>收银台</title><script>var token = '$!{token}';  //是否是绑卡支付的标识  必须有
+      var companyText = '$!{companyText}';
+      var amount = '$!{amount}';
+      var productName = '$!{productname}';
+      var orderId = '$!{orderid}';
+      var contextPath = '$!{ctx.contextPath}'; //获取项目路径
+      var useableBankCards; //可用列表
+      var unuseableBankCards; //不可用列表
+      #if($!{useableBankCards})
+        useableBankCards = $!{useableBankCards}
+      #else
+        useableBankCards = []
+      #end
+      #if($!{unuseableBankCards})
+        unuseableBankCards = $!{unuseableBankCards}
+      #else
+        unuseableBankCards = []
+      #end
+      var firstPreauthFlag = $!{firstPreauthFlag}  //是否为预授权首次支付
+      
+      var showChangeCard //是否展示换卡支付按钮 
+      #if($!{showChangeCard})
+        showChangeCard = $!{showChangeCard}
+      #else
+        showChangeCard = false
+      #end</script><link href=${ctx.contextPath}/static/pre-authorization-static/css/app.e3a2c629f72e2b5aec71cc76d3b0eaaf.css rel=stylesheet></head><body style=background:#f5f5f5;><div id=app></div><script type=text/javascript src=${ctx.contextPath}/static/pre-authorization-static/js/manifest.4273a417ffa5f5ef7c17.js></script><script type=text/javascript src=${ctx.contextPath}/static/pre-authorization-static/js/vendor.c021b8f158447214d203.js></script><script type=text/javascript src=${ctx.contextPath}/static/pre-authorization-static/js/app.845fd585c8e54cd39cb1.js></script></body></html>

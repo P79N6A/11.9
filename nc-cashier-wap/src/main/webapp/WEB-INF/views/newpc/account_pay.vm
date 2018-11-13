@@ -1,0 +1,96 @@
+<input type="radio" name="pay-mode-handler" id="payModeAccount" class="pay-mode-handler">
+<div class="account-pay">
+    <label for="payModeAccount"><h2>账户支付 <span>企业账户余额支付</span></h2></label>
+
+    <div class="account-pay-main">
+
+        <form id="accountPayForm">
+            <div class="sington"><label><span class="title">企业账户名</span><input type="text"
+                                                                               placeholder="请输入企业账户名" maxlength="50"
+                                                                               name="userAccount" encrypt="true"
+                                                                               autofocus></label>
+            </div>
+            <div class="sington"><label><span class="title">交易密码</span><input type="password"
+                                                                              placeholder="请输入交易密码" maxlength="32"
+                                                                              name="tradePassword" encrypt="true"
+                                                                              autocomplete="off"></label>
+
+            </div>
+            <div class="sington"><label><span class="title">验证码</span><input type="text"
+                                                                             placeholder="输入您的验证码" class="verify-code"
+                                                                             name="captcha"></label><img
+                    class="verifycode-img" id="verifyCodeImg" src="${ctx.contextPath}/captcha/refresh?token=${token}"
+                    width="122" height="52"
+                    title="换一张">
+            </div>
+            <div id="accountPayError" class="back-error"></div>
+            <div class="sington">
+                <button id="passPayButton" type="button">下一步</button>
+            </div>
+            <a id="forgetTradingPassword" href="javascript:void(0)">忘记交易密码</a>
+        </form>
+    </div>
+</div>
+<script>
+    (function () {
+        User.form.validate("#accountPayForm");
+        dom.querySelector("#forgetTradingPassword").addEventListener("click", Util.popup.bind(Util, '', User.template.forgetTradingPassword, autoSetPas));
+        dom.querySelector("#verifyCodeImg").addEventListener("click", function () {
+            var href = this.src.substring(0, this.src.indexOf("?"));
+            this.src = href + "?token=${token}&" + Date.now();
+        });
+        function autoSetPas() {
+            /*
+             * 自动跳转设置密码
+             * */
+            User.timing(function (second) {
+                dom.querySelector("#secondRemain").textContent = second;
+            }, function () {
+                dom.querySelector(".auto-set").classList.add("none");
+                dom.querySelector(".set-password").click();
+            }, 5);
+        }
+
+        dom.querySelector("#passPayButton").addEventListener("click", function () {
+            /*
+             * 下一步提交表单
+             * 提交前对表单校验，校验通过提交到后端
+             * */
+            var validate = User.form.autoValidate("#accountPayForm");
+            var button = this;
+            if (validate) {
+                Util.loading("支付等待中...");
+                button.disabled = true;
+                Action.ajax({
+                    url: "${ctx.contextPath}/newpc/accountpay/pay",
+                    data: User.form.serialize("#accountPayForm", {
+                        token: session.getItem("token")
+                    }),
+                    success: function (responseText) {
+                        var data = JSON.parse(responseText);
+                        if (data.bizStatus == "FAIL") {
+                            button.disabled = false;
+                            Util.hideLoading();
+                            dom.querySelector("#verifyCodeImg").click();
+                            if (data.hasOwnProperty("retryTimes") && data.retryTimes > 0) {
+                                User.Error("#accountPayError", "密码输入错误，您还可以重试" + data.retryTimes + "次");
+                                return;
+                            }
+                            if (data.hasOwnProperty("frozenTime") && data.frozenTime != null) {
+                                User.Error("#accountPayError", "由于密码输入错误次数过多，您的帐号已经被冻结，请" + data.frozenTime + "后重试");
+                                return;
+                            }
+                            User.Error("#accountPayError", data.errormsg + "(" + data.errorcode + ")");
+                        } else if (data.bizStatus == "SUCCESS") {
+                            /*
+                             * 查询支付结果
+                             * */
+                            button.disabled = false;
+                            Action.getQueryStatus(parseInt(session.getItem("jsTrys")),"ZHZF");
+                        }
+                    }
+                });
+            }
+        }, false);
+    })();
+</script>

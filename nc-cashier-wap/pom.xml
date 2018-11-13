@@ -1,0 +1,181 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>yeepay3g</groupId>
+        <artifactId>yeepay3g-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <groupId>com.yeepay.g3.app.nccashier.wap</groupId>
+    <artifactId>nc-cashier-wap</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>nc-cashier-wap</name>
+    <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+    <!-- 新加的ncmock依赖 -->
+		 <dependency>
+	         <groupId>com.yeepay.infra</groupId>
+	         <artifactId>metrics-agent-core</artifactId>
+	         <version>1.0</version>
+	      </dependency>
+	      <dependency>
+	         <groupId>com.yeepay.infra</groupId>
+	         <artifactId>tomcat-plugin</artifactId>
+	         <version>1.0</version>
+	      </dependency>
+        <dependency>
+		  <groupId>com.yeepay.g3.ncmock</groupId>
+		  <artifactId>ncmock-factory</artifactId>
+		  <version>1.0.3</version>
+		</dependency>
+        <dependency>
+            <groupId>com.yeepay.g3.facade.nccashier</groupId>
+            <artifactId>nc-cashier-facade</artifactId>
+            <version>${nc-cashier-facade.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>  
+            <version>4.10</version>
+            <scope>test</scope> 
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.28</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yeepay.g3.utils</groupId>
+            <artifactId>yeepay-rmi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <!-- velocity -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.2.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>com.yeepay.g3.cwh</groupId>
+			<artifactId>cwh-facade</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.utils</groupId>
+			<artifactId>yeepay-lock</artifactId>
+		</dependency>
+		
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>2.2</version>
+        </dependency>
+        
+        <!-- 错误码管理系统 -->
+		<dependency> 
+			<groupId>com.yeepay.g3.foundation</groupId> 
+			<artifactId>foundation-utils</artifactId> 
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.opr</groupId>
+			<artifactId>opr-facade</artifactId>
+		</dependency>
+		
+		<!-- modify by meiling.zhuang:去除Athena（无人维护，又占据大量日志）-->
+		<!-- <dependency>
+		    <groupId>com.yeepay.g3.athena</groupId>
+		    <artifactId>athena-collection</artifactId>
+		    <version>1.5</version>
+		</dependency> -->
+		
+		<dependency>
+			<groupId>com.yeepay.g3.opr</groupId>
+			<artifactId>opr-facade</artifactId>
+		</dependency>
+
+		<!-- 图片验证码插件 -->
+		<dependency>
+			<groupId>org.patchca</groupId>
+			<artifactId>patchca</artifactId>
+		</dependency>
+		
+		<!-- 鉴权中心 -->
+		<dependency>
+  			<groupId>com.yeepay.g3.ncauth</groupId>
+  			<artifactId>nc-auth-facade</artifactId>
+  			<version>1.0-SNAPSHOT</version>
+		</dependency>
+    </dependencies>
+    <build>
+        <finalName>nc-cashier-wap</finalName>
+        <pluginManagement>
+        	<plugins>
+        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        		<plugin>
+        			<groupId>org.eclipse.m2e</groupId>
+        			<artifactId>lifecycle-mapping</artifactId>
+        			<version>1.0.0</version>
+        			<configuration>
+        				<lifecycleMappingMetadata>
+        					<pluginExecutions>
+        						<pluginExecution>
+        							<pluginExecutionFilter>
+        								<groupId>
+        									org.codehaus.mojo
+        								</groupId>
+        								<artifactId>
+        									sql-maven-plugin
+        								</artifactId>
+        								<versionRange>
+        									[1.5,)
+        								</versionRange>
+        								<goals>
+        									<goal>execute</goal>
+        								</goals>
+        							</pluginExecutionFilter>
+        							<action>
+        								<ignore></ignore>
+        							</action>
+        						</pluginExecution>
+        					</pluginExecutions>
+        				</lifecycleMappingMetadata>
+        			</configuration>
+        		</plugin>
+        	</plugins>
+        </pluginManagement>
+    </build>
+</project>

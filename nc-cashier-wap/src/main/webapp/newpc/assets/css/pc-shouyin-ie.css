@@ -1,0 +1,1278 @@
+/*银行logo*/
+.bank-logo {
+    background-image: url(../images/bank-logo.png);
+    background-repeat: no-repeat;
+}
+
+.CMBCHINA {
+    /*招商银行*/
+    background-position: 0 0;
+}
+
+.ABC {
+    /*农业银行*/
+    background-position: 0 -56px;
+}
+
+.CCB {
+    /*建设银行*/
+    background-position: 0 -112px;
+}
+
+.ICBC {
+    /*工商银行*/
+    background-position: 0 -168px;
+}
+
+.BOC {
+    /*中国银行*/
+    background-position: 0 -224px;
+}
+
+.BOCO {
+    /*交通银行*/
+    background-position: 0 -278px;
+}
+
+.CMBC {
+    /*中国民生银行*/
+    background-position: 0 -336px;
+}
+
+.CIB {
+    /*兴业银行*/
+    background-position: 0 -391px;
+}
+
+.CEB {
+    /*光大银行*/
+    background-position: 0 -447px;
+}
+
+.ECITIC {
+    /*中信银行*/
+    background-position: 0 -504px;
+}
+
+.PSBC {
+    /*中国邮政*/
+    background-position: 0 -560px;
+}
+
+.BCCB {
+    /*北京银行*/
+    background-position: 0 -616px;
+}
+
+.GDB {
+    /*广发银行*/
+    background-position: 0 -672px;
+}
+
+.SDB {
+    /*深圳发展银行*/
+    background-position: 0 -727px;
+}
+
+.SPDB {
+    /*上海浦东发展银行*/
+    background-position: 0 -783px;
+}
+
+.HXB {
+    /*华夏银行*/
+    background-position: 0 -840px;
+}
+
+.SHB {
+    /*上海银行*/
+    background-position: 0 -895px;
+}
+
+.SZPA {
+    /*平安银行*/
+    background-position: 0 -952px;
+}
+
+.NBCB {
+    /*宁波银行*/
+    background-position: 0 -1008px;
+}
+
+.BJRCB {
+    /*北京农村商业银行*/
+    background-position: 0 -1064px;
+}
+
+.BOCD {
+    /*成都银行*/
+    background-position: 0 -1120px;
+}
+
+.CZ {
+    /*浙商银行*/
+    background-position: 0 -1176px;
+}
+
+.ZJRCU {
+    /*顺德信用社*/
+    background-position: 0 -1232px;
+}
+
+.JZBANK {
+    /*锦州银行*/
+    background-position: 0 -1288px;
+}
+
+.HFB {
+    /*恒丰银行*/
+    background-position: 0 -1344px;
+}
+
+.ZJTLCB {
+    /*浙江泰隆商业银行*/
+    background-position: 0 -1399px;
+}
+
+.CBHB {
+    /*渤海银行*/
+    background-position: 0 -1456px;
+}
+
+.HKBEA {
+    /*东亚银行*/
+    background-position: 0 -1512px;
+}
+
+.GDRCU {
+    /*广东农村信用社*/
+    background-position: 0 -1568px;
+}
+
+.GZCB {
+    /*广州市商业银行*/
+    background-position: 0 -1624px;
+}
+
+.NCB {
+    /*南洋商业银行*/
+    background-position: 0 -1680px;
+}
+
+.HEBBANK {
+    /*河北银行*/
+    background-position: 0 -1736px;
+}
+
+.HZB {
+    /*杭州银行*/
+    background-position: 0 -1793px;
+}
+
+.NJCB {
+    /*南京银行*/
+    background-position: 0 -1848px;
+}
+
+.SRCB {
+    /*上海农村商业银行*/
+    background-position: 0 -1904px;
+}
+
+.JSBC {
+    /*江苏银行*/
+    background-position: 0 -1960px;
+}
+
+.HZCCB {
+    /*湖州银行*/
+    background-position: 0 -2016px;
+}
+
+.QHD {
+    /*秦皇岛银行*/
+    background-position: 0 -2072px;
+}
+
+.HRB {
+    /*哈尔滨银行*/
+    background-position: 0 -2128px;
+}
+
+.CJCCB {
+    /*江苏长江银行*/
+    background-position: 0 -2184px;
+}
+
+.ORDOSB {
+    /*鄂尔多斯银行*/
+    background-position: 0 -2240px;
+}
+
+.GDNYB {
+    /*广东南粤银行*/
+    background-position: 0 -2296px;
+}
+
+.BGZ {
+    /*贵州银行*/
+    background-position: 0 -2352px;
+}
+
+.CDRCB {
+    /*成都农商银行*/
+    background-position: 0 -2408px;
+}
+
+.TJB {
+    /*天津银行*/
+    background-position: 0 -2463px;
+}
+
+.DLB {
+    /*大连银行*/
+    background-position: 0 -2520px;
+}
+
+.SRB {
+    /*上饶银行*/
+    background-position: 0 -2576px;
+}
+
+.BSB {
+    /*包商银行*/
+    background-position: 0 -2632px;
+}
+
+.GZCB {
+    /*广州银行*/
+    background-position: 0 -2688px;
+}
+
+.CQRCB {
+    /*重庆农村商业银行*/
+    background-position: 0 -2744px;
+}
+
+.SJB {
+    /*盛京银行*/
+    background-position: 0 -2780px;
+}
+
+.SQBANK {
+    /*商丘市商业银行*/
+    background-position: 0 -2856px;
+}
+
+.UCCB {
+    /*乌鲁木齐市商业银行*/
+    background-position: 0 -2912px;
+}
+
+.YDHSH {
+    /*尧都农村商业银行*/
+    background-position: 0 -2968px;
+}
+
+.HKBC {
+    /*汉口银行*/
+    background-position: 0 -3024px;
+}
+
+.JRCB {
+    /*江苏江阴农村商业银行*/
+    background-position: 0 -3080px;
+}
+
+.KSRCB {
+    /*昆山农商银行*/
+    background-position: 0 -3135px;
+}
+
+.GSRCU {
+    /*甘肃省农村信用社*/
+    background-position: 0 -3242px;
+}
+
+.QHRCU {
+    /*青海省农村信用社*/
+    background-position: 0 -3242px;
+}
+
+.WEBANK {
+    /*微众银行*/
+    background-position: 0 -3188px;
+}
+
+.TRCB {
+    /*天津农商银行*/
+    background-position: 0 -3354px;
+}
+
+.CZRCB {
+    /*江南农村商业银行*/
+    background-position: 0 -3410px;
+}
+
+.HENRCU {
+    /*河南省农村信用社*/
+    background-position: 0 -3460px;
+}
+
+.LNRCU {
+    /*辽宁省农村信用社*/
+    background-position: 0 -3506px;
+}
+
+.URB {
+    /*联合村镇*/
+    background-position: 0 -3559px;
+}
+
+.JSRCU {
+    /*江苏省农村信用社*/
+    background-position: 0 -3616px;
+}
+
+.SCRCU {
+    /*四川省农村信用社*/
+    background-position: 0 -3672px;
+}
+
+.HUNRCU {
+    /*湖南省农村信用社*/
+    background-position: 0 -3727px;
+}
+
+.NXRCB {
+    /*黄河农商银行*/
+    background-position: 0 -3772px;
+}
+
+/*银行logo结束*/
+/*网银支付*/
+.bank-container {
+    width: 775px
+}
+
+.bank-container .tab-wrapper {
+    border-bottom: #e0e0e0 solid 1px;
+}
+
+.bank-container .tab-wrapper .tab {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    width: 156px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaaaaa;
+}
+
+.bank-container .tab-wrapper .active {
+    color: #000000;
+}
+
+.bank-container .tab-wrapper .active:before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+    display: block;
+    height: 10px;
+    width: 18px;
+    border: none;
+    bottom: -1px;
+    background: url("../images/IE8_1488792275.png") no-repeat;
+}
+
+.bank-container .tab-content {
+    display: none;
+}
+
+.bank-container .tab-content.active {
+    display: block;
+}
+
+.bank-container .tab-content {
+    margin-top: 20px;
+    margin-right: -21px;
+}
+
+.bank-container .tab-content li {
+    position: relative;
+    float: left;
+    margin-bottom: 20px;
+    margin-right: 19px;
+    width: 178px;
+    height: 46px;
+    line-height: 46px;
+    border: #e2e2e2 solid 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bank-container .tab-content li:hover, .bank-container .tab-content li.active {
+    border-color: #ff7f01;
+}
+
+.bank-container .tab-content li.active {
+    box-shadow: #ff7f01 0 0 0 1px, -1px -1px 0;
+}
+
+.bank-container .tab-content li.active:after {
+    content: "\e6e8";
+    display: block;
+    position: absolute;
+    right: -2px;
+    bottom: -11px;
+    font-family: "icon";
+    font-size: 25px;
+    color: #ff7f01;
+}
+
+.bank-container .tab-content li .bank-logo {
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+}
+
+.bank-container .tab-content li .card-type {
+    display: none;
+    position: absolute;
+    left: -1px;
+    bottom: -24px;
+    width: 180px;
+    height: 22px;
+    line-height: 22px;
+    background-color: #f8f8f8;
+    font-weight: 100;
+    font-size: 12px;
+    color: #626262;
+}
+
+.bank-container .tab-content li .card-type span {
+    margin-left: 12px;
+    padding-left: 12px;
+    border-left: #cecece solid 1px;
+}
+
+.bank-container .tab-content li .card-type span:first-child {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+}
+
+.bank-container .tab-content li:hover .card-type {
+    display: block;
+}
+
+.bank-container .bank-list .more-handler {
+    border-color: #f9f9f9;
+    background-color: #f9f9f9;
+    color: #415467;
+}
+
+.bank-container .bank-list .more-handler:hover {
+    border-color: #e5e5e5;
+    background-color: #e5e5e5;
+}
+.bank-container .tab-content li .warm-prompt {
+    display: none;
+    position: absolute;
+    top: -71px;
+    z-index: 2;
+    padding: 5px;
+    background-color: #ffffff;
+    line-height: 1.6em;
+    border: #e2e2e2 solid 1px;
+    font-size: 12px;
+    text-align: left;
+    color: #626262;
+}
+
+.bank-container .tab-content li:hover .warm-prompt {
+    display: block;
+}
+/*网银支付结束*/
+/*按钮*/
+button, .button {
+    margin-top: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    padding: 0 16px;
+    min-width: 135px;
+    height: 42px;
+    border: #58bc7e solid 1px;
+    border-radius: 4px;
+    background-color: #6dca90;
+    font-size: 16px;
+    text-decoration: none;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+}
+
+.button {
+    line-height: 40px;
+}
+
+button:hover, .button:hover {
+    background-color: #62b581;
+}
+
+button:disabled, .button.disabled {
+    background-color: #e8e8e8;
+    border-color: #dddddd;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=2225, Color=#ffffff)";
+    text-shadow: 1px -1px 0 #ffffff;
+    color: #aaaaaa;
+    cursor: not-allowed;
+}
+
+/*按钮结束*/
+
+/*网银企业客户号*/
+#clientId {
+    padding-bottom: 36px;
+    width: 570px;
+}
+
+#clientId .title {
+    padding-left: 23px;
+    height: 52px;
+    line-height: 52px;
+    border-bottom: #e2e2e2 solid 1px;
+    color: #454545;
+
+}
+
+#clientId .account-type {
+    margin-right: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 50px;
+    height: 23px;
+    line-height: 23px;
+    text-align: center;
+    background-color: #86bbd3;
+    color: #ffffff;
+}
+
+#clientId form {
+    margin-top: 48px;
+    margin-left: 35px;
+}
+
+#clientId .bank-logo {
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 26px;
+    height: 26px;
+}
+
+#clientId form input {
+    margin-left: 30px;
+    padding: 0 15px;
+    width: 255px;
+    height: 48px;
+    line-height: 48px;
+    outline: none;
+    vertical-align: middle;
+}
+
+#clientId form button {
+    display: block;
+    margin: 40px auto auto;
+}
+
+#clientId .errormsg {
+    margin-left: 123px;
+}
+
+/*网银企业客户号结束*/
+/*右侧固定工具*/
+.fixed-sidebar {
+    position: fixed;
+    z-index: 2000;
+    top: 195px;
+    right: 0;
+    border: #e8e8e8 solid 1px;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    text-align: center;
+    overflow: hidden;
+    _position: absolute;
+    _top: expression(eval(document.documentElement.scrollTop+195));
+}
+
+.fixed-sidebar .item {
+    display: block;
+    width: 80px;
+    height: 80px;
+    border-top: #e8e8e8 solid 1px;
+    background-color: #f8f8f8;
+    font-size: 12px;
+    color: #454545;
+}
+
+.fixed-sidebar .item:first-child {
+    border-top: none;
+}
+
+.fixed-sidebar .item:hover {
+    background-color: #eeeeee;
+}
+
+.fixed-sidebar .item .icon {
+    padding-top: 16px;
+    padding-bottom: 14px;
+    display: block;
+    font-size: 25px;
+    color: #23ac38;
+}
+
+/*右侧固定工具结束*/
+/*底部版权*/
+.footer {
+    margin-top: 178px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    border-top: #e3e5e9 solid 1px;
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+}
+
+/*底部版权结束*/
+/*错误信息*/
+.global-error {
+    width: 751px;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 20px 22px;
+    background-color: #fcf0ee;
+    font-size: 12px;
+}
+
+.global-error:before {
+    content: "\e625";
+    padding-top: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+    font-family: "icon";
+    font-size: 20px;
+    color: #e83619;
+}
+
+.global-error .other-bank {
+    margin: 0 5px;
+    padding: 10px 20px;
+    border: #efe9e8 solid 1px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #000000;
+    cursor: pointer;
+}
+
+.global-error .change-card {
+    color: #019cd2;
+    cursor: pointer;
+}
+
+/*错误信息结束*/
+/*
+全站样式
+*/
+html {
+    height: 100%;
+}
+
+body {
+    position: relative;
+    min-height: 100%;
+    background-color: #f1f1f1;
+    font-family: "STHeiti", "Microsoft YaHei", "宋体", "arial";
+    font-size: 14px;
+    line-height: 18px;
+    color: #4c4948;
+    cursor: default;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+.clearfix:after {
+    content: "";
+    display: block;
+    clear: both;
+    visibility: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+#mask {
+    position: fixed;
+    z-index: 2100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    opacity: .1;
+    filter: alpha(opacity=60);
+    _position: absolute;
+    _bottom: 0;
+    _background-color: transparent;
+    _top: expression(eval(document.documentElement.scrollTop));
+}
+
+#loading {
+    position: fixed;
+    z-index: 1012;
+    left: 50%;
+    top: 50%;
+    margin-left: -190px;
+    margin-top: -60px;
+    width: 390px;
+    height: 120px;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 23px;
+    text-align: center;
+}
+
+#loading img {
+    margin-top: 12px;
+    vertical-align: middle;
+}
+
+.suggests {
+    height: 30px;
+    line-height: 30px;
+    background-color: #e83619;
+    text-align: center;
+    color: #ffffff;
+    font-size: 14px;
+}
+
+@font-face {
+    font-family: 'icon';
+    src: url('../iconfont/iconfont.eot'); /* IE9*/
+    src: url('../iconfont/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../iconfont/iconfont.woff') format('woff'), /* chrome、firefox */ url('../iconfont/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('../iconfont/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.icon {
+    font-family: "icon";
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.none {
+    display: none;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+/*
+*页面布局
+*/
+.layout {
+    width: 1170px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+}
+
+.main {
+    margin-top: 25px;
+    min-height: 500px;
+    background-color: #ffffff;
+    border: #dcdcdc solid 1px;
+    border-top: none;
+    box-shadow: #d5d4d4 1px 1px 10px 3px, #d5d4d4 -1px -1px 10px 3px;
+    overflow: hidden;
+}
+
+.module-error {
+    margin-top: 60px;
+    margin-left: 50px;
+    font-size: 24px;
+}
+
+.module-error:before {
+    content: "\e625";
+    margin-right: 23px;
+    display: inline-block;
+    vertical-align: middle;
+    font-family: "icon";
+    font-size: 40px;
+    color: #03a9f4;
+}
+
+/*页面顶部全局通知栏*/
+.notice-board {
+    height: 59px;
+    line-height: 59px;
+    background-color: #eaf1f7;
+    border-bottom: #bed4e2 solid 1px;
+    color: #42627e;
+    overflow: hidden;
+}
+
+.notice-board .content-list {
+}
+
+.notice-board .content-list li {
+    /*float: left;*/
+    margin-left: 25px;
+    list-style: decimal inside;
+}
+
+/*页面顶部全局通知栏结束*/
+/*订单信息*/
+.order-info {
+    position: relative;
+    padding: 20px 0;
+    background-color: #f9f9f9;
+    border-top: #6dca90 solid 3px;
+    border-bottom: #dfdfdf dotted 3px;
+    font-size: 14px;
+    color: #878787;
+}
+
+.order-info .merchant-info-wrapper {
+    float: right;
+    position: relative;
+    margin-right: 120px;
+}
+
+.order-info .amount {
+    float: left;
+    margin-left: 50px;
+    margin-right: 25px;
+}
+
+.order-info .money {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 24px;
+    line-height: 30px;
+    color: #ff7f01;
+}
+
+.order-info .fee {
+    color: #ff7f01;
+}
+
+.order-info .merchant-info.details {
+    margin-top: 22px;
+    display: none;
+}
+
+.order-info .merchant-info p {
+    margin-left: 25px;
+    padding-left: 25px;
+    display: inline;
+    vertical-align: middle;
+}
+
+.order-info .merchant-info p span {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 400px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.order-info .merchant-info p:first-child {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+}
+
+.order-info .order-details-trigger {
+    position: absolute;
+    right: -80px;
+    bottom: 0;
+    font-size: 12px;
+    color: #53bf63;
+    cursor: pointer;
+}
+
+.order-info .order-details-trigger .br-hack {
+    display: inline-block;
+    vertical-align: middle;
+    font-style: normal;
+}
+
+.order-info .order-details-trigger:after {
+    margin-top: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    content: "\e603";
+    font-size: 22px;
+}
+
+.order-info #order-details-handler {
+    position: absolute;
+    left: -9999px;
+}
+
+.order-info #order-details-handler:checked ~ .merchant-info.details {
+    display: block;
+}
+
+.order-info #order-details-handler:checked ~ label .order-details-trigger:after {
+    content: "\e604";
+}
+
+.payment-time {
+    padding: 12px 0;
+    background-color: #f9f9f9;
+    border-bottom: #f1f1f1 solid 8px;
+    text-align: center;
+}
+
+.payment-time .time {
+    color: #ff7f01;
+}
+
+/*订单信息结束*/
+
+/*弹层*/
+#Popup,#PopupClientId {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -281px;
+    margin-top: -190px;
+    z-index: 2115;
+    border: #cdcdcd solid 1px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: #cdcdcd 1px 1px 10px;
+    overflow: hidden;
+    _position: absolute;
+    _bottom: auto;
+    _margin-top: 10px;
+    _top: expression(eval(document.documentElement.scrollTop));
+}
+
+#Popup h2 .close,#PopupClientId h2 .close  {
+    position: absolute;
+    z-index: 1006;
+    top: 12px;
+    right: 12px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #969696;
+}
+
+#Popup h2 .close:hover {
+    color: #717171;
+}
+
+/*弹层结束*/
+
+/*顶部logo、客服电话*/
+.header {
+    height: 70px;
+    border-bottom: #dadada solid 1px;
+    background-color: #ffffff;
+}
+
+.header .logo {
+    float: left;
+    margin-top: 16px;
+}
+
+.header .logo img {
+    vertical-align: middle;
+}
+
+.header .service-phone {
+    float: right;
+    margin-top: 40px;
+    font-style: italic;
+    font-size: 14px;
+    color: #3fb16a;
+}
+
+.header .sign {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 22px;
+    padding: 5px 22px;
+    border-left: #d4d4d4 solid 1px;
+    font-size: 20px;
+    color: #4c4948;
+}
+
+/*顶部logo、客服电话结束*/
+
+/*等待去银行付款弹层*/
+.waiting-pay {
+    padding: 40px 40px 30px;
+    width: 480px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    line-height: 18px;
+}
+
+.waiting-pay .open-new, .waiting-pay .tip, .waiting-pay .btn-group {
+    text-align: center;
+}
+
+.waiting-pay .tip {
+    margin-top: 18px;
+}
+
+.waiting-pay .open-new {
+    font-size: 22px;
+}
+
+.waiting-pay .btn-group {
+    margin-top: 45px;
+}
+
+.waiting-pay .btn-group .button {
+    margin-right: 25px;
+}
+
+.waiting-pay .btn-group .button.issue {
+    background-color: #fafafa;
+    border-color: #d1d1d1;
+    color: #000000;
+}
+
+.waiting-pay .misc {
+    margin-top: 37px;
+    padding-top: 20px;
+    border-top: #e2e2e2 solid 1px;
+}
+
+.waiting-pay .misc .fail, .waiting-pay .misc .yeepay {
+    float: left;
+}
+
+.waiting-pay .misc a {
+    color: #6fb7da;
+    text-decoration: underline;
+}
+
+.waiting-pay .fail a {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.waiting-pay .fail a:last-child {
+    margin-bottom: 0;
+}
+
+.waiting-pay .yeepay {
+    margin-left: 68px;
+    width: 282px;
+}
+
+.waiting-pay .yeepay .yp-qrcode {
+    float: left;
+    margin-right: 13px;
+}
+
+.waiting-pay .yeepay .yp-desc {
+    float: left;
+    width: 160px;
+}
+
+.waiting-pay .yeepay .yp-desc .number {
+    margin-top: 22px;
+    letter-spacing: 0;
+    word-break: break-all;
+}
+
+/*等待去银行付款弹层结束*/
+.scan-pay, .bank-pay {
+    margin: 40px 50px;
+}
+
+.scan-pay h2, .bank-pay h2 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.scan-pay h2 span, .bank-pay h2 span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #454545;
+}
+
+.qrcode-item {
+    margin:0 auto;
+    text-align: center;
+}
+
+.qrcode-item .img-area {
+    position: relative;
+    width: 156px;
+    height: 156px;
+    margin:0 auto;
+}
+
+.qrcode-item .img-area .logo {
+    position: absolute;
+    margin-left: -9px;
+    margin-top: -9px;
+    padding: 1px;
+    top: 50%;
+    left: 50%;
+    background-color: #ffffff;
+    font-size: 21px;
+}
+.icon-sprites {
+    background: url("../images/sprites.png") no-repeat;
+}
+.qrcode-item .img-area .weixin,.support-app .icon.weixin{
+    color: #27b43c;
+}
+.qrcode-item .img-area .weixin:after{
+    content:"\e611"
+}
+.qrcode-item .img-area .alipay,.support-app .icon.alipay {
+    color: #02a1eb;
+}
+.qrcode-item .img-area .alipay:after {
+    content:"\e624";
+}
+.support-app .icon.union,.support-app .icon.installment,.support-app .icon.installment2{
+    width:40px;
+    height:40px;
+}
+.support-app .icon.union {
+    background: url("../../assets/images/sprites.png") no-repeat 9px 9px #f5f5f5;
+}
+.qrcode-item .img-area .union:after,.qrcode-item .img-area .installment2:after{
+    content:"";
+    width:22px;
+    height:22px;
+    display: inline-block;
+}
+.qrcode-item .img-area .union:after {
+    background: url("../../assets/images/sprites.png") 0px 0px ;
+}
+
+.support-app .icon.installment {
+    background: url("../../assets/images/sprites.png") no-repeat 9px -62px #f5f5f5;
+}
+.support-app .icon.installment2 {
+    background: url("../../assets/images/logo_01.png") no-repeat center #f5f5f5;
+    background-size:26px 26px;
+}
+.qrcode-item .img-area .installment2:after {
+    background: url("../../assets/images/logo_01.png") center ;
+}
+.qrcode-item .img-area .installment:after,.qrcode-item .img-area .qq:after {
+    content:"";
+    width:22px;
+    height:23px;
+    display: inline-block;
+}
+.qrcode-item .img-area .installment:after {
+    background: url("../../assets/images/sprites.png") 0px -70px;
+}
+.qrcode-item .img-area .qq:after {
+    background: url("../../assets/images/sprites.png") no-repeat 0px -238px ;
+}
+.qrcode-item .img-area .jd,.support-app .icon.jd {
+    color: #E33F3B;
+}
+.qrcode-item .img-area .jd:after{
+    content:"\e6a6"
+}
+.support-app .icon.qq {
+    background: url("../../assets/images/sprites.png") no-repeat 8px -230px #f5f5f5;
+}
+
+/*new 布局 start zym*/
+.hidden{
+    display: none;
+}
+.typeText{
+    width:400px;
+    text-align: center;
+    margin:0 auto 26px;
+
+}
+.typeText .icon{
+    font-size:32px;
+    color:#27b43c;
+}
+.typeText .textCon{
+    font-style: normal;
+    margin-left:10px;
+    display: inline-block;
+}
+.qrcode-wrapper{
+    width:400px;
+    background: #f5f5f5;
+    border-radius:10px;
+    padding: 70px 0;
+    margin:0 auto;
+    min-height:140px;
+    position: relative;
+}
+.qrcode-wrapper .error{
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin-left:-66px;
+    margin-top:-40px;
+}
+.support-app{
+    width:500px;
+    text-align: center;
+    margin:0 auto;
+    font-size:0;
+
+}
+.support-app .icon{
+    vertical-align: middle;
+    display: inline-block;
+    width:40px;
+    height:40px;
+    line-height:40px;
+    text-align: center;
+    border-radius:50%;
+    margin-top:16px;
+    margin-left:10px;
+    background: #f5f5f5;
+    font-size:22px;
+}
+.support-app .icon.active{
+    background-color: #ddd;
+}
+/*new 布局 end zym*/

@@ -1,0 +1,41 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no"><title>银行卡分期</title><script>var token = '$!{token}';  //是否是绑卡支付的标识  必须有
+      var contextPath = '$!{ctx.contextPath}'; //获取项目路径
+      var mode = '$!{mode}';//新老用户标识 New
+      var errormsg = '$!{errormsg}';
+      var errorcode = '$!{errorcode}';
+      var periodList = $!{periodList};
+      //老用户列表
+      var usableSignRelationList;
+      var unusableSignRelationList ;
+      //新用户列表
+      var usableBankList ;
+      var unusableBankList ;
+      var haveMoney = localStorage.getItem("money");
+      if(haveMoney){
+        localStorage.removeItem('money');
+      }
+      #if($!{usableSignRelationList})
+        usableSignRelationList = $!{usableSignRelationList}
+      #else
+        usableSignRelationList = ''
+      #end
+      #if($!{unusableSignRelationList})
+        unusableSignRelationList = $!{unusableSignRelationList}
+      #else
+        unusableSignRelationList = ''
+      #end
+      #if($!{usableBankList})
+        usableBankList = $!{usableBankList}
+      #else
+        usableBankList = ''
+      #end
+      #if($!{unusableBankList})
+        unusableBankList = $!{unusableBankList}
+      #else
+        unusableBankList = ''
+      #end
+      #if($!{periodList})
+        periodList = $!{periodList}
+      #else
+        periodList = '';
+      #end</script><link href=${ctx.contextPath}/static/bank-card-stage-static/css/app.e0546f108707182c5cb32b3d2953d1a1.css rel=stylesheet></head><body style=background:#f5f5f5;><div id=app></div><script type=text/javascript src=${ctx.contextPath}/static/bank-card-stage-static/js/manifest.1b6074f30770ac940206.js></script><script type=text/javascript src=${ctx.contextPath}/static/bank-card-stage-static/js/vendor.295217d6aa93d5df25b0.js></script><script type=text/javascript src=${ctx.contextPath}/static/bank-card-stage-static/js/app.7d992ac98f55ca79d425.js></script></body></html>

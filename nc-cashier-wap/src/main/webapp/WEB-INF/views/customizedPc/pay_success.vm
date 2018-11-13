@@ -1,0 +1,155 @@
+#parse("customizedPc/header.vm")
+<body>
+#parse("customizedPc/top.vm")
+<div class="container clearfix" style="min-height: 600px">
+    #parse("customizedPc/order_info.vm")
+    <div class="success-layout">
+    <p class="pay-success"><i class="icon">&#xe66b;</i>支付成功 <span class="timing none"><span id="second">3</span>秒后自动返回商户</span>
+    </p>
+    <a href="${merchantUrl}" class="button back-merchant none">返回商户</a>
+    </div>
+    <!--公众号二维码-->
+    <div class="official-accounts none"><a href="#" target="_blank" id="magnify"><img id="qrcode" width="90"></a><span>识别左方二维码，<br>可查询订单信息</span></div>
+    <!--公众号二维码结束-->
+    <!--嘉年华活动-->
+    ## #if(${showCarnival}==true)
+    ## <div style="margin-top:20px; text-align: center;"><a href="${carnivalUrl}" target="_blank"> <img
+    ##         src="${ctx.contextPath}/customizedPc/assets/images/carnival.jpg"></a>
+    ## </div>
+    ## #end
+    <!--嘉年华活动结束-->
+</div>
+<script>
+    /*结果页公众号二维码控制*/
+    dom.querySelector("#qrcode").addEventListener("error",function(){
+        dom.querySelector(".official-accounts").classList.add("none");
+    },false);
+    #if("$!{token}")
+    Action.ajax({
+        url:"${ctx.contextPath}/newwap/yeepay/qrcode",
+        data:{
+            token:"${token}",
+            orderId:"$!{orderId}",
+            merchantNo:"$!{merchantNo}"
+        },
+        success:function(path){
+            dom.querySelector("#qrcode").src = path;
+            dom.querySelector("#magnify").href = path;
+            dom.querySelector(".official-accounts").classList.remove("none");
+        }
+    });
+    #end
+    /*结果页公众号二维码控制结束*/
+    (function () {
+        #if ("$!merchantUrl" != "")
+            var merchantUrl = "$merchantUrl";
+        dom.querySelector(".back-merchant").classList.remove("none");
+        #end
+        function timing() {
+            /*
+             * 15s倒计时
+             * */
+            User.timing(function (second) {
+                dom.querySelector("#second").innerHTML = second;
+            }, function () {
+                dom.querySelector(".back-merchant").click();
+            }, 15);
+        }
+
+        function chooseSetOwnerInfo() {
+            /*
+             * 选择已有身份信息作为唯一支付身份
+             * 把信息传给服务器后不需要等待处理结果直接关闭弹层或返回商户
+             * */
+            User.form.disabledSubmit(this);
+            Action.ajax({
+                /*
+                 * 获取支付身份信息
+                 * */
+                url:  "${ctx.contextPath}/newpc/setOwnerInfo",
+                data: {
+                    token: session.getItem("token"),
+                    bindId: dom.querySelector("input[name=idGroup]:checked").getAttribute("bindid")
+                },
+                success: function (responseText) {
+//                    var data = JSON.parse(responseText);
+                }
+            });
+            typeof merchantUrl != "undefined" ? location.assign(merchantUrl) : Util.closePopup();
+        }
+
+        function addSetOwnerInfo() {
+            /*
+             * 添加新身份信息
+             * 把信息传给服务器后不需要等待处理结果直接关闭弹层或返回商户
+             * */
+            if (!User.form.autoValidate("#addIdForm"))return;
+            User.form.disabledSubmit(this);
+            Action.ajax({
+                /*
+                 * 获取支付身份信息
+                 * */
+                url:  "${ctx.contextPath}/newpc/setOwnerInfo",
+                data: User.form.serialize("#addIdForm", {
+                    token: session.getItem("token")
+                }),
+                success: function (responseText) {
+//                    var data = JSON.parse(responseText);
+                }
+            });
+            typeof merchantUrl != "undefined" ? location.assign(merchantUrl) : Util.closePopup();
+        }
+
+        Action.ajax({
+            /*
+             * 获取支付身份信息
+             * */
+            url: "${ctx.contextPath}/newpc/getOwnerInfo",
+            data: {token: session.getItem("token")},
+            success: function (responseText) {
+                var data = JSON.parse(responseText);
+                if (data.needChooseCardOwner) {
+                    /*
+                     * needChooseCardOwner等于true需要选择身份
+                     * */
+                    Util.popup("", User.template.idChoice, function () {
+                        var lis = "";
+                        for (var i = 0, l = data.persons.length; i < l; i++) {
+                            /*
+                             * 获取身份列表
+                             * */
+                            lis += '<li> ' +
+                                    '<label><input type="radio"' + (i == 0 ? "checked" : "") + ' name="idGroup" bindId="' + data.persons[i].bindId + '"><i class="icon"></i>' + data.persons[i].realName + ' /' +
+                                    '' + data.persons[i].idCardNo + '<span class="checked-text">已选择“' + data.persons[i].realName + '”作为唯一支付身份</span></label>' +
+                                    '</li>';
+                        }
+                        dom.querySelector(".id-choice .id-list").insertAdjacentHTML("afterBegin", lis);
+                        /*添加表单校验*/
+                        User.form.validate("#addIdForm");
+                        /*确定按钮绑定事件*/
+                        dom.querySelector(".id-choice .confirm").addEventListener("click", chooseSetOwnerInfo, false);
+                        dom.querySelector(".new-id .confirm").addEventListener("click", addSetOwnerInfo, false);
+
+                        if (data.persons == null || data.persons.length == 0) {
+                            /*
+                             * 没有身份选择
+                             * */
+                            dom.querySelector(".new-id-trigger").click();
+                            dom.querySelector(".new-id .back").classList.add("none");
+                        }
+                        if (data.showTimes == 3) {
+                            /*showTimes等于3时不显示关闭按钮*/
+                            dom.querySelector("#Popup i.close").classList.add("none");
+                        }
+                    });
+                } else if (typeof merchantUrl != "undefined") {
+                    dom.querySelector(".timing").classList.remove("none");
+                    timing();
+                }
+            }
+        });
+    })();
+</script>
+#parse("customizedPc/footer.vm")
+</body>
+</html>

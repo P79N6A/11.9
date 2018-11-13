@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" info="false">
+	<appender name="CONSOLELOG" class="org.apache.log4j.ConsoleAppender">
+		<layout class="com.yeepay.g3.utils.common.log.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
+		</layout>
+	</appender>
+	<category name="DALCompenent" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="CONSOLELOG" />
+	</category>
+	<category name="com.yeepay.g3.PerformanceLogger" >
+		<level value="info"/>
+	</category>
+	<category name="com.opensymphony.xwork2.ognl.OgnlValueStack" >
+		<level value="ERROR"/>
+	</category>
+	<category name="com.yeepay" >
+		<level value="info"/>
+	</category>
+	<category name="net.sf.ehcache">
+		<level value="INFO"/>
+	</category>
+	<category name="com.alisoft.xplatform.asf">
+		<level value="WARN"/>
+	</category>
+	<category name="com.mbi">
+		<level value="ERROR"/>
+	</category>
+	<category name="net.mlw">
+		<level value="INFO"/>
+	</category>
+	<category name="java.sql">
+		<priority value="info"/>
+	</category>
+	<category name="org.hibernate.type">
+		<priority value="ERROR"/>
+	</category>
+	<category name="com.opensymphony.webwork">
+		<priority value="ERROR"/>
+	</category>
+	<category name="org.apache">
+		<priority value="INFO"/>
+	</category>
+	<category name="org.jgroups">
+		<priority value="WARN"/>
+	</category>
+	<category name="org.jboss.axis">
+		<priority value="INFO"/>
+	</category>
+	<category name="org.jboss.management">
+		<priority value="INFO"/>
+	</category>
+	<category name="org.apache.commons.httpclient">
+		<priority value="ERROR"/>
+	</category>
+
+	<category name="com.alibaba.dubbo">
+		<level value="ERROR"/>
+	</category>
+	<category name="com.yeepay.g3.utils.soa.registry.zookeeper">
+		<level value="ERROR"/>
+	</category>
+	<root>
+		<priority value="INFO"/>
+		<appender-ref ref="CONSOLELOG"/>
+	</root>
+</log4j:configuration>

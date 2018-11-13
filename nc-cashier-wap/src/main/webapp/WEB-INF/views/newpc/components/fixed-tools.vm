@@ -1,0 +1,25 @@
+<!--右侧固定-->
+<div class="fixed-sidebar">
+    <a class="item" href="javascript:void(0)" id="customerService"><i class="icon">&#xe607;</i>在线客服</a>
+    <a class="item" href="http://www.yeepay.com/customerService/question" target="_blank"><i class="icon">
+        &#xe64e;</i>常见问题</a>
+</div>
+<script src="${ctx.contextPath}/static/js/service.js"></script>
+<script>
+    dom.querySelector("#customerService").addEventListener("click", function () {
+        Action.ajax({
+            url: "${ctx.contextPath}/helper/customerservice/${token}",
+            data: {
+                errMsg: session.getItem("errMsg")
+            },
+            success: function (orderInfo) {
+                openPcPosChatWithUserInfo(orderInfo);
+//                    delCookie("JESONG_EXT_DATA");
+            },
+            error: function () {
+                Util.popup("提示", "<div class='service-error'>请求客服失败！</div>");
+            }
+        });
+    }, false);
+</script>
+<!--右侧固定结束-->

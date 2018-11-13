@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context.xsd
+      http://www.springframework.org/schema/integration/ip
+      http://www.springframework.org/schema/integration/ip/spring-integration-ip-2.0.xsd
+      http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+      http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/rabbit
+      http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+      ">
+ 
+    <rabbit:connection-factory id="productorConnectionFactory"
+        host="rabbitmq.bass.3g" username="nccashier" password="nccashier" port="5672" virtual-host="nccashier" />
+    <!-- queue 队列声明 -->
+
+    <rabbit:queue id="nccashier_paynotice_skb" durable="true" auto-delete="false"
+        exclusive="false" name="nccashier_paynotice_skb" />
+        
+    <rabbit:queue id="nccashier_paynotice_nctrade" durable="true" auto-delete="false"
+        exclusive="false" name="nccashier_paynotice_nctrade" />
+
+    <!-- exchange queue binging key 绑定 -->
+    <rabbit:direct-exchange name="nccashier-notify-exchange"
+        durable="true" auto-delete="false" id="nccashier-notify-exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="nccashier_paynotice_skb" key="MQ_CASHIER_PAYNOTICE_SKB" />
+            <rabbit:binding queue="nccashier_paynotice_nctrade" key="MQ_CASHIER_PAYNOTICE_NCTRADE" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+ 
+    <!-- spring amqp默认的是jackson
+   		 的一个插件,目的将生产者生产的数据转换为json存入消息队列，由于fastjson的速度快于jackson,这里替换为fastjson的一个实现
+    -->
+    <bean id="jsonMessageConverter" class="com.yeepay.g3.core.nccashier.utils.FastJsonMessageConverter"></bean>
+ 
+    <!-- spring template声明-->
+    <rabbit:template exchange="nccashier-notify-exchange" id="amqpTemplate"
+        connection-factory="productorConnectionFactory" message-converter="jsonMessageConverter" />
+</beans>

@@ -1,0 +1,4 @@
+#*
+添加银行卡按钮
+*#
+<span class="add-bankCard-btn"><i class="icon">&#xe62a;</i>添加银行卡</span>

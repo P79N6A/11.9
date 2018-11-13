@@ -1,0 +1,41 @@
+#parse("customizedPc/header.vm")
+<body>
+#parse("customizedPc/top.vm")
+<div class="container clearfix">
+    #parse("customizedPc/order_info.vm")
+    <!--是否展示客服-->
+    #if($!{needCustomService})
+    #parse("customizedPc/fixed_tools.vm")
+    #end
+    <!--是否展示客服结束-->
+    <p class="paying"><i class="icon">&#xe625;</i>支付仍在后台处理中，请耐心等待</p>
+    <a href="javascript:Action.ebankResult()" class="button again-query">再次查询支付结果</a>
+    <!--公众号二维码-->
+    <div class="official-accounts none"><a href="#" target="_blank" id="magnify"><img id="qrcode" width="90"></a><span>识别左方二维码，<br>可查询订单信息</span></div>
+    <!--公众号二维码结束-->
+</div>
+<script>
+    /*结果页公众号二维码控制*/
+    dom.querySelector("#qrcode").addEventListener("error",function(){
+        dom.querySelector(".official-accounts").classList.add("none");
+    },false);
+    #if("$!{token}")
+    Action.ajax({
+        url:"${ctx.contextPath}/newwap/yeepay/qrcode",
+        data:{
+            token:"${token}",
+            orderId:"$!{orderId}",
+            merchantNo:"$!{merchantNo}"
+        },
+        success:function(path){
+            dom.querySelector("#qrcode").src = path;
+            dom.querySelector("#magnify").href = path;
+            dom.querySelector(".official-accounts").classList.remove("none");
+        }
+    });
+    #end
+    /*结果页公众号二维码控制结束*/
+</script>
+#parse("customizedPc/footer.vm")
+</body>
+</html>

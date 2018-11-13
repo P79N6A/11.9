@@ -1,0 +1,6 @@
+#*
+全站通用错误信息
+*#
+<div class="global-error">
+    当前所选银行网银支付不支持safiri，请用IE浏览器进行支付
+</div>

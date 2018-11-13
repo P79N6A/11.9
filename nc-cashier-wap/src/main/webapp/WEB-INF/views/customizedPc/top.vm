@@ -1,0 +1,6 @@
+<header id="header">
+    <div class="top-wrapper clearfix">
+        <div class="logo"><img src="#if($!{logoFileUrl})$!{logoFileUrl}#else${ctx.contextPath}/customizedPc/assets/images/logo.png#end" alt="易宝支付"><span class="sign">收银台</span></div>
+        <div class="service-phone">#if($!{servicePhone})$!{servicePhone} #else 7X24小时客服电话：4001-500-800#end</div>
+    </div>
+</header>

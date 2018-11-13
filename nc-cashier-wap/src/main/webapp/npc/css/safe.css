@@ -1,0 +1,23 @@
+.ocx_style{
+	width: 200px;
+	height: 33px;
+	line-height: 33px;
+	vertical-align: middle;
+	padding: 0px;
+	border: none;
+}
+.ocx_install{
+	float:right;
+	margin-right:60%;
+}
+.popCont .popIframe {
+	position:absolute; 
+	visibility:inherit; 
+	top:0px;
+	border:0px;
+	left:0px;  
+	height:100%;
+	width:100%; 
+	z-index:-1;
+	/*filter='progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)';*/
+}

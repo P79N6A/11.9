@@ -1,0 +1,268 @@
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+ul , li{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    cursor: pointer;
+}
+h3{
+    font-weight: normal;
+}
+html{
+    height: 100%;
+}
+body{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.identity-box{
+    position: absolute;
+    left: 50%;
+    z-index: 501;
+    width: 510px;
+    height: auto;
+    margin-left: -255px;
+    padding-bottom: 30px;
+    background: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+#mask{
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background: #000;
+    opacity: 0.4;
+}
+.identity{
+    width: 100%;
+    overflow: hidden;
+}
+.select-identity , .add-identity{
+    width: 100%;
+    height: auto;
+    display: none;
+}
+.block{
+    display: block;
+}
+.identity-head{
+    padding: 20px;
+    line-height: 20px;
+    border-bottom: 1px solid #dfdfdf;
+}
+.add-identity .identity-title{
+    text-align: center;
+}
+.identity-title{
+    text-align: left;
+}
+
+.identity-title h3{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    color: #454648;
+}
+.identity-title h3 span{
+    padding-right: 10px;
+    font-size: 20px;
+    color: #76ce5f;
+}
+.title-back , .title-close{
+    position: absolute;
+    top: 18px;
+    font-size: 20px;
+    color: #b4b4b4;
+}
+.title-back{
+    top: 20px;
+    left: 20px;
+}
+.title-close{
+    right: 20px;
+}
+.identity-explain{
+    margin-top: 10px;
+    padding: 10px 12px;
+    line-height: 18px;
+    font-size: 12px;
+    color: #454648;
+    background: #fff9e9;
+}
+.sv-phone{
+    color: #4490de;
+}
+.identity-content{
+    padding: 0 20px;
+}
+.identity-list{
+    max-height: 156px;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+.identity-list li{
+    border-bottom: 1px solid #dfdfdf;
+}
+.identity-list li:last-child{
+    border-bottom: none;
+}
+.li-t , .use-other , .form-child{
+    height: 52px;
+    line-height: 50px;
+    font-size: 15px;
+    color: #454648;
+}
+.li-t , .use-other{
+    cursor: pointer;
+}
+.li-t .check{
+    float: left;
+    margin-right: 10px;
+    font-size: 18px;
+    color: #d0d0d0;
+}
+.li-b{
+    position: relative;
+    display: none;
+    padding: 5px 12px;
+    margin-bottom: 10px;
+    line-height: 18px;
+    font-size: 12px;
+    color: #9f9f9f;
+    background: #fff9e9;
+}
+.li-b span{
+    color: #f26758;
+}
+.li-b .horn{
+    position: absolute;
+    top: -12px;
+    left: 40px;
+    line-height: normal;
+    font-size: 15px;
+    color: #fff9e9;
+}
+.active .li-b{
+    display: block;
+}
+.use-other{
+    display: block;
+    border-top: 1px solid #dfdfdf;
+    border-bottom: 1px solid #dfdfdf;
+}
+.use-other span{
+    float: right;
+    margin-right: -2px;
+    font-size: 18px;
+    color: #d0d0d0;
+}
+.btn-box{
+    width: 40%;
+    margin: 50px auto 0;
+}
+.add-identity .btn-box{
+    width: 25%;
+    padding-bottom: 60px;
+}
+.sure-btn , .finish-btn{
+    display: block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    background: #22ac38;
+    border-radius: 5px;
+}
+.identity-form{
+    position: relative;
+    padding: 30px 90px 0;
+}
+.form-child{
+    position: relative;
+    height: 42px;
+    padding-left: 80px;
+    margin-top: 20px;
+    line-height: 42px;
+}
+.form-child label{
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 80px;
+    text-align: right;
+}
+.input-text{
+    width: 100%;
+    height: 42px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    background: none;
+    border: 1px solid #c4d3ca;
+    outline: none;
+}
+.form-err{
+    position: absolute;
+    left: 170px;
+    bottom: -30px;
+    display: none;
+    line-height: 30px;
+    font-size: 14px;
+    color: #f00;
+}
+.none{
+    display: none;
+}
+
+/*font*/
+@font-face {font-family: "iconfont";
+    src: url('../font/iconfont.eot?t=1479964573925'); /* IE9*/
+    src: url('../font/iconfont.eot?t=1479964573925#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('../font/iconfont.woff?t=1479964573925') format('woff'), /* chrome, firefox */
+    url('../font/iconfont.ttf?t=1479964573925') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+    url('../font/iconfont.svg?t=1479964573925#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+    font-family:"iconfont" !important;
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shangjiantou:before { content: "\e61b"; }
+
+.icon-iconfontcha:before { content: "\e652"; }
+
+.icon-not_selected:before { content: "\e64e"; }
+
+.icon-guanbi:before { content: "\e603"; }
+
+.icon-xuanzhong:before { content: "\e78c"; color: #fa9e5b;}
+
+.icon-wenhao:before { content: "\e63a"; }
+
+.icon-duigouzhuanhuan:before { content: "\e62f"; }
+
+.icon-gou:before { content: "\e73d"; }
+
+.icon-jiantouyoujiantou:before { content: "\e615"; }
+
+.icon-jiantouyoujiantou1:before { content: "\e600"; }

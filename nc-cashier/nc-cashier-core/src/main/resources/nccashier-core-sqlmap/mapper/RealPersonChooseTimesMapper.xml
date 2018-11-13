@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yeepay.g3.core.nccashier.entity.RealPersonChooseTimes">
+
+	<resultMap id="realPersonChooseTimesMap" type="RealPersonChooseTimes">
+		<id column="ID" property="id"/>
+		<result column="MERCHANT_NO" property="merchantNo" />
+		<result column="STATUS" property="status" />
+		<result column="IDENTITY_ID" property="identityId" jdbcType="VARCHAR" typeHandler="com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler"/>
+		<result column="IDENTITY_TYPE" property="identityType" />
+		<result column="SHOW_COUNT" property="showCount" />
+		<result column="PAYMENT_REQUEST_ID" property="payRequestId" />
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="UPDATE_TIME" property="updateTime"/>
+	</resultMap>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="RealPersonChooseTimes">
+		insert into TBL_NCCA_SHOWTIMES
+		(
+		MERCHANT_NO,
+		IDENTITY_ID,
+		IDENTITY_TYPE,
+		STATUS,
+		SHOW_COUNT,
+		PAYMENT_REQUEST_ID,
+		CREATE_TIME,
+		UPDATE_TIME,
+		IDENTITY_ID_ENCRYPT
+		)
+		values
+		(
+		#{merchantNo,jdbcType=VARCHAR},
+		#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdWriteTypeHandler},
+		#{identityType,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR},
+		#{showCount,jdbcType=INTEGER},
+		#{payRequestId,jdbcType=BIGINT},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler}
+		)
+	</insert>
+
+	<select id="getShowTimesByUserInfo" parameterType="map" resultMap="realPersonChooseTimesMap">
+		SELECT * FROM TBL_NCCA_SHOWTIMES
+			WHERE MERCHANT_NO = #{merchantNo} and IDENTITY_ID = #{identityId} and  IDENTITY_TYPE = #{identityType}
+	</select>
+	<update id="update" parameterType="RealPersonChooseTimes">
+		UPDATE TBL_NCCA_SHOWTIMES
+		SET SHOW_COUNT = #{showCount}
+		<if test="status!=null">
+			,STATUS = #{status}
+		</if>
+		<if test="payRequestId!=null">
+			,PAYMENT_REQUEST_ID = #{payRequestId}
+		</if>
+		,UPDATE_TIME=#{updateTime}
+        WHERE ID = #{id} 
+	</update>
+
+		<select id="getUnChooseShowTimesInfo" parameterType="map" resultMap="realPersonChooseTimesMap">
+		SELECT * FROM TBL_NCCA_SHOWTIMES
+			WHERE 
+			<if test="updateTimeBegin!=null and updateTimeEnd!=null">
+			  UPDATE_TIME  <![CDATA[>=]]> #{updateTimeBegin}
+			AND UPDATE_TIME <![CDATA[<=]]>#{updateTimeEnd} AND
+			</if>
+			SHOW_COUNT >2 and STATUS='VALIDE'  
+			FETCH FIRST ${dealRecordsNo} ROW ONLY with ur
+		</select>
+
+	<!--查询TBL_NCCA_SHOWTIMES记录数量-->
+	<select id="countRealPersonChooseTimes" parameterType="map" resultType="int">
+		select count(ID)
+		from NCCASHIER.TBL_NCCA_SHOWTIMES as req
+		where req.ID &gt;= #{fromIdTotal} and req.ID &lt;#{toIdTotal}
+	</select>
+
+	<!--批量查询RealPersonChooseTimes-->
+	<select id="listRealPersonChooseTimesNotEnctypt" parameterType="map" resultMap="realPersonChooseTimesMap">
+		select * from
+		(select rownumber() over(order by ID asc) as rownum,req.ID,req.IDENTITY_ID
+		from NCCASHIER.TBL_NCCA_SHOWTIMES as req
+		where req.ID &gt;= #{fromIdTotal} and req.ID &lt;#{toIdTotal}
+		)
+		where rownum &gt;= #{fromIndex} and rownum &lt;#{toIndex}
+	</select>
+
+	<!--修改IDENTITY_ID_ENCRYPT为加密后的IDENTITY_ID-->
+	<update id="updateForEncrypt" parameterType="RealPersonChooseTimes">
+		update TBL_NCCA_SHOWTIMES
+		set
+		IDENTITY_ID_ENCRYPT = #{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler}
+		where ID = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,7 @@
+#if(!${theme} || ${theme.showMerchantName})
+<footer class="pme-footer" id="mod-footer" style="margin-bottom: 10px;">
+     <p>本服务由易宝支付（yeepay.com）提供</p>
+     <p>易宝支付客服电话：<span style="color:#6ec37a; text-decoration:none;">4001-500-800</span></p>
+     <p>易宝支付客服公众号：<span style="color:#6ec37a;">易宝支付</span></p>
+</footer>
+#end

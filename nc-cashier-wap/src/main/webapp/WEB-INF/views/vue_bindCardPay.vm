@@ -1,0 +1,13 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no"><title>添加银行卡</title><script>var bindCardMerchantRequest = $!{bindCardMerchantRequest};
+      var token = '$!{token}';  //是否是绑卡支付的标识  必须有
+      var orderId = '$!{orderId}';
+      var productName = '$!{productName}';
+      var amount = '$!{amount}';
+      var companyName = '$!{companyName}';
+      var companyText = '$!{companyText}';
+      // var tradeTime = '$!{tradeTime}';
+      var fee = '$!{fee}';
+      var contextPath = '$!{ctx.contextPath}'; //获取项目路径
+      var showActivity = $!{showActivity.showActivity}; //活动页面
+      var errormsg = '$!{errormsg}';
+      var errorcode = '$!{errorcode}';</script><link href=${ctx.contextPath}/static/vue-static/css/app.56c7b08269e28de0060b9cd584d12045.css rel=stylesheet></head><body style=background:#f5f5f5;><div id=app></div><script type=text/javascript src=${ctx.contextPath}/static/vue-static/js/manifest.141bcd3bc441048fbe3a.js></script><script type=text/javascript src=${ctx.contextPath}/static/vue-static/js/vendor.2be039578e4abe37e6dc.js></script><script type=text/javascript src=${ctx.contextPath}/static/vue-static/js/app.3561e5c9145acf6b9dc0.js></script></body></html>

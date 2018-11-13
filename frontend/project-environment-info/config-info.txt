@@ -1,0 +1,21 @@
+线上的各个地方的配置信息：
+1，统一配置
+boss后台[系统]-[查询配置信息]，命名空间default，配置类型config_type_sys，配置键：
+FRONT_END_REFUND_CALLBAK_URL-http://frontend.core.3g:8080/frontend-hessian/hessian/RefundResultNotifyFacade-前端支付退款回调接口
+FRONT_END_MPAY_URL-http://wpay.yeepay.com/mpay-web/hessian/FrontEndPayFacade-前端支付请求mpay的URL 
+FRONT_END_REQUEST_SYSTEM_CONFIG-list-前端支付业务方
+FRONT_END_REQUEST_SYSTEM_MAP-map-前端支付业务方中英文对照 
+FRONT_END_CARD_TYPE-map-前端支付卡类型 
+FRONT_END_BANK_LIST-map-前端支付银行中英文对照
+2，mq
+QA   http://172.17.102.171:15672
+内测  http://59.151.25.126:6353
+生产 http://59.151.25.126:6304/#/
+
+"rabbitmq.bass.3g" username="yjzf" password="1qaz2wsx" port="5672" virtual-host=“yjzf"
+
+3，错误码系统
+boss3g.yeepay.com/ncboss支付系统／错误码管理nc和错误码对应关系
+具体信息：
+系统名称:前端支付
+4，微信后台配置 商户的公众号授权访问的地址，以及openid相关信息

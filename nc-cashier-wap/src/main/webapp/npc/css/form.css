@@ -1,0 +1,142 @@
+@charset "utf-8";
+/**************表单样式*******************/
+.form .row {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.form .row .tit {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 80px;
+    height: 25px;
+    line-height: 25px;
+    text-align: right;
+    visibility: visible;
+}
+
+.form .row .tit em {
+    color: #E80f0F;
+}
+
+.form .row .vt {
+    vertical-align: top;
+}
+
+input, textArea, select {
+    width: 195px;
+    height: 33px;
+    padding-left: 3px;
+    line-height: 33px;
+    box-shadow: inset 1px 1px 3px #ECECEC;
+    vertical-align: middle;
+    border: #DADADA solid 1px;
+    transition: border ease-out .6s;
+    font-size: 12px;
+}
+
+select {
+    width: 198px;
+}
+
+input::-ms-clear {
+    display: none;
+}
+
+input[readonly] {
+    color: #999999;
+}
+
+label {
+    vertical-align: top;
+}
+
+input:hover, textArea:hover, select:hover, .simuSel:hover, input:focus, textArea:focus, select:focus, .simuSel:focus {
+    border-color: #5AC66F;
+}
+
+input[type=radio], .form input[type=checkbox] {
+    width: auto;
+    height: auto;
+    margin-right: 5px;
+}
+
+input.dateInput {
+    background: url(../images/icon2.png) no-repeat 97% -212px;
+}
+
+input.writError {
+    border-color: #EA1818;
+}
+
+textArea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.placeholder {
+    color: #90959C;
+    font-size: 12px;
+}
+
+input::-moz-placeholder {
+    font-size: 12px;
+    font-family: "宋体";
+    font-weight: normal;
+    color: #90959C;
+}
+
+input::-webkit-input-placeholder {
+    font-size: 12px;
+    font-family: "宋体";
+    font-weight: normal;
+    color: #90959C;
+}
+
+.simuSel {
+    background-color: #FFF;
+    border: #DADADA solid 1px;
+    box-shadow: 1px 1px 3px #ECECEC;
+    transition: border ease-out .6s;
+    cursor: default;
+}
+
+.simuSel:hover .arrow {
+    background-position: -6px -321px !important;
+}
+
+.uploadFile {
+    padding-right: 25px;
+    width: 170px;
+}
+
+.uploadFile:hover, .uploadFile:focus {
+    background-position: 97% -845px !important;
+}
+
+.optionWrap {
+    border: #5AC66F solid 1px;
+}
+
+.optionWrap li {
+    padding-left: 3px;
+    background-color: #FFF;
+}
+
+.optionWrap li:hover {
+    background-color: #E6F3E8;
+}
+
+.code {
+    width: 80px;
+}
+
+.changeBtn {
+    cursor: pointer;
+}
+
+.changeBtn:hover {
+    color: #5AC66F;
+    -moz-user-select: none;
+    user-select: none;
+}

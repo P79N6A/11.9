@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <meta name="format-detection" content="telephone=no">
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            position: relative;
+            background-color: #f7f7f7;
+            font-size: 14px;
+        }
+
+        body, div, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        @font-face {
+            font-family: 'iconfont';
+            src: url('${ctx.contextPath}/npc/iconfontsdk/iconfont.eot');
+            src: url('${ctx.contextPath}/npc/iconfontsdk/iconfont.eot?#iefix') format('embedded-opentype'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.woff') format('woff'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.ttf') format('truetype'),
+            url('${ctx.contextPath}/npc/iconfontsdk/iconfont.svg#iconfont') format('svg');
+        }
+
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .sdk-money {
+            margin: 20px 15px;
+            text-align: center;
+            word-break: break-all;
+            font-size: 30px;
+        }
+
+        .sdk-pay-item {
+            position: relative;
+            margin-left: 10px;
+            padding: 12px 12px 12px 0;
+            border-bottom: #b1b1b1 solid 1px;
+        }
+
+        .sdk-pay-item:not([class~=disabled]):active {
+            background-color: lightgrey;
+        }
+
+        .sdk-pay-item.disabled {
+            color: #8a8a8a;
+            -webkit-filter: grayscale(1);
+            filter: grayscale(1);
+        }
+
+        .sdk-pay-item .disabled-msg {
+            display: none;
+        }
+
+        .sdk-pay-item.disabled .disabled-msg {
+            display: inline;
+        }
+
+        .sdk-pay-item:after {
+            content: "\e600";
+            position: absolute;
+            right: 5px;
+            line-height: 25px;
+            font-family: "iconfont";
+        }
+
+        .sdk-pay-item .iconfont {
+            margin-right: 5px;
+            vertical-align: middle;
+            font-size: 18px;
+        }
+
+        .sdk-pay-item .iconfont.wx {
+            color: #62b900;
+        }
+
+        .sdk-pay-item .iconfont.alipay {
+            color: #0da0e5;
+        }
+
+        .sdk-footer {
+		   position: absolute;
+            bottom: 35px;
+            width: 100%;
+            margin-top: 80px;
+            text-align: center;
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+        .sdk-footer a {
+            color: #6ec37a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="sdk-money">¥<span id="payAmount">0.00</span></div>
+<div class="sdk-pay-item-wrapper">
+    <div class="sdk-pay-item" id="yb"><img class="iconfont" src="${ctx.contextPath}/npc/imagessdk/logo.png" width="18">银行卡支付</div>
+    <div class="sdk-pay-item" id="weixin"><i class="iconfont wx">&#xe647;</i>微信<span class="disabled-msg">(未安装APP,该支付不可用)</span>
+    </div>
+    <div class="sdk-pay-item" id="alipay"><i class="iconfont alipay">&#xe65f;</i>支付宝 <span class="disabled-msg">(未安装APP,该支付不可用)</span>
+    </div>
+</div>
+<footer class="sdk-footer">
+    <p>本服务由易宝支付（yeepay.com）提供</p>
+
+    <p>易宝支付客服电话：<a href="tel:4001-500-800">4001-500-800</a></p>
+</footer>
+<script>
+    var browser = {
+        versions: function () {
+            var u = navigator.userAgent;
+            return {
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,//火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Adr') > -1, //android终端
+                iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1, //是否web应该程序，没有头部与底部
+                weixin: u.indexOf('MicroMessenger') > -1, //是否微信
+                qq: u.match(/\sQQ/i) == " qq" //是否QQ
+            };
+        }()
+    };
+    var Controller = function () {
+        /*
+         * 支付方式控制，包含置顶、禁用、点击返回支付标识
+         * */
+        function top(id) {
+            /*
+             * 上次选择的支付方式置顶
+             *{id} 元素id值
+             * */
+            var elem = document.querySelector("#" + id),
+                    parent = elem.parentNode;
+            parent.insertBefore(elem, parent.firstChild);
+        }
+
+        function disabled(id) {
+            /*
+             * 禁用支付方式
+             *{id} 元素id值
+             * */
+            var elem = document.querySelector("#" + id);
+            elem.classList.add("disabled");
+            return elem;
+        }
+
+        function payAmount(amount) {
+            /*
+             * 支付金额
+             * {amount} 支付金额
+             * */
+            document.querySelector("#payAmount").textContent = amount;
+        }
+		function hidden(id) {
+            /*
+             * 隐藏支付方式
+             * {id} 元素id值
+             * */
+            var elem = document.querySelector("#" + id);
+            elem.style.display = "none";
+        }
+        +function identify() {
+            /*
+             * 返回支付标识,无需调用，页面渲染后，自动绑定点击事件
+             * 银行卡支付 → "yb"
+             * 微信支付 → "weixin"
+             * 支付宝支付 → "alipay"
+             * */
+            var pay = Array.prototype.slice.call(document.querySelectorAll(".sdk-pay-item"));
+            pay.forEach(function (currentItem) {
+                currentItem.addEventListener("click", function () {
+                    if (!this.classList.contains("disabled")) {
+                        if (browser.versions.ios) {
+                            /*
+                             * IOS
+                             * */
+                            paymentClick(this.id)
+                        } else if (browser.versions.android) {
+                            /*
+                             * Android
+                             * */
+                            window.Android.paymentClick(this.id);
+                        }
+                    }
+                });
+            });
+        }();
+
+        return {
+            top: top,
+            disabled: disabled,
+            hidden: hidden,
+            payAmount: payAmount
+        }
+    }();
+    /*调用示例*/
+<!--    Controller.disabled("alipay");-->
+</script>
+</body>
+</html>

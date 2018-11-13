@@ -1,0 +1,32 @@
+//页面总宽度
+@total-width: 1170px;
+//槽宽度
+@gutter-width: 30px;
+//列宽度
+@column-width: 70px;
+//居中对齐
+@layout-center: 0 auto;
+//页面主色
+@main-color: color(`skin.mainColor`);
+//强调文字颜色
+@font-color: color(`skin.fontColor`);
+//@font-color: spin(@main-color, -(180 / 3));
+//背景颜色
+@background-color: #e4e4e4;
+//文字大小
+@font-size: 14px;
+//鼠标滑过颜色
+@hover-color: darken(@main-color, 10%);
+//强制文本不换行，显示为省略号
+.ellipsis() {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+//禁止选中文本
+.disabled-select() {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}

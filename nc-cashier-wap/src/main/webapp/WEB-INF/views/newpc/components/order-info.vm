@@ -1,0 +1,42 @@
+#*
+订单信息
+*#
+<div class="payment-time none" id="expireTime">请在<span class="time">$!{expireTime}</span>之前完成支付</div>
+<div class="order-info layout clearfix">
+    <div class="amount"><span class="title">订单总额：</span>#if(${actualAmount})<span class="money"
+                                                                                  title="$!{actualAmount}">￥$!{actualAmount}</span>
+        <span class="original-order-amount">￥$!{amount}</span>
+    #else
+        <span class="money"
+              title="$!{amount}">￥$!{amount}</span>
+    #end
+        #if(${fee})
+            （包含手续费<span class="fee">$!{fee}</span>元）#end<span class="all-random-guide none">随机立减</span></div>
+    <div class="merchant-info-wrapper">
+        <div class="merchant-info"><p><span class="title">购买商品：</span><span>$!{productName}</span></p>
+
+            <p><span class="title">订单号：</span><span title="$!{orderId}">$!{orderId}</span></p></div>
+        <input type="checkbox" id="order-details-handler">
+
+        <div class="merchant-info details"><p><span class="title">收款商家：</span><span>$!{companyName}</span></p>
+
+            <p><span
+                    class="title">交易时间：</span><span>$!{tradeTime}</span></p></div>
+        <label for="order-details-handler"><span class="order-details-trigger icon"><i class="br-hack">详情</i></span></label>
+    </div>
+
+</div>
+<div id="globalErrorWrapper"></div>
+<script>
+    (function () {
+        /*
+        * 用户进入页面传入订单有效期
+        * 订单有效期和当前本地时间比较，如果小于30min，显示交易过期时间提示
+        * */
+        var expireTime = "$!{expireTime}".replace(/-/g,"/");
+        var delta = new Date(expireTime).getTime() - new Date().getTime() <= 30 * 60 * 1000;
+        if (delta) {
+            dom.querySelector("#expireTime").classList.remove("none");
+        }
+    })();
+</script>

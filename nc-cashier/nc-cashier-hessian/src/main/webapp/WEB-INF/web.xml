@@ -1,0 +1,68 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Archetype Created Web Application</display-name>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/nccashier-core-spring/applicationContext-nccashier.xml
+		</param-value>
+	</context-param>
+
+	<!-- modify by meiling.zhuang:去除Athena（无人维护，又占据大量日志）com.yeepay.g3.athena.collection.listener.AthenaListener -->
+	<listener>
+		<listener-class>com.yeepay.g3.utils.soa.context.ContextLoaderListener</listener-class>
+	</listener>
+	
+	   <!-- 健康检查页 -->
+    <listener>
+        <listener-class>com.yeepay.infra.MetricsServletsWiringContextListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>metrics</servlet-name>
+        <servlet-class>com.yeepay.infra.servlets.MetricsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>metrics</servlet-name>
+        <url-pattern>/metrics/*</url-pattern>
+    </servlet-mapping>
+    
+	<servlet>
+		<servlet-name>soa</servlet-name>
+		<servlet-class>com.yeepay.g3.utils.soa.remoting.http.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>soa</servlet-name>
+		<url-pattern>/soa/*</url-pattern>
+	</servlet-mapping>
+	
+
+	<servlet>
+		<servlet-name>hessian</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>hessian</servlet-name>
+		<url-pattern>/hessian/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>class</servlet-name>
+		<servlet-class>com.yeepay.g3.utils.soa.remoting.http.servlet.HttpURLClassLoaderServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>class</servlet-name>
+		<url-pattern>/class/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- session timeout -->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+</web-app>

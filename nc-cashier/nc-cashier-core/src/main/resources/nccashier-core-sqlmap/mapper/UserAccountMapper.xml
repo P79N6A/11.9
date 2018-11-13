@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yeepay.g3.core.nccashier.entity.UserAccount">
+
+	<resultMap id="userAccountMap" type="UserAccount">
+		<id column="ID" property="id"/>
+		<result column="PAYMENT_REQUEST_ID" property="paymentRequestId"/>
+		<result column="PAYMENT_RECORD_ID" property="paymentRecordId"/>
+		<result column="TOKEN_ID" property="tokenId"/>
+		<result column="MERCHANT_NO" property="merchantNo"/>
+		<result column="TRADE_SYS_ORDER_ID" property="tradeSysOrderId"/>
+		<result column="TRADE_SYS_NO" property="tradeSysNo"/>
+		<result column="ORDER_ORDER_ID" property="orderOrderId"/>
+		<result column="ORDER_SYS_NO" property="orderSysNo"/>
+		<result column="USER_IP" property="userIp"/>
+		<result column="USER_UA" property="userUa"/>
+		<result column="PARAM_SHOW_INFO" property="paramShowInfo" jdbcType="VARCHAR" javaType="com.yeepay.g3.core.nccashier.entity.ParamShowInfo"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="UPDATE_TIME" property="updateTime"/>
+	</resultMap>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="UserAccount">
+		insert into TBL_NCCA_USER_ACC
+		(
+		PAYMENT_REQUEST_ID,
+		PAYMENT_RECORD_ID,
+		TOKEN_ID,
+   		MERCHANT_NO,
+   		TRADE_SYS_ORDER_ID,
+   		TRADE_SYS_NO,
+   		ORDER_ORDER_ID,
+   		ORDER_SYS_NO,
+		PARAM_SHOW_INFO,
+		USER_UA,
+		USER_IP,
+		CREATE_TIME,
+		UPDATE_TIME
+		)
+		values
+		(
+		#{paymentRequestId,jdbcType=BIGINT},
+		#{paymentRecordId,jdbcType=BIGINT},
+		#{tokenId,jdbcType=VARCHAR},
+		#{merchantNo,jdbcType=VARCHAR},
+		#{tradeSysOrderId,jdbcType=VARCHAR},
+		#{tradeSysNo,jdbcType=VARCHAR},
+		#{orderOrderId,jdbcType=VARCHAR},
+		#{orderSysNo,jdbcType=VARCHAR},
+		#{paramShowInfo,jdbcType=VARCHAR,javaType=com.yeepay.g3.core.nccashier.entity.ParamShowInfo},
+		#{userUa,jdbcType=VARCHAR},
+		#{userIp,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<select id="findUserAccountByToken" parameterType="map" resultMap="userAccountMap">
+		SELECT * FROM TBL_NCCA_USER_ACC
+		WHERE TOKEN_ID=#{tokenId}
+	</select>
+
+	<update id="updateRecordId" parameterType="UserAccount">
+		UPDATE TBL_NCCA_USER_ACC
+		SET PAYMENT_RECORD_ID=#{paymentRecordId},UPDATE_TIME=#{updateTime}
+		WHERE ID=#{id}
+	</update>
+</mapper>

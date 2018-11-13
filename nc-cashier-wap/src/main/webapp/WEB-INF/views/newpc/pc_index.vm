@@ -1,0 +1,218 @@
+#parse("newpc/components/head.vm")
+<body>
+<!--[if lte IE 8]>
+<script type="text/javascript">window.location.replace("${ctx.contextPath}/newpc/request/$!{token}?compatibleView=Y")</script>
+<![endif]-->
+    #parse("newpc/components/top.vm")
+    #parse("newpc/components/fixed-tools.vm")
+<div class="main layout #if(($showSccanPay && $showNcPay) || ($showSccanPay && $showEankPay) || ($showSccanPay && $showAccountPay) || ($showSccanPay && $showNotBankCardPay) || ($showSccanPay && $showBindCardPay) || ($showLoadNet && $showSccanPay) || ($showLoadRemit && $showSccanPay) || ($showClfEasy && $showSccanPay))col-md-2#end clearfix">
+    #parse("newpc/components/order-info.vm")
+    #if($showNcPay || $showEankPay || $showAccountPay || $showNotBankCardPay || $showBindCardPay || $showLoadNet || $showLoadRemit || $showLoadRemit || $showClfEasy)
+        <div class="column">
+        #*北京银行扒鸡活动*#
+            #if($showActivity.showActivity && ($showNcPay || $showEankPay))
+                <div style="padding:12px 0;text-align: center; background-color: #fff6e6;"><img
+                        src="${ctx.contextPath}/newpc/assets/images/paji_20180416.png" style="vertical-align: middle">
+                </div>
+            #end
+        #*北京银行扒鸡活动结束*#
+            #if ($showNcPay || $showBindCardPay)
+                <div id="quickPayWrapper"></div>
+            #end
+            #if($showClfEasy)
+                <div id="installmentPayWrapper"></div>
+            #end
+            #if ($showEankPay || $showLoadRemit || $showLoadNet)
+                <div id="bankPayWrapper"></div>
+            #end
+            #if ($showLoadRemit)
+                <div id="remitBankPayWrapper"></div>
+            #end
+            #if ($showAccountPay)
+                <div id="accountPayWrapper"></div>
+            #end
+            #if($showNotBankCardPay)
+                <div id="notBankPayWrapper">
+                    <input type="radio" name="pay-mode-handler" checked id="payModeNotBankpay" class="pay-mode-handler">
+
+                    <div class="not-bank-pay">
+                        <label for="payModeNotBankpay"><h2>非银行卡支付</h2></label>
+
+                        <div class="not-bank-pay-main">
+                            <div class="not-bank-content">跳转到非银行卡支付升级版<a href="${notBankCardPayUrl}" target="_blank">前往&gt;</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            #end
+        </div>
+    #end
+    #if($showSccanPay)
+        <div class="column">
+            <div class="qrcode-wrapper">#parse("newpc/components/qrcode.vm")</div>
+        </div>
+    #end
+</div>
+<!--易宝官网传送订单号,官网可查询交易订单状态-->
+<iframe id="messageFrame" style="display: none" src="https://www.yeepay.com/localStorageCashier"></iframe>
+<script>
+    document.querySelector("#messageFrame").addEventListener("load", function () {
+        var messageWin = document.querySelector("#messageFrame").contentWindow;
+        messageWin.postMessage("$!{orderId}", "https://www.yeepay.com");
+    }, false);
+</script>
+<!--易宝官网传送订单号结束-->
+<script>
+    var orderInfo = {};
+    (function (global) {
+        #if ($showNcPay)
+            /***********快捷支付模块***********/
+            Action.getComponent({
+                        "data": {"token": sessionStorage.getItem("token")},
+                        "url": "${ctx.contextPath}/newpc/routpayway/" + sessionStorage.getItem("token")
+                    },
+                    "#quickPayWrapper", null, function (data) {
+//                        if (dom.querySelector(".module-error") != null) return;
+                        var html = '<input type="radio" name="pay-mode-handler" id="payModeQuick" class="pay-mode-handler"><div class="quick-pay"><label for="payModeQuick"><h2>银行卡快捷支付<span>无需开通网银</span></h2></label><div class="quick-pay-main"></div>'
+                        dom.querySelector("#quickPayWrapper").insertAdjacentHTML("beforeEnd", html);
+                        dom.querySelector("#payModeQuick").checked = true;
+                        User.Error("#quickPayWrapper .quick-pay-main", data.errormsg + '(' + data.errorcode + ')', "module-error");
+                        hideError(dom.querySelector("#quickPayWrapper .pay-mode-handler"));
+                    });
+            /******快捷支付模块结束*******/
+        #end
+
+        #if ($showClfEasy)
+            /***********分期易支付模块***********/
+            Action.clfEasyIndex();
+            /******分期易模块结束*******/
+        #end
+
+        #if ($showBindCardPay)
+            /***********绑卡支付模块***********/
+            Action.bindCardPayOrderInfo();
+            /******绑卡支付模块结束*******/
+        #end
+
+
+        #if ($showEankPay)
+            /******网银支付模块*******/
+            Action.getComponent({
+                        "data": {"token": sessionStorage.getItem("token")},
+                        "url": "${ctx.contextPath}/newpc/ebank/index"
+                    },
+                    "#bankPayWrapper", function () {
+                        User.Tab.bind();
+                        User.Bank.select().more();
+                        dom.querySelector(".pay-mode-handler").checked = true;
+                        #if ($isOverLimit)
+                            dom.querySelector(".over-limit").classList.remove("none");
+                        #end
+                        #if($needClientId)
+                            dom.querySelector("#payModeBank").checked = true;
+                            dom.querySelector(".bank-container .tab-wrapper #b2bTab").click();
+                            dom.querySelector(".bank-container .tab-content-wrapper .tab-content.active li[bankcode=$needClientId]").click();
+                            Action.eBankPayRoute();
+                        #end
+                    }, function (data) {
+//                        if (dom.querySelector(".module-error") != null) return;
+                        var html = '<input type="radio" name="pay-mode-handler" id="payModeBank" class="pay-mode-handler"><div class="bank-pay"><label for="payModeBank"><h2>网银支付 <span>请选择银行</span></h2></label><div class="bank-container"></div>'
+                        dom.querySelector("#bankPayWrapper").insertAdjacentHTML("beforeEnd", html);
+                        User.Error("#bankPayWrapper .bank-container", data.errormsg + '(' + data.errorcode + ')', "module-error");
+                        hideError(dom.querySelector("#bankPayWrapper .pay-mode-handler"));
+                    });
+            /******网银支付模块结束*******/
+        #end
+
+
+        #if ($showAccountPay)
+            /******账户支付模块*******/
+            Action.getComponent({
+                        "data": {"token": sessionStorage.getItem("token")},
+                        "url": "${ctx.contextPath}/newpc/accountpay/index"
+                    },
+                    "#accountPayWrapper", function () {
+                        dom.querySelector(".pay-mode-handler").checked = true;
+                    }, function (data) {
+//                        if (dom.querySelector(".module-error") != null) return;
+                        var html = '<input type="radio" name="pay-mode-handler" id="payModeAccount" class="pay-mode-handler"><div class="account-pay"><label for="payModeAccount"><h2>账户支付 <span>企业账户余额支付</span></h2></label><div class="account-pay-main"></div>'
+                        dom.querySelector("#accountPayWrapper").insertAdjacentHTML("beforeEnd", html);
+                        User.Error("#accountPayWrapper .account-pay-main", data.errormsg + '(' + data.errorcode + ')', "module-error");
+                        hideError(dom.querySelector("#accountPayWrapper .pay-mode-handler"));
+                    });
+            /******账户支付模块结束*******/
+        #end
+
+
+        #if ($showLoadNet)
+            /******充值网银支付模块*******/
+            Action.getComponent({
+                        "data": {"token": sessionStorage.getItem("token"), "type": "NET"},
+                        "url": "${ctx.contextPath}/newpc/bacLoad/index"
+                    },
+                    "#bankPayWrapper", function () {
+                        dom.querySelector(".pay-mode-handler").checked = true;
+                        hideError(dom.querySelector("#bankPayWrapper .pay-mode-handler"));
+                        #if ($isOverLimit)
+                            dom.querySelector(".over-limit").classList.remove("none");
+                        #end
+                        #if ($needClientId)
+                            dom.querySelector("#payModeBank").checked = true;
+                            dom.querySelector(".bank-container .tab-wrapper #b2bTab").click();
+                            dom.querySelector(".bank-container .tab-content-wrapper .tab-content.active li[bankcode=$needClientId]").click();
+                            Action.eBankPayRoute('recharge');
+                        #end
+                    }, function (data) {
+//                        if (dom.querySelector(".module-error") != null) return;
+                        var html = '<input type="radio" name="pay-mode-handler" id="payModeBank" class="pay-mode-handler"><div class="bank-pay"><label for="payModeBank"><h2>网银支付 <span>请选择银行</span></h2></label><div class="bank-container"></div>'
+                        dom.querySelector("#bankPayWrapper").insertAdjacentHTML("beforeEnd", html);
+                        User.Error("#bankPayWrapper .bank-container", data.errormsg + '(' + data.errorcode + ')', "module-error");
+                        dom.querySelector(".pay-mode-handler").checked = true;
+                        hideError(dom.querySelector("#bankPayWrapper .pay-mode-handler"));
+                    });
+            /******充值网银支付模块结束*******/
+        #end
+
+
+        #if ($showLoadRemit)
+            /******充值代付汇入模块*******/
+            Action.getComponent({
+                        "data": {"token": sessionStorage.getItem("token"), "type": "REMIT"},
+                        "url": "${ctx.contextPath}/newpc/bacLoad/index"
+                    },
+                    "#remitBankPayWrapper", function () {
+                        dom.querySelector(".pay-mode-handler").checked = true;
+                        hideError(dom.querySelector("#remitBankPayWrapper .pay-mode-handler"));
+                        #if ($isOverLimit)
+                            dom.querySelector(".over-limit").classList.remove("none");
+                        #end
+                        #if ($needClientId)
+                            dom.querySelector("#payModeBank").checked = true;
+                            dom.querySelector(".bank-container .tab-wrapper #b2bTab").click();
+                            dom.querySelector(".bank-container .tab-content-wrapper .tab-content.active li[bankcode=$needClientId]").click();
+                            Action.eBankPayRoute('recharge');
+                        #end
+                    }, function (data) {
+//                        if (dom.querySelector(".module-error") != null) return;
+                        var html = '<input type="radio" name="pay-mode-handler" id="netPayModeBank" class="pay-mode-handler"><div class="bank-pay"><label for="netPayModeBank"><h2>代付汇入支付 <span>需提前开通网银，充值成功可立即出款</span></h2></label><div class="bank-container"></div>'
+                        dom.querySelector("#remitBankPayWrapper").insertAdjacentHTML("beforeEnd", html);
+                        User.Error("#remitBankPayWrapper .bank-container", data.errormsg + '(' + data.errorcode + ')', "module-error");
+                        dom.querySelector(".pay-mode-handler").checked = true;
+                        hideError(dom.querySelector("#remitBankPayWrapper .pay-mode-handler"));
+                    });
+        /******充值代付汇入模块结束*******/
+        #end
+
+        #if ($showLoadRemit || $showLoadNet)
+        setTimeout(function () {
+            User.Tab.bind();
+            User.Bank.select().more();
+        }, 600)
+        #end
+    }(window));
+    Action.getQueryStatus(parseInt(session.getItem("jsTrys")) * 3);
+    setTimeout(Action.marketinginfo, 1000);
+</script>
+    #parse("newpc/components/footer.vm")
+</body>
+</html>

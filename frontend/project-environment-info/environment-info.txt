@@ -1,0 +1,34 @@
+3、申请一组机器(使用上述回收的8台)，8台，2c4g，一个内测，7台对外，7台机器新建两个vs，两个内部域名frontend.core.3g（4台）和frontendquery.core.3g（3台）;
+4、不需要外网访问，内测机器需要办公网访问;
+5、需要做ad上线相关配置，ad上线权限分配给zheng.song;
+6、ad和jenkins关联路径 frontend-hessian.war release/tomcat-frontend.zip@3g-prepackage;
+7、生产服务器日志拆分，归档策略（按天拆分，拆分时间每日凌晨4点，按天归档）
+8、生产jdk安装1.8版本
+9,tomcat qa和生产分别在svn的如下目录中
+http://172.17.103.2/YeePay/deploy/product/branches/product_20120217/tomcat-frontend-hessian
+http://172.17.103.2/YeePay/deploy/qa/tomcat-frontend-hessian
+10，服务器 centos
+
+IP信息如下：
+192.168.90.185:8080(内) VSIP：192.168.240.133：8080(内) VSIP：59.151.25.126：6254(办)
+192.168.90.186：8080
+192.168.90.188：8080
+192.168.90.189：8080
+192.168.90.191：8080 VS_IP：192.168.240.134
+ 域名：frontend.core.3g
+
+192.168.90.192:8080
+192.168.9.79:8080
+192.168.9.80:8080  VS_IP:192.168.90.135
+域名:frontendquery.core.3g
+
+数据库／数据银行：
+数据库：zxdb
+schema：frontend
+增删改用户：frontapp
+查询用户：zxquery
+
+
+日志同步到log.yeepay.com
+index:frontend-*
+

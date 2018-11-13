@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yeepay.g3.core.nccashier.entity.UserRequestInfo">
+
+	<resultMap id="userRequestInfoMap" type="UserRequestInfo">
+		<result column="TOKEN_ID" property="tokenId"/>
+		<result column="CASHIER_VERSION" property="cashierVersion"/>
+		<result column="URL_PARAM_INFO" property="urlParamInfo"/>
+		<result column="MERCHANT_CONFIG_INFO" property="merchantConfigInfo"/>
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="UPDATE_TIME" property="updateTime"/>
+	</resultMap>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="PaymentRequest">
+		insert into TBL_NCCA_USER_REQUEST_INFO
+		(
+		TOKEN_ID,
+		CASHIER_VERSION,
+		URL_PARAM_INFO,
+		MERCHANT_CONFIG_INFO,
+		CREATE_TIME,
+		UPDATE_TIME
+		)
+		values
+		(
+		#{tokenId,jdbcType=VARCHAR},
+		#{cashierVersion,jdbcType=VARCHAR},
+		#{urlParamInfo,jdbcType=VARCHAR},
+		#{merchantConfigInfo,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+	<select id="queryByTokenId" parameterType="java.lang.String" resultMap="userRequestInfoMap">
+		SELECT * FROM TBL_NCCA_USER_REQUEST_INFO
+			WHERE TOKEN_ID=#{tokenId}
+	</select>
+</mapper>

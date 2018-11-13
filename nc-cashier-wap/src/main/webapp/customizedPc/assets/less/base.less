@@ -1,0 +1,2319 @@
+@import "variable";
+
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  padding-bottom: 100px;
+  min-height: calc(~"100% - 100px");
+  background-color: @background-color;
+  font-size: @font-size;
+  line-height: 18px;
+  font-family: "STHeiti", "Microsoft YaHei", "宋体", "arial";
+  cursor: default;
+}
+
+a {
+  text-decoration: none;
+  color: lighten(#019cd2, 5%);
+}
+
+a:hover {
+  text-decoration: underline;
+  color: #019cd2;
+}
+
+img {
+  vertical-align: middle;
+}
+
+.emp {
+  color: @font-color !important;
+}
+
+.icon-sprites {
+  background: url("../images/sprites.png") no-repeat;
+}
+
+/*错误信息*/
+.global-error, .component-error {
+  padding: 10px 20px;
+  background-color: #fcf0ee;
+  box-sizing: border-box;
+  font-size: 12px;
+  &:before {
+    content: "\e625";
+    padding-top: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+    font-family: "icon";
+    font-size: 20px;
+    color: #e83619;
+  }
+  .other-bank {
+    margin: 0 5px;
+    padding: 10px 20px;
+    border: #efe9e8 solid 1px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #000000;
+    cursor: pointer;
+  }
+  .change-card {
+    color: #019cd2;
+    cursor: pointer;
+  }
+}
+
+.component-error {
+  margin: auto @column-width;
+}
+
+/*错误信息结束*/
+#header {
+  height: 71px;
+  background-color: #ffffff;
+  border-bottom: #dadada solid 1px;
+  overflow: hidden;
+  .top-wrapper {
+    margin: @layout-center;
+    width: @total-width;
+    .logo {
+      float: left;
+      margin-top: 16px;
+      img {
+        vertical-align: middle;
+        height: 38px;
+      }
+      .sign {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 22px;
+        padding: 5px 22px;
+        border-left: #d4d4d4 solid 1px;
+        font-size: 20px;
+        color: #4c4948;
+      }
+    }
+    .service-phone {
+      float: right;
+      max-width: 720px;
+      margin-top: 40px;
+      color: @main-color;
+      .ellipsis;
+    }
+  }
+}
+
+.container {
+  margin: @layout-center;
+  margin-top: 10px;
+  //padding-bottom: 30px;
+  min-height: 550px;
+  position: relative;
+  width: @total-width;
+  background-color: #ffffff;
+  border-bottom: #ffffff solid 1px;
+  box-shadow: #d5d4d4 1px 1px 10px 3px;
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  clear: both;
+  visibility: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+.filter-blur {
+  -ms-filter: blur(Add="1", Direction="45", Strength="5");
+  -moz-filter: blur(5px);
+  -webkit-filter: blur(5px);
+  -o-filter: blur(5px);
+  filter: blur(5px);
+}
+
+#mask {
+  position: fixed;
+  z-index: 2100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  opacity: .1;
+  filter: alpha(opacity=60);
+}
+
+#loading {
+  position: fixed;
+  z-index: 2101;
+  left: 50%;
+  top: 50%;
+  margin-left: -190px;
+  margin-top: -60px;
+  width: 390px;
+  height: 120px;
+  line-height: 120px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: @font-size * 1.2;
+  text-align: center;
+}
+
+#loading img {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@font-face {
+  font-family: 'icon';
+  src: url('../iconfont/iconfont.eot'); /* IE9*/
+  src: url('../iconfont/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../iconfont/iconfont.woff') format('woff'), /* chrome、firefox */ url('../iconfont/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('../iconfont/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.icon {
+  font-family: "icon";
+  font-size: @font-size + 2;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: @main-color;
+  color: contrast(@main-color);
+}
+
+.none {
+  display: none !important;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+/*表单*/
+form .sington {
+  position: relative;
+  margin-bottom: 18px;
+  .title {
+    display: inline-block;
+    vertical-align: middle;
+    width: 85px;
+    margin-right: @gutter-width;
+    text-align: right;
+  }
+  .sample {
+    position: absolute;
+    left: 600px;
+    top: -15px;
+    display: none;
+  }
+  input {
+    margin-right: 18px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: (@column-width * 4) + (@gutter-width * 3);
+    height: 50px;
+    box-sizing: border-box;
+    box-shadow: inset #f4f4f4 1px 1px 3px, inset #f4f4f4 -1px -1px 3px;
+    border: #cecece solid 1px;
+    border-radius: 4px;
+    outline: none;
+  }
+  input[name=cardno] {
+    font-size: 18px;
+  }
+  input[name=cardno]::-webkit-input-placeholder {
+    font-size: @font-size;
+  }
+  input[name=cardno]::-moz-placeholder {
+    font-size: @font-size;
+  }
+  input[name=cardno]:-ms-input-placeholder {
+    font-size: @font-size;
+  }
+  input.verify-code {
+    width: 230px;
+  }
+  .verifycode-img {
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #e8e8e8;
+    color: #62b581;
+  }
+  input[readonly] {
+    color: #999999;
+  }
+  input:focus {
+    border-color: @main-color;
+    box-shadow: lighten(@main-color, 20%) 1px 1px 5px;
+  }
+  input:not([readonly]):focus ~ .sample {
+    display: block;
+  }
+  input[readonly]:focus {
+    border: #cecece solid 1px;
+    box-shadow: inset #f4f4f4 1px 1px 3px, inset #f4f4f4 -1px -1px 3px;
+  }
+  &.success label:after {
+    content: "\e613";
+    font-family: "icon";
+    color: @main-color;
+    font-size: 18px;
+  }
+  &.error input {
+    border-color: #e83619;
+  }
+  &.error .errormsg {
+    display: block;
+  }
+  .errormsg {
+    display: none;
+    margin-top: 5px;
+    margin-left: 115px;
+    color: #e83619;
+    font-size: 12px;
+    &:before {
+      content: "\e65d";
+      padding-top: 2px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
+      font-size: 16px;
+      font-family: "icon";
+    }
+  }
+}
+
+input[type=checkbox] {
+  position: absolute;
+  left: -9999px;
+}
+
+form {
+  button, .button {
+    margin-left: 115px;
+  }
+  .checkbox {
+    margin-left: 115px;
+    margin-right: 5px;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 12px;
+    height: 12px;
+    line-height: 9px;
+    border: #cecece solid 1px;
+    border-radius: 2px;
+    background-color: #ffffff;
+    text-align: center;
+  }
+  input[type=checkbox]:checked ~ .checkbox:after {
+    content: "\e66b";
+    color: @main-color;
+    font-size: 12px;
+  }
+  .global-error {
+    width: (@column-width * 4) + (@gutter-width * 3);
+    margin-top: 20px;
+    margin-left: 115px;
+  }
+  .prompt {
+    width: 370px;
+    margin: 0 0 10px 115px;
+  }
+}
+
+/*按钮*/
+button, .button {
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+  padding: 0 16px;
+  min-width: @column-width * 2 + @gutter-width;
+  height: 42px;
+  border: darken(@main-color, 10%) solid 1px;
+  border-radius: 4px;
+  background-color: @main-color;
+  text-decoration: none;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+  outline: none;
+}
+
+.button {
+  line-height: 40px;
+}
+
+button:hover, .button:hover {
+  background-color: @hover-color;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+button:disabled, .button.disabled {
+  background-color: #e8e8e8;
+  border-color: #dddddd;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=0, Direction=2225, Color=#ffffff)";
+  text-shadow: 1px -1px 0 #ffffff;
+  color: #aaaaaa;
+  cursor: not-allowed;
+}
+
+/*按钮结束*/
+#forgetTradingPassword {
+  margin-left: 115px;
+}
+
+.card-bin-wrapper .title {
+  float: left;
+  margin-top: 16px;
+  margin-right: 30px;
+}
+
+.pass-card-bin {
+  margin-left: 43px;
+  .card-bin {
+    margin-left: 0;
+  }
+}
+
+/*表单结束*/
+/*模拟下拉框*/
+.select {
+  position: relative;
+  margin-right: 10px;
+  margin-bottom: 18px;
+  width: 420px;
+  height: 50px;
+  background-color: #ffffff;
+  color: #666666;
+  font-size: 12px;
+}
+
+.select .icon {
+  font-size: 12px;
+}
+
+.current-selected {
+  display: table;
+  position: relative;
+  padding-left: 15px;
+  padding-right: 75px;
+  width: 328px;
+  height: 48px;
+  border: #dcdcdc solid 1px;
+  border-radius: 4px;
+  overflow: hidden;
+  word-break: break-all;
+  cursor: pointer;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  .unbind {
+    padding-left: 15px;
+    display: table-cell;
+    vertical-align: middle;
+    color: @main-color;
+    text-decoration: underline;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.current-selected:after {
+  content: "\e610";
+  position: absolute;
+  right: -1px;
+  top: 0;
+  display: block;
+  width: 56px;
+  height: 50px;
+  line-height: 50px;
+  border-left: #dcdcdc solid 1px;
+  border-radius: 0 4px 4px 0;
+  text-align: center;
+  background-color: #f0f4f8;
+  font-size: 25px;
+  color: #69829b;
+}
+
+.select.open .current-selected:after {
+  content: "\e601";
+  background-color: #69829b;
+  color: #ffffff;
+}
+
+.select .option-wrapper {
+  display: none;
+  position: absolute;
+  z-index: 1010;
+  top: 49px;
+  width: 418px;
+  max-height: 154px;
+  overflow-y: scroll;
+  border: #98acbf solid 1px;
+  border-radius: 0 0 4px 4px;
+  background-color: #ffffff;
+  box-shadow: #d1d0d0 1px 1px 8px, #d1d0d0 -1px 5px 8px;
+}
+
+.select .option-wrapper .option {
+  display: table;
+  padding: 0 15px;
+  width: 388px;
+  height: 50px;
+  border-bottom: #f2f2f2 solid 1px;
+  cursor: pointer;
+  .unbind {
+    padding-left: 15px;
+    display: table-cell;
+    vertical-align: middle;
+    color: @main-color;
+    text-decoration: underline;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.select .option-wrapper .option[disabled=true] {
+  /*cursor: default;*/
+}
+
+.select .option-wrapper .option:last-child {
+  border-bottom: none;
+}
+
+.select .option-wrapper .option:hover {
+  background-color: #f0f4f8;
+}
+
+.select .option-wrapper .option:hover .excess {
+  color: #e25622;
+}
+
+.select.open .option-wrapper {
+  display: block;
+}
+
+.current-selected .bank, .current-selected .card-info, .select .option-wrapper .option .bank, .select .option-wrapper .option .card-info {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.current-selected .card-info, .select .option-wrapper .option .card-info {
+  text-align: right;
+}
+
+.select .card-info .excess {
+  margin: 3px 0 0;
+}
+
+.current-selected .card-info .card-type, .select .option-wrapper .option .card-info .card-type {
+  margin-left: 15px;
+  padding-left: 15px;
+  border-left: #e2e2e2 solid 1px;
+}
+
+.current-selected .bank, .select .option-wrapper .option .bank {
+  font-weight: bold;
+}
+
+.current-selected .bank .bank-logo, .select .option-wrapper .option .bank .bank-logo {
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 26px;
+  height: 26px;
+}
+
+/*模拟下拉框结束*/
+/*添加银行卡按钮*/
+.add-bankCard-btn {
+  display: inline-block;
+  vertical-align: middle;
+  width: 110px;
+  height: 48px;
+  border: dashed #69829b 1px;
+  line-height: 48px;
+  text-align: center;
+  cursor: pointer;
+  color: #69829b;
+  font-size: 12px;
+}
+
+.add-bankCard-btn:hover {
+  border-style: solid;
+  background-color: #69829b;
+  color: #ffffff;
+}
+
+.add-bankCard-btn .icon {
+  margin-right: 3px;
+  font-size: 12px;
+}
+
+/*添加银行卡按钮结束*/
+/*支付有效期*/
+.expire-time {
+  padding: 12px 0;
+  background-color: #f9f9f9;
+  border-bottom: @background-color solid 10px;
+  text-align: center;
+  &:before {
+    content: "\e6c9";
+    font-family: "icon";
+    margin-right: 10px;
+    color: @font-color;
+    font-size: @font-size + 2;
+    vertical-align: middle;
+  }
+}
+
+/*支付有效期结束*/
+/*订单信息*/
+.order-info {
+  position: relative;
+  padding: 20px @gutter-width;
+  background-color: #f9f9f9;
+  border-top: @main-color solid 3px;
+  border-bottom: #dfdfdf dotted 3px;
+  color: #878787;
+  .merchant-info-wrapper {
+    float: left;
+    .merchant-info.details {
+      margin-top: 10px;
+      opacity: 0;
+      transition: opacity .5s;
+    }
+    .merchant-info p {
+      margin-left: 25px;
+      padding-left: 25px;
+      display: inline-block;
+      border-left: #dddddd solid 1px;
+      vertical-align: middle;
+      span {
+        display: inline-block;
+        vertical-align: middle;
+        max-width: 400px;
+        .ellipsis;
+      }
+      &:first-child {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+      }
+    }
+  }
+  .amount {
+    float: right;
+    .money {
+      display: inline-block;
+      vertical-align: bottom;
+      max-width: 200px;
+      .ellipsis;
+      font-size: @font-size * 2;
+      line-height: @font-size * 2;
+      color: @font-color;
+    }
+    .fee {
+      color: @font-color;
+    }
+  }
+  .order-details-trigger {
+    position: absolute;
+    right: @gutter-width;
+    top: 50px;
+    font-size: @font-size;
+    color: @main-color;
+    cursor: pointer;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    .br-hack {
+      display: inline-block;
+      vertical-align: middle;
+      font-style: normal;
+    }
+    &:after {
+      margin-top: 2px;
+      display: inline-block;
+      vertical-align: middle;
+      content: "\e603";
+      font-size: 22px;
+    }
+  }
+  #order-details-handler:checked ~ .merchant-info.details {
+    opacity: 1;
+  }
+  #order-details-handler:checked ~ label .order-details-trigger:after {
+    content: "\e604";
+  }
+}
+
+/*订单信息结束*/
+/*卡bin信息*/
+.card-bin {
+  display: table;
+  margin-left: 115px;
+  margin-bottom: 18px;
+  padding: 0 20px;
+  width: 370px;
+  height: 50px;
+  border: #dcdcdc solid 1px;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 12px;
+  background-color: #ffffff;
+  .bank, .bank-info {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  .bank-info {
+    text-align: right;
+  }
+  .card-type {
+    margin-left: 15px;
+    padding-left: 15px;
+    border-left: #e2e2e2 solid 1px;
+  }
+}
+
+/*卡bin信息结束*/
+/*网银支付*/
+.bank-pay-list {
+  width: @column-width * 10 + @gutter-width * 9;
+  .tab-wrapper {
+    border-bottom: #e0e0e0 solid 1px;
+    .tab {
+      position: relative;
+      top: 1px;
+      margin-right: 3px;
+      display: inline-block;
+      vertical-align: middle;
+      width: 112px;
+      height: 36px;
+      line-height: 36px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #f5f5f5;
+      color: #aaaaaa;
+      .disabled-select;
+      &.active {
+        border: #e0e0e0 solid 1px;
+        border-bottom-color: #ffffff;
+        background-color: transparent;
+        font-weight: bold;
+        color: #000000;
+      }
+    }
+  }
+  .tab-content {
+    display: none;
+    margin-top: 20px;
+    margin-right: -@gutter-width;
+    //overflow: hidden;
+    &.active {
+      display: block;
+    }
+    li {
+      position: relative;
+      float: left;
+      margin-bottom: 20px;
+      margin-right: @gutter-width;
+      width: @column-width * 2 + @gutter-width;
+      height: 46px;
+      box-sizing: border-box;
+      line-height: 46px;
+      border: #e2e2e2 solid 1px;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      &:hover, &.active {
+        border-color: @main-color;
+      }
+      &:hover {
+        .card-type, .warm-prompt {
+          display: block;
+        }
+      }
+      &.active {
+        border-width: 2px;
+        .card-type {
+          left: -2px;
+        }
+        &:after {
+          content: "\e6e8";
+          display: block;
+          position: absolute;
+          right: -2px;
+          bottom: -11px;
+          font-family: "icon";
+          font-size: 25px;
+          color: @main-color;
+        }
+      }
+      .bank-logo {
+        margin-right: 10px;
+        display: inline-block;
+        vertical-align: middle;
+        width: 26px;
+        height: 26px;
+      }
+      .warm-prompt {
+        display: none;
+        position: absolute;
+        top: -71px;
+        z-index: 2;
+        padding: 5px;
+        background-color: #ffffff;
+        line-height: 1.6em;
+        border: #e2e2e2 solid 1px;
+        font-size: @font-size - 2;
+        text-align: left;
+        color: #626262;
+      }
+      .card-type {
+        display: none;
+        position: absolute;
+        left: -1px;
+        bottom: -22px;
+        width: @column-width * 2 + @gutter-width;
+        height: 20px;
+        line-height: 20px;
+        background-color: #f8f8f8;
+        font-weight: 100;
+        font-size: 12px;
+        color: #626262;
+        span {
+          margin-left: 12px;
+          padding-left: 12px;
+          border-left: #cecece solid 1px;
+          &:first-child {
+            margin-left: 0;
+            padding-left: 0;
+            border-left: none;
+          }
+
+        }
+      }
+      &.more-handler {
+        border-color: #f9f9f9;
+        background-color: #f9f9f9;
+        color: #415467;
+        &:hover {
+          border-color: #e5e5e5;
+          background-color: #e5e5e5;
+        }
+      }
+    }
+  }
+  button {
+    margin-bottom: 20px;
+  }
+}
+
+/*网银支付结束*/
+/*二维码付款*/
+.qrcode {
+  width: @column-width * 6 + @gutter-width * 5;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  .tip {
+    margin-bottom: @gutter-width;
+    text-align: center;
+    &:before {
+      content: "\ead5";
+      margin-right: 10px;
+      display: inline-block;
+      vertical-align: middle;
+      font-family: "icon";
+      color: @main-color;
+      font-size: @font-size + 10;
+    }
+  }
+  .qrcode-item-wrapper {
+    position: relative;
+    padding: @gutter-width 0;
+    border-radius: 15px;
+    background-color: #f9f9f9;
+    .arrow {
+      position: absolute;
+      left: 50%;
+      bottom: -9px;
+      display: block;
+      width: 18px;
+      height: 18px;
+      -webkit-transition: left .3s;
+      -moz-transition: left .3s;
+      -ms-transition: left .3s;
+      transition: left .3s;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+      background-color: #f9f9f9;
+    }
+  }
+  .qrcode-item {
+    display: none;
+    .qrcode-area {
+      position: relative;
+      text-align: center;
+      .logo {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -25px;
+        margin-top: -25px;
+        display: block;
+        width: 50px;
+        height: 50px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        line-height: 50px;
+        font-size: 30px;
+        text-align: center;
+      }
+      img.qrcode-stream {
+        width: 265px;
+        height: 265px;
+      }
+    }
+    &.active {
+      display: block;
+    }
+  }
+  .support-app .icon {
+    margin-left: 10px;
+    width: 52px;
+    height: 52px;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+    font-size: 25px;
+    line-height: 52px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    border-radius: 100%;
+    &.weixin {
+      color: #27b43c;
+    }
+    &.alipay {
+      color: #009fe8;
+    }
+    &.jd {
+      color: #e3393b;
+    }
+    &.union {
+      background-position: 13px 14px;
+      &.active {
+        background-position: 13px -129px;
+      }
+    }
+    &.installment {
+      background-position: 15px -56px;
+      &.active {
+        background-position: 15px -182px;
+      }
+    }
+    &:hover {
+      background-color: lighten(@main-color, 30%);
+    }
+    &.active {
+      background-color: @main-color;
+      cursor: default;
+      color: #ffffff;
+    }
+  }
+  .support-app {
+    position: relative;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .status {
+    margin-top: 25px;
+    padding: 12px;
+    line-height: 16px;
+    color: #909090;
+    background-color: #fffae0;
+    font-size: 12px;
+    .icon，p {
+      float: left;
+    }
+    .icon {
+      float: left;
+      color: @main-color;
+    }
+    p {
+      margin-left: 5px;
+    }
+  }
+  .qrcode-load-error {
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    text-align: center;
+    &:before {
+      content: "\e625";
+      font-family: "icon";
+      font-size: 20px;
+      vertical-align: middle;
+      color: #e83619;
+    }
+  }
+  .refresh-qrcode {
+    display: block;
+    margin: 15px auto;
+    height: 30px;
+    &:before {
+      margin-right: 5px;
+      content: "\e632";
+      font-family: "icon";
+      font-size: 16px;
+      vertical-align: middle;
+    }
+  }
+}
+
+/*二维码付款结束*/
+/*弹层*/
+#Popup {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 2115;
+  border: #cdcdcd solid 1px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: #cdcdcd 1px 1px 10px;
+  overflow: hidden;
+}
+
+#Popup h2 .close {
+  position: absolute;
+  z-index: 1006;
+  top: 12px;
+  right: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #969696;
+}
+
+#Popup h2 .close:hover {
+  color: #717171;
+}
+
+/*弹层结束*/
+/*支付协议*/
+.agreement {
+  width: 500px;
+  padding: 15px;
+  line-height: 20px;
+}
+
+.agreement .title {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: #cdcdcd solid 1px;
+  font-size: 18px;
+}
+
+.agreement .agree-btn {
+  margin: 15px;
+  text-align: center;
+}
+
+.agreement .elaborate {
+  height: 400px;
+  overflow: auto;
+}
+
+/*支付协议结束*/
+/*账户支付start*/
+.cashier-pay-tool form button {
+  margin-top: 30px;
+}
+
+/*账户支付end*/
+/*账户支付找回密码*/
+.retrieve-password {
+  width: @column-width * 5 + @gutter-width * 4;
+  padding-bottom: 25px;
+  text-align: center;
+  h2 {
+    padding-left: 25px;
+    height: 46px;
+    line-height: 46px;
+    border-bottom: #e2e2e2 solid 1px;
+    text-align: left;
+  }
+  ol {
+    margin: 25px 25px 0;
+    display: inline-block;
+    list-style: decimal;
+    list-style-position: inside;
+    line-height: 23px;
+    text-align: left;
+  }
+  .set-password {
+    display: block;
+    margin: 22px auto;
+    width: 148px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .auto-set {
+    color: @main-color;
+  }
+}
+
+/*账户支付找回密码结束*/
+/*银行限额*/
+.limit {
+  position: absolute;
+  left: 660px;
+  top: 0;
+  z-index: 2001;
+  width: 132px;
+  text-align: right;
+  .handler {
+    color: #019cd2;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .cont {
+    display: none;
+    position: absolute;
+    z-index: 2001;
+    padding: 20px 10px 10px;
+    top: -57px;
+    left: 145px;
+    width: 480px;
+    height: 242px;
+    border: #cdcdcd solid 1px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: #cdcdcd 1px 1px 8px;
+    text-align: left;
+    &:before {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: 58px;
+      width: 13px;
+      height: 13px;
+      background-color: #ffffff;
+      border: #cdcdcd solid 1px;
+      border-top-color: transparent;
+      border-right-color: transparent;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+      background-color: #ffffff;
+    }
+    .title {
+      padding-left: 18px;
+      font-size: 16px;
+    }
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #454545;
+      &:hover {
+        color: #000000;
+      }
+    }
+    .caption {
+      margin-top: 18px;
+      padding-left: 18px;
+      height: 36px;
+      line-height: 36px;
+      border-top: #e8e8e8 solid 1px;
+      border-bottom: #e8e8e8 solid 1px;
+      font-size: 12px;
+    }
+    .caption span, .tb li span {
+      margin-right: 3px;
+      display: inline-block;
+      vertical-align: middle;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .caption span.bank, .tb li span.bank {
+      width: 105px;
+    }
+    .tb li.vertical span.bank {
+      position: relative;
+      top: 17px;
+      left: -18px;
+      background-color: #ffffff;
+    }
+    .tb li.vertical span.bank .bank-logo {
+      margin-left: 18px;
+    }
+    .caption span.card-type, .tb span.card-type {
+      width: 55px;
+    }
+    .caption span.single, .caption span.day, .caption span.month, .tb li span.single, .tb li span.day, .tb li span.month {
+      width: 90px;
+    }
+    .tb {
+      height: 165px;
+      overflow-y: auto;
+      font-size: 12px;
+      background: url(../images/loading.gif) center no-repeat;
+      &.complete {
+        background: none;
+      }
+      li {
+        padding-left: 18px;
+        line-height: 36px;
+        border-top: #e8e8e8 solid 1px;
+        background-color: #ffffff;
+        &:first-child {
+          border-top: none;
+        }
+        .bank-logo {
+          display: inline-block;
+          vertical-align: middle;
+          width: 26px;
+          height: 26px;
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+  #showLimit:checked ~ .cont {
+    display: block;
+  }
+  #showLimit:checked ~ .handler, .handler:hover {
+    color: #27c7ff;
+  }
+}
+
+/*银行限额结束*/
+/*右侧固定工具*/
+.fixed-sidebar {
+  position: fixed;
+  z-index: 1;
+  top: 195px;
+  right: 0;
+  border: #e8e8e8 solid 1px;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  text-align: center;
+  overflow: hidden;
+  .item {
+    display: block;
+    width: 80px;
+    height: 80px;
+    border-top: #e8e8e8 solid 1px;
+    background-color: #f8f8f8;
+    font-size: 12px;
+    color: #454545;
+    &:first-child {
+      border-top: none;
+    }
+    &:hover {
+      background-color: #eeeeee;
+      text-decoration: none;
+    }
+    .icon {
+      padding-top: 16px;
+      padding-bottom: 14px;
+      display: block;
+      font-size: 25px;
+      color: @main-color;
+    }
+  }
+}
+
+/*右侧固定工具结束*/
+/*手机短信验证码*/
+.sms-code {
+  width: 570px;
+  padding-bottom: 35px;
+  h2 {
+    padding-left: 35px;
+    height: 52px;
+    line-height: 52px;
+    border-bottom: #e2e2e2 solid 1px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .send-tip {
+    margin-top: 25px;
+    padding-left: 35px;
+    &:before {
+      content: "\e625";
+      vertical-align: middle;
+      font-family: "icon";
+      font-size: 22px;
+      color: #86bbd3;
+    }
+    .phone {
+      margin: 0 8px;
+    }
+  }
+  .sington input {
+    width: 176px;
+  }
+  .validate-code {
+    margin-left: auto;
+  }
+  form {
+    margin-top: 30px;
+  }
+}
+
+/*手机短信验证码结束*/
+/*快捷支付未查询到结果弹层*/
+.query-result {
+  padding: 40px 40px 30px;
+  width: 480px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 18px;
+  .open-new, .tip, .btn-group {
+    text-align: center;
+  }
+  .tip {
+    margin-top: 18px;
+  }
+  .open-new {
+    font-size: 22px;
+  }
+  .btn-group {
+    margin-top: 45px;
+  }
+  .btn-group .button {
+    margin-right: 25px;
+    &.issue {
+      background-color: #fafafa;
+      border-color: #d1d1d1;
+      color: #000000;
+    }
+  }
+  .misc {
+    margin-top: 37px;
+    padding-top: 20px;
+    border-top: #e2e2e2 solid 1px;
+  }
+  .misc .fail, .misc .yeepay {
+    float: left;
+  }
+  .misc a {
+    color: #6fb7da;
+    text-decoration: underline;
+  }
+  .fail a {
+    display: block;
+    margin-top: 12px;
+  }
+  .yeepay {
+    margin-left: 80px;
+    width: 318px;
+    .yp-qrcode {
+      float: left;
+      margin-right: 13px;
+    }
+    .yp-desc .number {
+      margin-top: 30px;
+      white-space: nowrap;
+      letter-spacing: 0;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+  .repeat-tip {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 12px;
+    color: @main-color;
+  }
+}
+
+/*快捷支付未查询到结果弹层结束*/
+/*成功页*/
+.pay-success, .paying, .pay-fail {
+  margin-top: 60px;
+  margin-left: 50px;
+  font-size: 24px;
+}
+
+.pay-success .icon, .paying .icon {
+  margin-right: 23px;
+  vertical-align: middle;
+  font-size: 40px;
+  color: @main-color;
+}
+
+.paying .icon {
+  color: #4c91f8;
+}
+
+.back-merchant, .button.again-query, .back-pay {
+  margin: 38px 0 30px 190px;
+}
+
+/*成功页结束*/
+/*失败页*/
+.pay-fail .icon {
+  margin-top: 5px;
+  margin-right: 23px;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 40px;
+  color: #03a9f4;
+}
+
+/*失败页结束*/
+/*身份选择*/
+.id-choice {
+  width: 570px;
+  .pay-result {
+    padding: 25px 10px;
+    border-bottom: #e2e2e2 solid 1px;
+    text-align: center;
+    font-size: 20px;
+    .icon {
+      margin-right: 38px;
+      font-size: 35px;
+      font-weight: bold;
+      color: @main-color;
+    }
+  }
+  .tip {
+    margin: 18px 32px;
+    font-size: 12px;
+    .tel {
+      color: #019cd2;
+      &:hover {
+        color: #27c7ff;
+      }
+    }
+  }
+  .id-list {
+    margin: 18px 32px 0;
+    height: 111px;
+    overflow-y: scroll;
+    li {
+      position: relative;
+      padding: 18px 15px;
+      border-bottom: #e2e2e2 solid 1px;
+      &:first-child {
+        border-top: #e2e2e2 solid 1px;
+      }
+      .checked-text {
+        display: none;
+        position: absolute;
+        right: 15px;
+        font-size: 12px;
+        color: #fa9e5b;
+      }
+      label {
+        cursor: pointer;
+      }
+      input[name=idGroup]:checked ~ .checked-text {
+        display: inline;
+      }
+      input[name=idGroup] {
+        position: absolute;
+        left: -9999px;
+        visibility: hidden;
+      }
+      input[name=idGroup] + .icon:before {
+        content: "\e606";
+        margin-right: 12px;
+        display: inline-block;
+        vertical-align: text-top;
+        font-family: "icon";
+        font-size: 25px;
+      }
+      input[name=idGroup]:checked + .icon:before {
+        content: "\e602";
+        color: #fa9e5b;
+      }
+      &.new-id-trigger {
+        padding-left: 52px;
+        cursor: pointer;
+        &:after {
+          content: "\e65e";
+          position: absolute;
+          right: 0;
+          font-family: "icon";
+          font-size: 20px;
+          color: #bbbbbb;
+        }
+      }
+    }
+  }
+}
+
+.id-choice .confirm-layout, .new-id .confirm-layout {
+  margin: 18px 32px;
+  text-align: center;
+}
+
+.new-id {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #ffffff;
+  -webkti-transition: left .5s ease-out;
+  -moz-transition: left .5s ease-out;
+  -ms-transition: left .5s ease-out;
+  transition: left .5s ease-out;
+  .caption {
+    position: relative;
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    border-bottom: #e2e2e2 solid 1px;
+    .back {
+      position: absolute;
+      left: 20px;
+      color: #019cd2;
+      font-size: 14px;
+      cursor: pointer;
+      &:hover {
+        color: #27c7ff;
+      }
+    }
+  }
+  &.show {
+    left: 0;
+  }
+  form {
+    margin-top: 30px;
+    margin-left: 30px;
+    .sington input {
+      width: 300px;
+    }
+  }
+  .confirm-layout {
+    margin-top: 25px;
+    .confirm {
+      margin-left: auto;
+    }
+  }
+}
+
+/*身份选择结束*/
+/*跨商户授权*/
+.authorized {
+  width: 570px;
+}
+
+.authorized h2 {
+  padding-left: 35px;
+  height: 52px;
+  line-height: 52px;
+  border-bottom: #e2e2e2 solid 1px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.authorized .prompt {
+  padding: 25px 30px 0;
+  line-height: 22px;
+}
+
+.authorized .verifycode {
+  margin-left: 30px;
+  margin-top: 25px;
+}
+
+.authorized .obtain-btn {
+  margin-left: 10px;
+  padding: 0 10px;
+  min-width: 50px;
+  width: 124px;
+  border-color: #dddddd;
+  background: -moz-linear-gradient(0deg, #EBEBEB 0, #fefefe 100%); /* FF3.6+ */
+  background: -webkit-linear-gradient(0deg, #EBEBEB 0, #fefefe 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(0deg, #EBEBEB 0, #fefefe 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(0deg, #EBEBEB 0, #fefefe 100%); /* IE10+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefefe', endColorstr='#EBEBEB', GradientType='0'); /* for IE */
+  background: linear-gradient(0deg, #EBEBEB 0, #fefefe 100%); /* W3C */
+  color: #393939;
+  font-size: 14px;
+}
+
+.authorized .submit-wrapper {
+  margin: 25px 0;
+  text-align: center;
+}
+
+.authorized .add-new-card {
+  margin-left: 40px;
+  color: #019cd2;
+  text-decoration: underline;
+}
+
+.authorized .add-new-card:hover {
+  color: #27c7ff;
+}
+
+.authorized .errormsg {
+  margin-top: 10px;
+  margin-left: 30px;
+  color: #e83619;
+}
+
+/*跨商户授权结束*/
+/*验证码*/
+.verifycode .unit {
+  margin-left: 10px;
+  width: 48px;
+  height: 60px;
+  line-height: 60px \0;
+  box-shadow: inset #f4f4f4 1px 1px 3px, inset #f4f4f4 -1px -1px 3px;
+  border: #cecece solid 1px;
+  border-radius: 4px;
+  vertical-align: middle;
+  font-size: 36px;
+  text-align: center;
+  outline: none;
+  font-family: Helvetica, Arial;
+  font-weight: 100;
+}
+
+.verifycode .unit:first-child {
+  margin-left: 0;
+}
+
+.verifycode .unit:nth-last-of-type(3) {
+  margin-left: 35px
+}
+
+.verifycode .unit:focus {
+  border-color: #9ad9a6;
+  box-shadow: #d9f2e3 1px 1px 3px, #d9f2e3 -1px -1px 3px;
+}
+
+/*验证码结束*/
+/*快捷支付*/
+#quickPay {
+  position: relative;
+  padding-top: 26px;
+  .select-wrapper {
+    margin-left: 374px;
+  .select {
+    display: inline-block;
+    vertical-align: top;
+  }
+}
+}
+
+#addNewCard ~ #quickPayForm {
+  display: none;
+}
+
+#addNewCard:checked ~ #quickPayForm {
+  display: block;
+}
+
+#addNewCard:checked ~ .select-wrapper {
+  display: none;
+}
+
+#quickPayForm {
+  position: relative;
+  .back-my-card {
+    position: absolute;
+    top: -24px;
+  display: block;
+  margin-left: 114px;
+  color: #019cd2;
+  font-size: 14px;
+  cursor: pointer;
+}
+  .back-my-card .icon {
+  margin-right: 10px;
+  vertical-align: top;
+  font-size: 20px;
+}
+}
+
+#bindItemFormWrapper {
+  margin-left: -115px;
+  .global-error, .waiting-add-item {
+    width: 420px;
+    margin-left: 115px;
+    margin-bottom: 15px;
+  }
+}
+
+/*快捷支付结束*/
+/*非银行卡支付*/
+.not-bank-pay {
+  margin: 0 auto;
+  padding: 0 38px;
+  width: 640px;
+  height: 65px;
+  line-height: 65px;
+  background-color: #f9f9f9;
+}
+
+.not-bank-pay a {
+  margin-left: 20px;
+  color: @main-color;
+}
+
+/*非银行卡支付结束*/
+/*解除绑卡弹层*/
+.unbind-confrim {
+  width: 380px;
+  padding: 50px;
+  line-height: 1.8em;
+  text-align: center;
+  p {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  button:first-of-type {
+    margin-right: 25px;
+    background-color: transparent;
+    color: @main-color;
+    &:hover {
+      background-color: @hover-color;
+      color: #ffffff;
+    }
+  }
+}
+
+.unbind-error {
+  padding-bottom: 25px;
+  width: 360px;
+  text-align: center;
+  h2 {
+    height: 45px;
+    line-height: 45px;
+    border-bottom: #e2e2e2 solid 1px;
+    font-weight: bold;
+  }
+  p {
+    margin: 20px 12px 45px;
+  }
+}
+
+/*解除绑卡弹层结束*/
+/*结果页二维码*/
+.official-accounts {
+  margin: 20px auto;
+  width: 476px;
+  padding: 30px @column-width + @gutter-width;
+  background-color: #f9f9f9;
+  span {
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+/*结果页二维码结束*/
+/*绑卡支付获取验证码按钮*/
+.get-smsCode {
+  margin-left: 0;
+  margin-top: 0 !important;
+  width: 122px;
+  min-width: auto;
+}
+/*绑卡支付获取验证码按钮结束*/
+.bind-card-pas{
+  h2{
+    text-align: center;
+  }
+  .sington{
+    margin-left: 76px;
+    input{
+      width: 235px;
+    }
+  }
+  .confirm{
+    margin-left: 190px;
+  }
+}
+
+.success-layout {
+  margin-left: -550px;
+  text-align: center;
+}
+
+/*银行logo*/
+.bank-logo {
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 26px;
+  height: 26px;
+  background-image: url(../images/bank-logo.png);
+  background-repeat: no-repeat;
+}
+
+.CMBCHINA {
+  /*招商银行*/
+  background-position: 0 0;
+}
+
+.ABC {
+  /*农业银行*/
+  background-position: 0 -56px;
+}
+
+.CCB {
+  /*建设银行*/
+  background-position: 0 -112px;
+}
+
+.ICBC {
+  /*工商银行*/
+  background-position: 0 -168px;
+}
+
+.BOC {
+  /*中国银行*/
+  background-position: 0 -224px;
+}
+
+.BOCO {
+  /*交通银行*/
+  background-position: 0 -278px;
+}
+
+.CMBC {
+  /*中国民生银行*/
+  background-position: 0 -336px;
+}
+
+.CIB {
+  /*兴业银行*/
+  background-position: 0 -391px;
+}
+
+.CEB {
+  /*光大银行*/
+  background-position: 0 -447px;
+}
+
+.ECITIC {
+  /*中信银行*/
+  background-position: 0 -504px;
+}
+
+.PSBC {
+  /*中国邮政*/
+  background-position: 0 -560px;
+}
+
+.BCCB {
+  /*北京银行*/
+  background-position: 0 -616px;
+}
+
+.GDB {
+  /*广发银行*/
+  background-position: 0 -672px;
+}
+
+.SDB {
+  /*深圳发展银行*/
+  background-position: 0 -727px;
+}
+
+.SPDB {
+  /*上海浦东发展银行*/
+  background-position: 0 -783px;
+}
+
+.HX, .HXB {
+  /*华夏银行*/
+  background-position: 0 -840px;
+}
+
+.SHB {
+  /*上海银行*/
+  background-position: 0 -895px;
+}
+
+.SZPA {
+  /*平安银行*/
+  background-position: 0 -952px;
+}
+
+.NBCB {
+  /*宁波银行*/
+  background-position: 0 -1008px;
+}
+
+.BJRCB {
+  /*北京农村商业银行*/
+  background-position: 0 -1064px;
+}
+
+.BOCD {
+  /*成都银行*/
+  background-position: 0 -1120px;
+}
+
+.CZ {
+  /*浙商银行*/
+  background-position: 0 -1176px;
+}
+
+.ZJRCU {
+  /*顺德信用社*/
+  background-position: 0 -1232px;
+}
+
+.JZBANK {
+  /*锦州银行*/
+  background-position: 0 -1288px;
+}
+
+.HFB {
+  /*恒丰银行*/
+  background-position: 0 -1344px;
+}
+
+.ZJTLCB {
+  /*浙江泰隆商业银行*/
+  background-position: 0 -1399px;
+}
+
+.CBHB {
+  /*渤海银行*/
+  background-position: 0 -1456px;
+}
+
+.HKBEA {
+  /*东亚银行*/
+  background-position: 0 -1512px;
+}
+
+.GDRCU {
+  /*广东农村信用社*/
+  background-position: 0 -1568px;
+}
+
+.GZCB {
+  /*广州市商业银行*/
+  background-position: 0 -1624px;
+}
+
+.NCB {
+  /*南洋商业银行*/
+  background-position: 0 -1680px;
+}
+
+.HEBBANK {
+  /*河北银行*/
+  background-position: 0 -1736px;
+}
+
+.HZB {
+  /*杭州银行*/
+  background-position: 0 -1793px;
+}
+
+.NJCB {
+  /*南京银行*/
+  background-position: 0 -1848px;
+}
+
+.SRCB {
+  /*上海农村商业银行*/
+  background-position: 0 -1904px;
+}
+
+.JSBC {
+  /*江苏银行*/
+  background-position: 0 -1960px;
+}
+
+.HZCCB {
+  /*湖州银行*/
+  background-position: 0 -2016px;
+}
+
+.QHD {
+  /*秦皇岛银行*/
+  background-position: 0 -2072px;
+}
+
+.HRB {
+  /*哈尔滨银行*/
+  background-position: 0 -2128px;
+}
+
+.CJCCB {
+  /*江苏长江银行*/
+  background-position: 0 -2184px;
+}
+
+.ORDOSB {
+  /*鄂尔多斯银行*/
+  background-position: 0 -2240px;
+}
+
+.GDNY {
+  /*广东南粤银行*/
+  background-position: 0 -2296px;
+}
+
+.BGZ {
+  /*贵州银行*/
+  background-position: 0 -2352px;
+}
+
+.CDRCB {
+  /*成都农商银行*/
+  background-position: 0 -2408px;
+}
+
+.TJB {
+  /*天津银行*/
+  background-position: 0 -2463px;
+}
+
+.DLB {
+  /*大连银行*/
+  background-position: 0 -2520px;
+}
+
+.SRB {
+  /*上饶银行*/
+  background-position: 0 -2576px;
+}
+
+.BSB {
+  /*包商银行*/
+  background-position: 0 -2632px;
+}
+
+.GZCB {
+  /*广州银行*/
+  background-position: 0 -2688px;
+}
+
+.CQRCB {
+  /*重庆农村商业银行*/
+  background-position: 0 -2744px;
+}
+
+.SJB {
+  /*盛京银行*/
+  background-position: 0 -2780px;
+}
+
+.SQBANK {
+  /*商丘市商业银行*/
+  background-position: 0 -2856px;
+}
+
+.UCCB {
+  /*乌鲁木齐市商业银行*/
+  background-position: 0 -2912px;
+}
+
+.YDHSH, .SXRCU, .GXRCU {
+  /*农村信用社*/
+  background-position: 0 -2968px;
+}
+
+.HKBC {
+  /*汉口银行*/
+  background-position: 0 -3024px;
+}
+
+.JRCB {
+  /*江苏江阴农村商业银行*/
+  background-position: 0 -3080px;
+}
+
+.KSRCB {
+  /*昆山农商银行*/
+  background-position: 0 -3135px;
+}
+
+.GSRCU {
+  /*甘肃省农村信用社*/
+  background-position: 0 -3242px;
+}
+
+.QHRCU {
+  /*青海省农村信用社*/
+  background-position: 0 -3242px;
+}
+
+.WEBANK {
+  /*微众银行*/
+  background-position: 0 -3188px;
+}
+
+.TRCB {
+  /*天津农商银行*/
+  background-position: 0 -3354px;
+}
+
+.CZRCB {
+  /*江南农村商业银行*/
+  background-position: 0 -3410px;
+}
+
+.HENRCU {
+  /*河南省农村信用社*/
+  background-position: 0 -3460px;
+}
+
+.LNRCU {
+  /*辽宁省农村信用社*/
+  background-position: 0 -3506px;
+}
+
+.URB {
+  /*联合村镇*/
+  background-position: 0 -3559px;
+}
+
+.JSRCU {
+  /*江苏省农村信用社*/
+  background-position: 0 -3616px;
+}
+
+.SCRCU,.SHXRCU {
+  /*四川省农村信用社*/
+  background-position: 0 -3672px;
+}
+
+.HUNRCU {
+  /*湖南省农村信用社*/
+  background-position: 0 -3727px;
+}
+
+.NXRCB {
+  /*黄河农商银行*/
+  background-position: 0 -3772px;
+}
+
+.WHB {
+  /*乌海银行*/
+  background-position: 0 -3829px;
+}
+
+.XJHHB {
+  /*汇合银行*/
+  background-position: 0 -3884px;
+}
+
+.RHCZBC {
+  /*长子县融汇村镇银行*/
+  background-position: 0 -3939px;
+}
+
+.FJRCU {
+  /*福建农村信用社*/
+  background-position: 0 -1232px;
+}
+.SCB {
+  /*渣打银行*/
+  background-position: 0 -3995px;
+}
+.HEBRCU {
+  /*河北省农村信用联合社*/
+  background-position: 0 -1232px;
+}
+.DLRCB {
+  /*大连农商*/
+  background-position: 0 -4003px;
+}
+
+.JJB {
+  /*九江银行*/
+  background-position: 0 -4072px;
+}
+
+/*银行logo结束*/
+/*底部*/
+#footer {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  border-top: @main-color solid 3px;
+  background-color: #2f2f2f;
+  color: #ffffff;
+}
+
+/*网银企业客户号   clientld.css  2017.6.30*/
+#clientId {
+  padding-bottom: 36px;
+  width: 570px;
+}
+
+#clientId .title {
+  padding-left: 23px;
+  height: 52px;
+  line-height: 52px;
+  border-bottom: #e2e2e2 solid 1px;
+  color: #454545;
+
+}
+
+#clientId .account-type {
+  margin-right: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 50px;
+  height: 23px;
+  line-height: 23px;
+  text-align: center;
+  background-color: #86bbd3;
+  color: #ffffff;
+}
+
+#clientId form {
+  margin-top: 48px;
+  margin-left: 35px;
+}
+
+#clientId .bank-logo {
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  width: 26px;
+  height: 26px;
+}
+
+#clientId form input {
+  margin-left: 30px;
+  width: 285px;
+}
+
+#clientId form button {
+  display: block;
+  margin: 40px auto auto;
+}
+
+#clientId .errormsg {
+  margin-left: 123px;
+}
+
+/*网银企业客户号结束*/
+/*等待去银行付款弹层  waiting-pay.css 2017.6.30*/
+.waiting-pay {
+  padding: 40px 40px 30px;
+  width: 480px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 18px;
+}
+
+.waiting-pay .open-new, .waiting-pay .tip, .waiting-pay .btn-group {
+  text-align: center;
+}
+
+.waiting-pay .tip {
+  margin-top: 18px;
+}
+
+.waiting-pay .open-new {
+  font-size: 22px;
+}
+
+.waiting-pay .btn-group {
+  margin-top: 45px;
+}
+
+.waiting-pay .btn-group .button {
+  margin-right: 25px;
+}
+
+.waiting-pay .btn-group .button.issue {
+  background-color: #fafafa;
+  border-color: #d1d1d1;
+  color: #000000;
+}
+
+.waiting-pay .misc {
+  margin-top: 37px;
+  padding-top: 20px;
+  border-top: #e2e2e2 solid 1px;
+}
+
+.waiting-pay .misc .fail, .waiting-pay .misc .yeepay {
+  float: left;
+}
+
+.waiting-pay .misc a {
+  color: #6fb7da;
+  text-decoration: underline;
+}
+
+.waiting-pay .fail a {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.waiting-pay .fail a:last-child {
+  margin-bottom: 0;
+}
+
+.waiting-pay .yeepay {
+  margin-left: 68px;
+  width: 282px;
+}
+
+.waiting-pay .yeepay .yp-qrcode {
+  float: left;
+  margin-right: 13px;
+}
+
+.waiting-pay .yeepay .yp-desc {
+  float: left;
+  width: 160px;
+}
+
+.waiting-pay .yeepay .yp-desc .number {
+  margin-top: 22px;
+  letter-spacing: 0;
+  word-break: break-all;
+}
+
+/*等待去银行付款弹层结束*/
+
+/*底部结束*/

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd   
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- 启用spring mvc 注解 -->
+    <context:annotation-config/>
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+
+    <!-- start开启注释 -->
+    <context:component-scan base-package="com.yeepay.g3.app.nccashier.wap" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation" expression="com.alibaba.dubbo.config.annotation.Reference"/>
+    </context:component-scan>
+    <!-- end开始注释 -->
+
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8"/>
+            </bean>
+            <bean class="org.springframework.http.converter.ResourceHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean"
+                          p:indentOutput="true" p:simpleDateFormat="yyyy-MM-dd HH:mm"/>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <mvc:default-servlet-handler/>
+    <!--<mvc:interceptors>-->
+    <!--<bean class="com.yeepay.g3.app.frame.interceptor.springmvc.ContextHandlerInterceptor"/>-->
+    <!--<bean class="com.yeepay.g3.app.frame.interceptor.springmvc.ParametersInterceptor"/>-->
+    <!--<bean class="com.yeepay.g3.app.frame.interceptor.springmvc.SSOInterceptor"/>-->
+    <!--<bean class="com.yeepay.g3.app.frame.interceptor.springmvc.MenuInterceptor"/>-->
+    <!--<bean class="com.yeepay.g3.app.frame.interceptor.springmvc.AuditInterceptor"/>-->
+    <!--&lt;!&ndash; 权限 &ndash;&gt;-->
+    <!--&lt;!&ndash;   &ndash;&gt;-->
+    <!--<bean class="com.yeepay.g3.app.frame.interceptor.springmvc.AuthorityInterceptor"/>-->
+    <!-- -->
+    <!--</mvc:interceptors>-->
+    <!-- -->
+    <!-- 全局异常配置 start -->
+    <!--<bean id="exceptionResolver"-->
+          <!--class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+        <!--<property name="exceptionMappings">-->
+            <!--<props>-->
+                <!--<prop key="java.lang.Throwable">common/error_exception</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!-- 全局异常配置 end -->
+
+    <!-- 完成请求和注解POJO的映射 -->
+    <mvc:resources mapping="/static/**" location="/static/"/>
+    <!-- 视图解释类 -->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+    <!--<property name="prefix" value="/WEB-INF/views/"/>-->
+    <!--<property name="suffix" value=".jsp"/>-->
+    <!--</bean>-->
+    <!-- velocity解析器,替换掉原来的jsp -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+        <property name="suffix" value=".vm"/>
+        <property name="requestContextAttribute" value="ctx"/>
+    </bean>
+
+    <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath">
+            <value>WEB-INF/views/</value>
+        </property>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="contentType">text/html;charset=UTF-8</prop>
+            </props>
+        </property>
+    </bean>
+    <import resource="classpath:/nc-cashier-spring/nc-cashier-datasource.xml"/>
+    <import resource="classpath:/nc-cashier-spring/nc-cashier-spring-aop.xml"/>
+
+</beans>

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yeepay.g3.core.nccashier.entity.PaymentRequest">
+
+    <resultMap id="paymentRequestMap" type="PaymentRequest">
+        <id column="ID" property="id"/>
+        <result column="TRADE_SYS_ORDER_ID" property="tradeSysOrderId"/>
+        <result column="TRADE_SYS_NO" property="tradeSysNo"/>
+        <result column="ORDER_ORDER_ID" property="orderOrderId"/>
+        <result column="ORDER_SYS_NO" property="orderSysNo"/>
+        <result column="BIZ_MODE_CODE" property="bizModeCode"/>
+        <result column="BIND_ID" property="bindId"/>
+        <result column="CARD_INFO_ID" property="cardInfoId"/>
+        <result column="MERCHANT_NO" property="merchantNo"/>
+        <result column="MERCHANT_ORDER_ID" property="merchantOrderId"/>
+        <result column="MERCHANT_NAME" property="merchantName"/>
+        <result column="PRODUCT_NAME" property="productName"/>
+        <result column="CASHIER_VERSION" property="cashierVersion"/>
+        <result column="THEME_CUSTOM_CODE" property="themeCustomCode"/>
+        <result column="ORDER_AMOUNT" property="orderAmount"/>
+        <result column="COST" property="cost"/>
+        <result column="PAY_METHOD" property="payMethod"/>
+        <result column="USER_UA" property="userUA"/>
+        <result column="USER_IP" property="userIp"/>
+        <result column="CARD_NO" property="cardNo"/>
+        <result column="CARD_TYPE" property="cardType"/>
+        <result column="BANK_CODE" property="bankCode"/>
+        <result column="PAYMENT_ORDER_NO" property="paymentOrderNo"/>
+        <result column="PAYMENT_SYS_NO" property="paymentSysNo"/>
+        <result column="ORDER_EXP_DATE" property="orderExpDate"/>
+        <result column="ERROR_CODE" property="errorCode"/>
+        <result column="ERROR_MSG" property="errorMsg"/>
+        <result column="STATE" property="state"/>
+        <result column="INDUSTRY_CATALOG" property="industryCatalog"/>
+        <result column="IDENTITY_ID" property="identityId" jdbcType="VARCHAR" typeHandler="com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler" />
+        <result column="IDENTITY_TYPE" property="identityType"/>
+        <result column="OWNER" property="owner"/>
+        <result column="ID_CARD_TYPE" property="idCardType"/>
+        <result column="ID_CARD" property="idCard"/>
+        <result column="PHONE_NO" property="phoneNo"/>
+        <result column="CURRENCY" property="currency"/>
+        <result column="AREA_INFO" property="areaInfo"/>
+        <result column="TRADE_RISK_INFO" property="tradeRiskInfo"/>
+        <result column="QUERY_RISK_INFO" property="queryRiskInfo"/>
+        <result column="MERCHANT_ORDER_URL" property="merchantOrderUrl"/>
+        <result column="FRONT_CALL_BACK_URL" property="frontCallBackUrl"/>
+        <result column="PAY_TIME" property="payTime"/>
+        <result column="TERMINAL_INFO" property="terminalInfo"/>
+        <result column="APP_INFO" property="appInfo"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="UPDATE_TIME" property="updateTime"/>
+        <result column="VERSION" property="version"/>
+        <result column="REMARK" property="remark"/>
+        <result column="MEMBER_NO" property="memberNo"/>
+        <result column="MEMBER_TYPE" property="memberType"/>
+        <result column="EBANK_PAY_SCENE" property="ebankPayScene"/>
+        <result column="EXTEND_INFO" property="extendInfo"></result>
+        <result column="MERCHANT_CONFIG_FROM" property="merchantConfigFrom"></result>
+        <result column="PARENT_MERCHANT_NO" property="parentMerchantNo"></result>
+        <result column="ORDER_EXP_DATE_TYPE" property="orderExpDateType"></result>
+        <result column="FEE" property="fee"></result>
+        <result column="FEE_TYPE" property="feeType"></result>
+        <result column="APPID" property="appID"></result>
+        <result column="PAY_SYS_CODE" property="paySysCode"></result>
+        <result column="RISK_PRODUCTION" property="riskProduction"></result>
+		<result column="ORDER_TIME" property="orderTime"></result>
+    </resultMap>
+
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="PaymentRequest">
+		insert into TBL_NCCA_PAY_REQ
+		(
+		TRADE_SYS_ORDER_ID,
+		TRADE_SYS_NO,
+		ORDER_ORDER_ID,
+		ORDER_SYS_NO,
+		BIZ_MODE_CODE,
+		BIND_ID,
+		CARD_INFO_ID,
+		MERCHANT_NO,
+		MERCHANT_ORDER_ID,
+		MERCHANT_NAME,
+		PRODUCT_NAME,
+		CASHIER_VERSION,
+		THEME_CUSTOM_CODE,
+		ORDER_AMOUNT,
+		COST,
+		PAY_METHOD,
+		USER_UA,
+		USER_IP,
+		CARD_NO,
+		CARD_TYPE,
+		BANK_CODE,
+		PAYMENT_ORDER_NO,
+		PAYMENT_SYS_NO,
+		ORDER_EXP_DATE,
+		ERROR_CODE,
+		ERROR_MSG,
+		STATE,
+		INDUSTRY_CATALOG,
+		IDENTITY_ID,
+		IDENTITY_TYPE,
+		OWNER,
+		ID_CARD_TYPE,
+		ID_CARD,
+		PHONE_NO,
+		CURRENCY,
+		AREA_INFO,
+		TRADE_RISK_INFO,
+		QUERY_RISK_INFO,
+		MERCHANT_ORDER_URL,
+		FRONT_CALL_BACK_URL,
+		PAY_TIME,
+		TERMINAL_INFO,
+		APP_INFO,
+		CREATE_TIME,
+		UPDATE_TIME,
+		VERSION,
+		REMARK,
+		MEMBER_NO,
+		MEMBER_TYPE,
+		EBANK_PAY_SCENE,
+		EXTEND_INFO,
+		MERCHANT_CONFIG_FROM,
+		PARENT_MERCHANT_NO,
+		ORDER_EXP_DATE_TYPE,
+		FEE,
+		FEE_TYPE,
+		APPID,
+		PAY_SYS_CODE,
+		RISK_PRODUCTION,
+		IDENTITY_ID_ENCRYPT,
+		ORDER_TIME
+		)
+		values
+		(
+		#{tradeSysOrderId,jdbcType=VARCHAR},
+		#{tradeSysNo,jdbcType=VARCHAR},
+		#{orderOrderId,jdbcType=VARCHAR},
+		#{orderSysNo,jdbcType=VARCHAR},
+		#{bizModeCode,jdbcType=VARCHAR},
+		#{bindId,jdbcType=VARCHAR},
+		#{cardInfoId,jdbcType=VARCHAR},
+		#{merchantNo,jdbcType=VARCHAR},
+		#{merchantOrderId,jdbcType=VARCHAR},
+		#{merchantName,jdbcType=VARCHAR},
+		#{productName,jdbcType=VARCHAR},
+		#{cashierVersion,jdbcType=VARCHAR},
+		#{themeCustomCode,jdbcType=VARCHAR},
+		#{orderAmount,jdbcType=DECIMAL},
+		#{cost,jdbcType=DECIMAL},
+		#{payMethod,jdbcType=VARCHAR},
+		#{userUA,jdbcType=VARCHAR},
+		#{userIp,jdbcType=VARCHAR},
+		#{cardNo,jdbcType=VARCHAR},
+		#{cardType,jdbcType=VARCHAR},
+		#{bankCode,jdbcType=VARCHAR},
+		#{paymentOrderNo,jdbcType=VARCHAR},
+		#{paymentSysNo,jdbcType=VARCHAR},
+		#{orderExpDate,jdbcType=INTEGER},
+		#{errorCode,jdbcType=VARCHAR},
+		#{errorMsg,jdbcType=VARCHAR},
+		#{state,jdbcType=VARCHAR},
+		#{industryCatalog,jdbcType=VARCHAR},
+		#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdWriteTypeHandler},
+		#{identityType,jdbcType=VARCHAR},
+		#{owner,jdbcType=VARCHAR},
+		#{idCardType,jdbcType=VARCHAR},
+		#{idCard,jdbcType=VARCHAR},
+		#{phoneNo,jdbcType=VARCHAR},
+		#{currency,jdbcType=VARCHAR},
+		#{areaInfo,jdbcType=VARCHAR},
+		#{tradeRiskInfo,jdbcType=VARCHAR},
+		#{queryRiskInfo,jdbcType=VARCHAR},
+		#{merchantOrderUrl,jdbcType=VARCHAR},
+		#{frontCallBackUrl,jdbcType=VARCHAR},
+		#{payTime,jdbcType=TIMESTAMP},
+		#{terminalInfo,jdbcType=VARCHAR},
+		#{appInfo,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{version,jdbcType=INTEGER},
+		#{remark,jdbcType=VARCHAR},
+		#{memberNo,jdbcType=VARCHAR},
+		#{memberType,jdbcType=VARCHAR},
+		#{ebankPayScene,jdbcType=VARCHAR},
+		#{extendInfo,jdbcType=VARCHAR},
+		#{merchantConfigFrom,jdbcType=VARCHAR},
+		#{parentMerchantNo,jdbcType=VARCHAR},
+		#{orderExpDateType,jdbcType=VARCHAR},
+		#{fee,jdbcType=DECIMAL},
+		#{feeType,jdbcType=VARCHAR},
+		#{appID,jdbcType=VARCHAR},
+		#{paySysCode,jdbcType=VARCHAR},
+		#{riskProduction,jdbcType=VARCHAR},
+		#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler},
+		#{orderTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+
+    <select id="findPayRequestById" parameterType="java.lang.Long" resultMap="paymentRequestMap">
+		SELECT
+		*
+		FROM TBL_NCCA_PAY_REQ
+		WHERE ID=#{requestId}
+	</select>
+    <update id="updatePayRequestState" parameterType="PaymentRequest">
+        UPDATE TBL_NCCA_PAY_REQ
+        SET STATE = #{state}
+        <if test="paymentOrderNo!=null">
+            ,PAYMENT_ORDER_NO=#{paymentOrderNo}
+        </if>
+        <if test="errorCode!=null">
+            ,ERROR_CODE = #{errorCode}
+        </if>
+        <if test="errorMsg!=null">
+            ,ERROR_MSG = #{errorMsg}
+        </if>
+        <if test="cardNo!=null">
+            ,CARD_NO = #{cardNo}
+        </if>
+        <if test="cardType!=null">
+            ,CARD_TYPE = #{cardType}
+        </if>
+        <if test="bindId!=null">
+            ,BIND_ID = #{bindId}
+        </if>
+        <if test="cost!=null">
+            ,COST = #{cost}
+        </if>
+        <if test="payTime!=null">
+            ,PAY_TIME=#{payTime}
+        </if>
+		<if test="orderTime!=null">
+			,ORDER_TIME=#{orderTime}
+		</if>
+        ,UPDATE_TIME = #{updateTime}
+        WHERE TRADE_SYS_ORDER_ID = #{tradeSysOrderId} and TRADE_SYS_NO = #{tradeSysNo}
+    </update>
+
+
+    <select id="findRequestByTradeSysOrderId" parameterType="map" resultMap="paymentRequestMap">
+		select
+		*
+		from TBL_NCCA_PAY_REQ 
+		where TRADE_SYS_ORDER_ID = #{tradeSysOrderId} and TRADE_SYS_NO = #{tradeSysNo}
+	</select>
+
+    <select id="findRequestByOrderOrderId" parameterType="map" resultMap="paymentRequestMap">
+		select
+		*
+		from TBL_NCCA_PAY_REQ 
+		where ORDER_ORDER_ID = #{orderOrderId} and ORDER_SYS_NO = #{orderSysNo}
+	</select>
+
+    <update id="updateRequestBaseOnStatus" parameterType="map">
+        UPDATE TBL_NCCA_PAY_REQ
+        SET STATE = #{paymentRequest.state}
+        <if test="paymentRequest.paymentOrderNo!=null">
+            ,PAYMENT_ORDER_NO=#{paymentRequest.paymentOrderNo}
+        </if>
+        <if test="paymentRequest.errorCode!=null">
+            ,ERROR_CODE = #{paymentRequest.errorCode}
+        </if>
+        <if test="paymentRequest.errorMsg!=null">
+            ,ERROR_MSG = #{paymentRequest.errorMsg}
+        </if>
+        <if test="paymentRequest.cardNo!=null">
+            ,CARD_NO = #{paymentRequest.cardNo}
+        </if>
+        <if test="paymentRequest.cardType!=null">
+            ,CARD_TYPE = #{paymentRequest.cardType}
+        </if>
+        <if test="paymentRequest.bindId!=null">
+            ,BIND_ID = #{paymentRequest.bindId}
+        </if>
+        <if test="paymentRequest.cost!=null">
+            ,COST = #{paymentRequest.cost}
+        </if>
+        <if test="paymentRequest.payTime!=null">
+            ,PAY_TIME=#{paymentRequest.payTime}
+        </if>
+		<if test="paymentRequest.orderTime!=null">
+			,ORDER_TIME=#{paymentRequest.orderTime}
+		</if>
+        ,UPDATE_TIME = #{paymentRequest.updateTime},
+        EXTEND_INFO=#{paymentRequest.extendInfo}
+        WHERE ID=#{paymentRequest.id}
+        <if test="originalStatus != null and originalStatus.size>0">
+            AND STATE in
+            <foreach collection="originalStatus" index="index" item="item"
+                     open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+    </update>
+
+
+    <select id="findRequestsByMerchantOrderId" parameterType="map" resultMap="paymentRequestMap">
+		select
+		*
+		from TBL_NCCA_PAY_REQ 
+		where MERCHANT_NO = #{merchantNo} and MERCHANT_ORDER_ID = #{merchantOrderId}
+	</select>
+
+
+    <update id="updatePayRequestExtendInfoById" parameterType="PaymentRequest">
+		UPDATE TBL_NCCA_PAY_REQ
+		SET EXTEND_INFO = #{extendInfo}
+		,UPDATE_TIME = #{updateTime}
+		WHERE ID=#{id}
+	</update>
+    <update id="updateUserRequestInfo" parameterType="PaymentRequest">
+		UPDATE TBL_NCCA_PAY_REQ
+		SET
+		EXTEND_INFO = #{extendInfo}
+		,UPDATE_TIME = #{updateTime}
+		,VERSION = #{version}
+		,CASHIER_VERSION = #{cashierVersion}
+		,REMARK = #{remark}
+		,CARD_TYPE =#{cardType}
+		,IDENTITY_ID =#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdWriteTypeHandler}
+		,IDENTITY_TYPE =#{identityType}
+		,BIZ_MODE_CODE=#{bizModeCode}
+		,EBANK_PAY_SCENE=#{ebankPayScene}
+		,IDENTITY_ID_ENCRYPT = #{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler}
+		WHERE ID=#{id}
+	</update>
+
+	<!--查询pay_request数量-->
+	<select id="countPaymentRequest" parameterType="map" resultType="int">
+		select count(ID)
+		from NCCASHIER.TBL_NCCA_PAY_REQ as req
+		where req.ID &gt;= #{fromIdTotal} and req.ID &lt;#{toIdTotal}
+	</select>
+
+    <!--批量查询pay_request-->
+    <select id="listPaymentRequestNotEnctypt" parameterType="map" resultMap="paymentRequestMap">
+		select * from
+		(select rownumber() over(order by ID asc) as rownum,req.ID,req.IDENTITY_ID
+		from NCCASHIER.TBL_NCCA_PAY_REQ as req
+		where req.ID &gt;= #{fromIdTotal} and req.ID &lt;#{toIdTotal}
+		)
+		where rownum &gt;= #{fromIndex} and rownum &lt;#{toIndex}
+	</select>
+
+	<!--修改IDENTITY_ID_ENCRYPT为加密后的IDENTITY_ID-->
+    <update id="updateForEncrypt" parameterType="PaymentRequest">
+		update TBL_NCCA_PAY_REQ
+		set
+		IDENTITY_ID_ENCRYPT = #{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler}
+		where ID = #{id}
+	</update>
+
+</mapper>

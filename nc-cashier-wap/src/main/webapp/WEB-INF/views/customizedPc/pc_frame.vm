@@ -1,0 +1,30 @@
+#parse("customizedPc/header.vm")
+<body>
+<!--[if lte IE 8]>
+<script type="text/javascript">window.location.replace("${ctx.contextPath}/newpc/request/$!{token}?compatibleView=Y")</script>
+<![endif]-->
+#parse("customizedPc/top.vm")
+<div class="container clearfix">
+    #parse("customizedPc/order_info.vm")
+    <!--是否展示客服-->
+    #if($!{needCustomService})
+    #parse("customizedPc/fixed_tools.vm")
+    #end
+    <!--是否展示客服结束-->
+</div>
+<!--易宝官网传送订单号,官网可查询交易订单状态-->
+<iframe id="messageFrame" style="display: none" src="https://www.yeepay.com/localStorageCashier"></iframe>
+<script>
+    document.querySelector("#messageFrame").addEventListener("load", function () {
+        var messageWin = document.querySelector("#messageFrame").contentWindow;
+        messageWin.postMessage("$!{orderId}", "https://www.yeepay.com");
+    }, false);
+</script>
+<!--易宝官网传送订单号结束-->
+<script>
+    Cashier.applyLayout("$!{layoutId}");
+    Action.getQueryStatus(parseInt(session.getItem("jsTrys")) * 3);
+</script>
+#parse("customizedPc/footer.vm")
+</body>
+</html>

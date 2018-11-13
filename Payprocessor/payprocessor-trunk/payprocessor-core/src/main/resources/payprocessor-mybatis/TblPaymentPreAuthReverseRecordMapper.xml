@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeepay.g3.core.payprocessor.dao.PreAuthReverseRecordDao" >
+  <resultMap id="PreAuthReverseRecordMap" type="PreAuthReverseRecord" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="REQUEST_ID" property="requestId" jdbcType="BIGINT" />
+    <result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+    <result column="REVERSE_NO" property="reverseNo" jdbcType="VARCHAR" />
+    <result column="ORG_PAYMENT_NO" property="orgPaymentNo" jdbcType="VARCHAR" />
+    <result column="PAYMENT_NO" property="paymentNo" jdbcType="VARCHAR" />
+    <result column="BIZ" property="biz" jdbcType="INTEGER" />
+    <result column="ORG_PAY_ORDER_TYPE" property="orgPayOrderType" jdbcType="VARCHAR" />
+    <result column="PAY_ORDER_TYPE" property="payOrderType" jdbcType="VARCHAR" />
+    <result column="CANCEL_STATUS" property="cancelStatus" jdbcType="VARCHAR" />
+    <result column="REQUEST_TIME" property="requestTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="SUCCESS_TIME" property="successTime" jdbcType="TIMESTAMP" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <select id="selectByPrimaryKey" resultMap="ReverseRecordMap" parameterType="java.lang.Long" >
+    select
+    ID, REQUEST_ID, RECORD_NO, RECORD_NO, ORG_PAYMENT_NO, PAYMENT_NO, BIZ, ORG_PAY_ORDER_TYPE, PAY_ORDER_TYPE, CANCEL_STATUS, REQUEST_TIME, MODIFY_TIME, SUCCESS_TIME, REMARK
+    from PP.TBL_PAYMENT_PRE_AUTH_REVERSE_RECORD
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <insert id="insert" parameterType="com.yeepay.g3.core.payprocessor.entity.PreAuthReverseRecord"
+          useGeneratedKeys="true" keyProperty="id" >
+    insert into PP.TBL_PAYMENT_PRE_AUTH_REVERSE_RECORD (REQUEST_ID, RECORD_NO, REVERSE_NO, ORG_PAYMENT_NO, PAYMENT_NO, BIZ, ORG_PAY_ORDER_TYPE, PAY_ORDER_TYPE,
+      CANCEL_STATUS, REQUEST_TIME,MODIFY_TIME, SUCCESS_TIME, REMARK)
+    values (#{requestId,jdbcType=BIGINT}, #{recordNo,jdbcType=VARCHAR},#{reverseNo,jdbcType=VARCHAR},#{orgPaymentNo,jdbcType=VARCHAR},#{paymentNo,jdbcType=VARCHAR},#{biz,jdbcType=INTEGER},#{orgPayOrderType,jdbcType=VARCHAR},
+      #{payOrderType,jdbcType=VARCHAR},#{cancelStatus,jdbcType=VARCHAR}, #{requestTime,jdbcType=TIMESTAMP},
+      CURRENT_TIMESTAMP,#{successTime,jdbcType=TIMESTAMP},#{remark,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.yeepay.g3.core.payprocessor.entity.PreAuthReverseRecord" >
+    update PP.TBL_PAYMENT_PRE_AUTH_REVERSE_RECORD
+    set
+      PAYMENT_NO = #{paymentNo, jdbc=VARCHAR},
+      CANCEL_STATUS = #{cancelStatus,jdbcType=VARCHAR},
+      SUCCESS_TIME = CURRENT_TIMESTAMP
+    where ID = #{id,jdbcType=BIGINT}
+    AND CANCEL_STATUS IN ('DOING', 'FAILURE')
+  </update>
+
+  <select id="queryByRecordNo" resultMap="PreAuthReverseRecordMap" parameterType="map">
+    SELECT
+    ID, REQUEST_ID, RECORD_NO, REVERSE_NO, ORG_PAYMENT_NO, PAYMENT_NO, BIZ, ORG_PAY_ORDER_TYPE, PAY_ORDER_TYPE, CANCEL_STATUS, REQUEST_TIME, MODIFY_TIME, SUCCESS_TIME, REMARK
+    FROM  PP.TBL_PAYMENT_PRE_AUTH_REVERSE_RECORD
+    WHERE
+    RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryByReverseNo" resultMap="PreAuthReverseRecordMap" parameterType="map">
+    SELECT
+    ID, REQUEST_ID, RECORD_NO, REVERSE_NO, ORG_PAYMENT_NO, PAYMENT_NO, BIZ, ORG_PAY_ORDER_TYPE, PAY_ORDER_TYPE, CANCEL_STATUS, REQUEST_TIME, MODIFY_TIME, SUCCESS_TIME, REMARK
+    FROM  PP.TBL_PAYMENT_PRE_AUTH_REVERSE_RECORD
+    WHERE
+    REVERSE_NO = #{reverseNo,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

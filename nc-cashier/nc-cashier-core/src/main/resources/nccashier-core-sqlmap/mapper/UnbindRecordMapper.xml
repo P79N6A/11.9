@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yeepay.g3.core.nccashier.entity.UnbindRecord">
+
+	<resultMap id="unbindRecordMap" type="UnbindRecord">
+		<id column="ID" property="id"/>
+		<result column="MERCHANT_NO" property="merchantNo" />
+		<result column="STATUS" property="status" />
+		<result column="IDENTITY_ID" property="identityId" jdbcType="VARCHAR" typeHandler="com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler"/>
+		<result column="IDENTITY_TYPE" property="identityType" />
+		<result column="CAUSE" property="cause" />
+		<result column="ERROR_CODE" property="errorCode" />
+		<result column="ERROR_MSG" property="errorMsg" />
+		<result column="MEMBER_NO" property="mermberNo" />
+		<result column="BIND_ID" property="bindId" />
+		<result column="CREATE_TIME" property="createTime"/>
+		<result column="UPDATE_TIME" property="updateTime"/>
+	</resultMap>
+
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="UnbindRecord">
+		insert into TBL_NCCA_UNBINDRECORD
+		(
+		MERCHANT_NO,
+		IDENTITY_ID,
+		IDENTITY_TYPE,
+		STATUS,
+		CAUSE,
+		ERROR_CODE,
+		ERROR_MSG,
+		MEMBER_NO,
+		BIND_ID,
+		CREATE_TIME,
+		UPDATE_TIME,
+		IDENTITY_ID_ENCRYPT
+		)
+		values
+		(
+		#{merchantNo,jdbcType=VARCHAR},
+		#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdWriteTypeHandler},
+		#{identityType,jdbcType=VARCHAR},
+		#{status,jdbcType=VARCHAR},
+		#{cause,jdbcType=VARCHAR},
+		#{errorCode,jdbcType=VARCHAR},
+		#{errorMsg,jdbcType=VARCHAR},
+		#{mermberNo,jdbcType=VARCHAR},
+		#{bindId,jdbcType=BIGINT},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP},
+		#{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler}
+		)
+	</insert>
+
+	<select id="getUnbindRecord" parameterType="java.lang.Long" resultMap="unbindRecordMap">
+		SELECT * FROM TBL_NCCA_UNBINDRECORD
+			WHERE BIND_ID = #{bindId}
+	</select>
+	<update id="update" parameterType="UnbindRecord">
+		UPDATE TBL_NCCA_UNBINDRECORD
+		SET STATUS = #{status}
+		<if test="updateTime!=null">
+			,UPDATE_TIME=#{updateTime}
+		</if>
+		<if test="errorCode!=null">
+			,ERROR_CODE = #{errorCode}
+		</if>
+		<if test="errorMsg!=null">
+			,ERROR_MSG = #{errorMsg}
+		</if>
+		<if test="cause!=null">
+			,CAUSE = #{cause}
+		</if>
+        WHERE ID = #{id} 
+	</update>
+
+	<!--查询TBL_NCCA_UNBINDRECORD记录数量-->
+	<select id="countUnbindRecord" parameterType="map" resultType="int">
+		select count(ID)
+		from NCCASHIER.TBL_NCCA_UNBINDRECORD as req
+		where req.ID &gt;= #{fromIdTotal} and req.ID &lt;#{toIdTotal}
+	</select>
+
+	<!--批量查询UnbindRecord-->
+	<select id="listUnbindRecordNotEnctypt" parameterType="map" resultMap="unbindRecordMap">
+		select * from
+		(select rownumber() over(order by ID asc) as rownum,req.ID,req.IDENTITY_ID
+		from NCCASHIER.TBL_NCCA_UNBINDRECORD as req
+		where req.ID &gt;= #{fromIdTotal} and req.ID &lt;#{toIdTotal}
+		)
+		where rownum &gt;= #{fromIndex} and rownum &lt;#{toIndex}
+	</select>
+
+	<!--修改IDENTITY_ID_ENCRYPT为加密后的IDENTITY_ID-->
+	<update id="updateForEncrypt" parameterType="UnbindRecord">
+		update TBL_NCCA_UNBINDRECORD
+		set
+		IDENTITY_ID_ENCRYPT = #{identityId,jdbcType=VARCHAR,typeHandler=com.yeepay.g3.core.nccashier.typeHandler.IdentityIdEncryptTypeHandler}
+		where ID = #{id}
+	</update>
+
+</mapper>

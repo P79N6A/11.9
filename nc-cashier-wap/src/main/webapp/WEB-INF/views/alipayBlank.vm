@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <title></title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .alipay {
+            margin: 100px 10px;
+            display: block;
+            height: 50px;
+            line-height: 50px;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            background-color: #00a3ee;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<p class="alipay" onclick="ready(alipay)">前往支付</p>
+<script>
+    function ready(callback) {
+        // 如果jsbridge已经注入则直接调用
+        if (window.AlipayJSBridge) {
+            callback && callback();
+        } else {
+            // 如果没有注入则监听注入的事件
+            document.addEventListener('AlipayJSBridgeReady', callback, false);
+        }
+    }
+    function alipay() {
+        AlipayJSBridge.call("tradePay", {
+            tradeNO: "$!{tradeNO}"
+        }, function (result) {
+            if (result.resultCode == "9000") {
+                window.location.href = "${ctx.contextPath}/wap/query/result?token=${token}";
+            }
+//                                alert(JSON.stringify(result));
+        });
+    }
+    ready(alipay);
+</script>
+</body>
+</html>

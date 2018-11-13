@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>payprocessor-parent</artifactId>
+		<groupId>com.yeepay.g3.payprocessor</groupId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.yeepay.g3.payprocessor</groupId>
+	<artifactId>payprocessor-facade</artifactId>
+	<version>${payprocessor-facade.version}</version>
+	<name>payprocessor-facade</name>
+	<packaging>jar</packaging>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.ncpay</groupId>
+			<artifactId>nc-pay-facade</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.frontend</groupId>
+			<artifactId>frontend-facade</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.yeepay.g3.frontend</groupId>
+			<artifactId>frontend-netpay-facade</artifactId>
+		</dependency>
+		
+		<dependency>
+ 			<groupId>com.yeepay.g3.frontend</groupId>
+ 			<artifactId>frontend-installment-facade</artifactId>
+		</dependency>
+		
+	</dependencies>
+</project>

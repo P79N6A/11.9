@@ -1,0 +1,76 @@
+#*
+模拟下拉框
+*#
+<div class="select">
+    <div class="current-selected icon"></div>
+
+    <div class="option-wrapper">
+        <div class="option" bankId="1">
+            <div class="bank"><span class="bank-logo"></span>北京银行</div>
+            <div class="card-info">************4546 <span class="card-type">储蓄卡</span>
+
+                <p class="excess">已超出本行限额 暂不可用</p>
+            </div>
+        </div>
+        <div class="option" bankId="2">
+            <div class="bank"><span class="bank-logo CMBCHINA"></span>招商银行</div>
+            <div class="card-info">************8756 <span class="card-type">信用卡</span>
+
+                <p class="excess">已超出本行限额 暂不可用</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (global) {
+        'use strict';
+        var dom = global.document;
+        var array = Array.from;
+        var selects = array(dom.querySelectorAll(".select")),//保存所有select
+                currentSelecteds = array(dom.querySelectorAll(".select .current-selected")),//保存每个select选中项
+                options = array(dom.querySelectorAll(".select .option"));//保存每个select下拉项
+        function selectController() {
+            /*
+             * 下拉菜单显示、隐藏控制
+             * */
+            var target = this;
+            currentSelecteds.forEach(function (currentValue) {
+                if (target != currentValue) {
+                    currentValue.classList.remove("open");
+                }
+            });
+            this.classList.toggle("open");
+        }
+
+        function selected() {
+            /*
+             * 点击下拉选项，为当前项重新赋值
+             * */
+            var currentSelected = this.parent(".select").querySelector(".current-selected");
+            currentSelected.innerHTML = this.innerHTML;
+            currentSelected.setAttribute("bankId", this.getAttribute("bankId"));
+            selectController.call(currentSelected);
+        }
+
+        currentSelecteds.forEach(function (currentValue) {
+            /*
+             * 每一个select绑定点击事件
+             * */
+            currentValue.addEventListener("click", selectController, false);
+        });
+        options.forEach(function (currentValue) {
+            /*
+             * 每一个option绑定点击事件
+             * */
+            currentValue.addEventListener("click", selected, false);
+        });
+        currentSelecteds.forEach(function (currentValue, index) {
+            /*
+             * 默认选中第一个
+             * */
+            var firstOption = selects[index].querySelector(".option");
+            currentValue.innerHTML = firstOption.innerHTML;
+            currentValue.setAttribute("bankId", firstOption.getAttribute("bankId"));
+        });
+    })(window);
+</script>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <title></title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .weixin-pay {
+            margin: 70% 10px;
+            display: block;
+            height: 50px;
+            line-height: 50px;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            background-color: #2eb944;
+            color: #ffffff;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<a class="weixin-pay" href="javascript:void(0)">前往微信支付</a>
+<script>
+    function onBridgeReady(json) {
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', function () {
+                    onBridge(json);
+                }, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', function () {
+                    onBridge(json);
+                });
+                document.attachEvent('onWeixinJSBridgeReady', function () {
+                    onBridge(json);
+                });
+            }
+        } else {
+            onBridge(json);
+        }
+    }
+    onBridgeReady(${url});
+    document.querySelector(".weixin-pay").addEventListener("click",function(){
+        onBridgeReady(${url})
+    },false);
+    function onBridge(json) {
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', json,
+                function (res) {
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+
+                        window.location.href = "${ctx.contextPath}/wap/query/result?token=${token}";
+                    } else {
+                        return false;
+                    }    // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                }
+        );
+    }
+    function openIdPay(weChatPay) {
+        jQuery.ajax({
+            method: "POST",
+            timeout: 20000, //超时时间设置，单位毫秒
+            url: "${ctx.contextPath}/newwap/wechat/pay",
+            data: {'payType': weChatPay, 'token': "$!{token}", 'wpayId': "$!{wpayId}"},
+            success: function (data) {
+                try {
+                    var json = JSON.parse(data);
+                    if (json.status == "success") {
+                        if (json.needRedirect) {
+                            location.assign(json.url);
+                        } else {
+                            json = JSON.parse(json.url);
+                            onBridgeReady(json);
+                        }
+                    } else {
+                        alert(json.msg);
+                        closeLoading();
+                        return;
+                    }
+                } catch (e) {
+                    alert("支付失败，请稍后重试");
+                    closeLoading();
+
+                }
+            },
+            error: function () {
+                alert("支付失败，请稍后重试");
+                closeLoading();
+            }
+        });
+    }
+</script>
+</body>
+</html>

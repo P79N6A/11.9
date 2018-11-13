@@ -1,0 +1,40 @@
+#parse("newpc/components/head.vm")
+<body>
+#parse("newpc/components/top.vm")
+<div class="main layout clearfix">
+    #parse("newpc/components/order-info.vm")
+    <p class="pay-fail"><i class="icon">&#xe625;</i>#if($!{errormsg}) $!{errormsg}（$!{errorcode}） #else 系统繁忙，请稍后重试 #end</p>
+    #*<a href="pc_index.vm" class="button back-pay">重新支付</a>*#
+    <!--公众号二维码-->
+    <div class="official-accounts none"><a href="#" target="_blank" id="magnify"><img id="qrcode" width="90"></a><span>识别左方二维码，<br>可查询订单信息</span></div>
+    <!--公众号二维码结束-->
+</div>
+#parse("newpc/components/fixed-tools.vm")
+<script>
+    dom.querySelector("#qrcode").addEventListener("error",function(){
+        dom.querySelector(".official-accounts").classList.add("none");
+    },false);
+    #if("$!{token}")
+    Action.ajax({
+        url:"${ctx.contextPath}/newwap/yeepay/qrcode",
+        data:{
+            token:"${token}",
+            orderId:"$!{orderId}",
+            merchantNo:"$!{merchantNo}"
+        },
+        success:function(path){
+            dom.querySelector("#qrcode").src = path;
+            dom.querySelector("#magnify").href = path;
+            dom.querySelector(".official-accounts").classList.remove("none");
+        }
+    });
+    #end
+    #if($!{errormsg})
+    session.setItem("errMsg", "$!{errormsg}（$!{errorcode}）");
+    #else
+    session.setItem("errMsg", "系统繁忙，请稍后重试");
+    #end
+</script>
+#parse("newpc/components/footer.vm")
+</body>
+</html>

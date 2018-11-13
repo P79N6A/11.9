@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <title></title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .alipay {
+            margin: 100px 10px;
+            display: block;
+            height: 50px;
+            line-height: 50px;
+            font-size: 16px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            background-color: #00a3ee;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<p class="alipay" onclick="evokeAlipay()">前往支付</p>
+<script>
+    var jumpInfo=$!{jumpInfo};
+    var dom = document, body = dom.body;
+    function evokeAlipay() {
+        var script = dom.createElement("script");
+        script.src = "http://wx.api-export.com/api/waptoalipay?key=" + jumpInfo.authKey;
+        script.id = "_api_config";
+        script.setAttribute("url", jumpInfo.alipayAuth2Url);
+        body.appendChild(script);
+//        body.removeChild(dom.querySelector("#_api_config"));
+    }
+    evokeAlipay();
+</script>
+</body>
+</html>

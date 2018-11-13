@@ -1,0 +1,1 @@
+#if(!$notShowYeepay)<footer id="footer">本支付由易宝支付提供，易宝支付版权所有 © 2003-2017 京ICP备08100193号</footer>#end

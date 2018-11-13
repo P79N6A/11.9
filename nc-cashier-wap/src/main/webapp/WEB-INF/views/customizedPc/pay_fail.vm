@@ -1,0 +1,45 @@
+#parse("customizedPc/header.vm")
+<body>
+#parse("customizedPc/top.vm")
+<div class="container clearfix" style="min-height: 600px">
+    #parse("customizedPc/order_info.vm")
+    <p class="pay-fail"><i class="icon">&#xe625;</i>#if($!{errormsg}) $!{errormsg}（$!{errorcode}） #else 系统繁忙，请稍后重试 #end</p>
+    <!--公众号二维码-->
+    <div class="official-accounts none"><a href="#" target="_blank" id="magnify"><img id="qrcode" width="90"></a><span>识别左方二维码，<br>可查询订单信息</span></div>
+    <!--公众号二维码结束-->
+</div>
+<!--是否展示客服-->
+#if($!{needCustomService})
+#parse("customizedPc/fixed_tools.vm")
+#end
+<!--是否展示客服结束-->
+<script>
+    /*结果页公众号二维码控制*/
+    dom.querySelector("#qrcode").addEventListener("error",function(){
+        dom.querySelector(".official-accounts").classList.add("none");
+    },false);
+    #if("$!{token}")
+    Action.ajax({
+        url:"${ctx.contextPath}/newwap/yeepay/qrcode",
+        data:{
+            token:"${token}",
+            orderId:"$!{orderId}",
+            merchantNo:"$!{merchantNo}"
+        },
+        success:function(path){
+            dom.querySelector("#qrcode").src = path;
+            dom.querySelector("#magnify").href = path;
+            dom.querySelector(".official-accounts").classList.remove("none");
+        }
+    });
+    #end
+    /*结果页公众号二维码控制结束*/
+    #if($!{errormsg})
+     session.setItem("errMsg", "$!{errormsg}（$!{errorcode}）");
+     #else
+    session.setItem("errMsg", "系统繁忙，请稍后重试");
+     #end
+</script>
+#parse("customizedPc/footer.vm")
+</body>
+</html>

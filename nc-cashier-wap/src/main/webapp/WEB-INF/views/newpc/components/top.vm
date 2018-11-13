@@ -1,0 +1,19 @@
+#*
+顶部logo、客服电话
+*#
+<div class="header clearfix">
+    <div class="layout">
+        <div class="logo">#if(!$notShowYeepay)<img src="${ctx.contextPath}/newpc/assets/images/logo.png" alt="易宝支付">#end<span class="sign">收银台</span></div>
+        #if(!$notShowYeepay)<div class="service-phone">7X24小时客服电话：4001-500-800</div>#end
+    </div>
+</div>
+<!--[if IE]>
+<div class="suggests">为了您可以获得更好的用户体验，建议使用Chrome、Firefox、Safari等浏览器</div>
+<script type="text/javascript">
+    (function () {
+        setTimeout(function () {
+            dom.querySelector(".suggests").classList.add("none");
+        }, 5000);
+    }());
+</script>
+<![endif]-->

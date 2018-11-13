@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="frontend-core" />
+        <module name="frontend-facade" />
+        <module name="frontend-hessian" />
+        <module name="nc-cashier-core" />
+        <module name="nc-cashier-facade" />
+        <module name="nc-cashier-hessian" />
+        <module name="payprocessor-core" />
+        <module name="payprocessor-facade" />
+        <module name="payprocessor-hessian" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="frontend-app" target="7" />
+      <module name="nc-cashier-wap" target="1.6" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="frontend-app" options="-nowarn" />
+      <module name="frontend-core" options="-nowarn" />
+      <module name="frontend-facade" options="-nowarn" />
+      <module name="frontend-hessian" options="-nowarn" />
+      <module name="frontend-parent" options="-nowarn" />
+      <module name="nc-cashier-core" options="-nowarn" />
+      <module name="nc-cashier-facade" options="-nowarn" />
+      <module name="nc-cashier-hessian" options="-nowarn" />
+      <module name="nc-cashier-parent" options="-nowarn" />
+      <module name="nc-cashier-wap" options="-nowarn" />
+      <module name="payprocessor-core" options="-nowarn" />
+      <module name="payprocessor-facade" options="-nowarn" />
+      <module name="payprocessor-hessian" options="-nowarn" />
+      <module name="payprocessor-parent" options="-nowarn" />
+    </option>
+  </component>
+</project>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeepay.g3.core.payprocessor.dao.PaymentRequestDao" >
+  <resultMap id="PaymentRequestMap" type="PaymentRequest" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="CUSTOMER_NO" property="customerNo" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR" />
+    <result column="OUT_TRADE_NO" property="outTradeNo" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="DEAL_UNIQUE_SERIAL_NO" property="dealUniqueSerialNo" jdbcType="VARCHAR" />
+    <result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+    <result column="ORDER_SYSTEM" property="orderSystem" jdbcType="VARCHAR" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="PAY_STATUS" property="payStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_SYSTEM_STATUS" property="orderSystemStatus" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="CONFIRM_TIME" property="confirmTime" jdbcType="TIMESTAMP" />
+    <result column="PAY_TYPE" property="payType" jdbcType="VARCHAR" />
+    <result column="EXPIRE_DATE" property="expireDate" jdbcType="TIMESTAMP" />
+    <result column="PRE_AUTH_AMOUNT" property="preAuthAmount" jdbcType="DECIMAL" />
+    
+  </resultMap>
+  <select id="selectByPrimaryKey" resultMap="PaymentRequestMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from PP.TBL_PAYMENT_REQUEST
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <insert id="insert" parameterType="com.yeepay.g3.core.payprocessor.entity.PaymentRequest"
+          useGeneratedKeys="true" keyProperty="id" >
+    insert into PP.TBL_PAYMENT_REQUEST (CUSTOMER_NO, CUSTOMER_NAME,
+      OUT_TRADE_NO, ORDER_NO, 
+      DEAL_UNIQUE_SERIAL_NO, RECORD_NO, 
+      ORDER_SYSTEM, AMOUNT, CREATE_TIME, 
+      PAY_STATUS, ORDER_SYSTEM_STATUS, UPDATE_TIME, EXPIRE_DATE,
+      CONFIRM_TIME, PAY_TYPE)
+    values (#{customerNo,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR},
+      #{outTradeNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR},
+      #{dealUniqueSerialNo,jdbcType=VARCHAR}, #{recordNo,jdbcType=VARCHAR}, 
+      #{orderSystem,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{payStatus,jdbcType=VARCHAR}, #{orderSystemStatus,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},#{expireDate,jdbcType=TIMESTAMP},
+      #{confirmTime,jdbcType=TIMESTAMP}, #{payType,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.yeepay.g3.core.payprocessor.entity.PaymentRequest" >
+    update PP.TBL_PAYMENT_REQUEST
+    set CUSTOMER_NO = #{customerNo,jdbcType=VARCHAR},
+      CUSTOMER_NAME = #{customerName,jdbcType=VARCHAR},
+      OUT_TRADE_NO = #{outTradeNo,jdbcType=VARCHAR},
+      ORDER_NO = #{orderNo,jdbcType=VARCHAR},
+      DEAL_UNIQUE_SERIAL_NO = #{dealUniqueSerialNo,jdbcType=VARCHAR},
+      RECORD_NO = #{recordNo,jdbcType=VARCHAR},
+      ORDER_SYSTEM = #{orderSystem,jdbcType=VARCHAR},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      PAY_STATUS = #{payStatus,jdbcType=VARCHAR},
+      ORDER_SYSTEM_STATUS = #{orderSystemStatus,jdbcType=VARCHAR},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      CONFIRM_TIME = #{confirmTime,jdbcType=TIMESTAMP},
+      EXPIRE_DATE = #{expireDate,jdbcType=TIMESTAMP},
+      PAY_TYPE = #{payType,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateRequestToReverse" parameterType="com.yeepay.g3.core.payprocessor.entity.PaymentRequest" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+      PAY_STATUS = 'REVERSE',
+      ORDER_SYSTEM_STATUS = 'REVERSE',
+      UPDATE_TIME = CURRENT_TIMESTAMP
+    where ID = #{requestId,jdbcType=BIGINT}
+    AND PAY_STATUS = #{orgStatus,jdbcType=VARCHAR}
+  </update>
+  <update id="updateRequestToSuccess" parameterType="java.util.Map" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+      PAY_STATUS = 'SUCCESS',
+      UPDATE_TIME = CURRENT_TIMESTAMP ,
+      CONFIRM_TIME = CURRENT_TIMESTAMP ,
+      RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+    AND PAY_STATUS = 'DOING'
+    WITH rr
+  </update>
+  <update id="updateRequestToNotifySuccess" parameterType="java.lang.Long" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+      ORDER_SYSTEM_STATUS = 'SUCCESS'
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="queryBySystemAndOrderNo" parameterType="java.util.Map" resultMap="PaymentRequestMap">
+    SELECT *
+    FROM PP.TBL_PAYMENT_REQUEST
+    WHERE
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND ORDER_SYSTEM = #{orderSystem,jdbcType=VARCHAR}
+  </select>
+
+  <select id="queryUnNotifyPayment" parameterType="java.util.Map" resultMap="PaymentRequestMap">
+      SELECT *
+      FROM PP.TBL_PAYMENT_REQUEST
+      WHERE
+      PAY_STATUS IN ('SUCCESS','FAILURE')
+      AND ORDER_SYSTEM_STATUS = 'DOING'
+      <![CDATA[ AND CONFIRM_TIME >= #{startDate, jdbcType=TIMESTAMP}  ]]>
+      <![CDATA[ AND CONFIRM_TIME <= #{endDate, jdbcType=TIMESTAMP}  ]]>
+  </select>
+
+  <update id="updatePayTypeAndStatus" parameterType="java.util.Map">
+    UPDATE PP.TBL_PAYMENT_REQUEST
+    SET
+      PAY_TYPE = #{payType,jdbcType=VARCHAR},
+      PAY_STATUS = #{status, jdbcType=VARCHAR},
+      ORDER_SYSTEM_STATUS = 'DOING'
+    WHERE
+      ID = #{requestId,jdbcType=BIGINT}
+    AND
+      PAY_TYPE = #{prePayType,jdbcType=VARCHAR}
+    AND
+      PAY_STATUS = #{preStatus, jdbcType=VARCHAR}
+  </update>
+
+  <update id="updatePaymentToSuccessForPreAuth" parameterType="java.util.Map" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+    PAY_STATUS = 'SUCCESS',
+    <if test="preAuthAmount != null" >
+      PRE_AUTH_AMOUNT = #{preAuthAmount,jdbcType=DECIMAL},
+    </if>
+    UPDATE_TIME = CURRENT_TIMESTAMP ,
+    CONFIRM_TIME = CURRENT_TIMESTAMP ,
+    RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+    AND PAY_STATUS IN ('DOING', 'FAILURE')
+  </update>
+  <update id="updateRequestToFail" parameterType="java.util.Map" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+    PAY_STATUS = 'FAILURE',
+    <if test="orderSystemStatus != null" >
+      ORDER_SYSTEM_STATUS = #{orderSystemStatus,jdbcType=VARCHAR},
+    </if>
+    UPDATE_TIME = CURRENT_TIMESTAMP ,
+    CONFIRM_TIME = CURRENT_TIMESTAMP ,
+    RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+    AND PAY_STATUS = 'DOING'
+  </update>
+  <update id="updateRequestFromFailToSuccess" parameterType="java.util.Map" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+    PAY_STATUS = 'SUCCESS',
+    <if test="orderSystemStatus != null" >
+      ORDER_SYSTEM_STATUS = #{orderSystemStatus,jdbcType=VARCHAR},
+    </if>
+    UPDATE_TIME = CURRENT_TIMESTAMP ,
+    CONFIRM_TIME = CURRENT_TIMESTAMP ,
+    RECORD_NO = #{recordNo,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+    AND PAY_STATUS = 'FAILURE'
+    AND PAY_TYPE = 'PREAUTH_CC'
+  </update>
+  <update id="updatePaymentOrderSystemStatus"  parameterType="java.util.Map" >
+    update PP.TBL_PAYMENT_REQUEST
+    set
+      ORDER_SYSTEM_STATUS = #{orderSystemStatus,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yeepay.g3.core.payprocessor.hisDao.HisPaymentRequestDao" >
+  <resultMap id="PaymentRequestMap" type="PaymentRequest" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="CUSTOMER_NO" property="customerNo" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_NAME" property="customerName" jdbcType="VARCHAR" />
+    <result column="OUT_TRADE_NO" property="outTradeNo" jdbcType="VARCHAR" />
+    <result column="ORDER_NO" property="orderNo" jdbcType="VARCHAR" />
+    <result column="DEAL_UNIQUE_SERIAL_NO" property="dealUniqueSerialNo" jdbcType="VARCHAR" />
+    <result column="RECORD_NO" property="recordNo" jdbcType="VARCHAR" />
+    <result column="ORDER_SYSTEM" property="orderSystem" jdbcType="VARCHAR" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="PAY_STATUS" property="payStatus" jdbcType="VARCHAR" />
+    <result column="ORDER_SYSTEM_STATUS" property="orderSystemStatus" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="CONFIRM_TIME" property="confirmTime" jdbcType="TIMESTAMP" />
+    <result column="PAY_TYPE" property="payType" jdbcType="VARCHAR" />
+    <result column="EXPIRE_DATE" property="expireDate" jdbcType="TIMESTAMP" />
+    
+  </resultMap>
+  <select id="selectByPrimaryKey" resultMap="PaymentRequestMap" parameterType="java.lang.Long" >
+    select 
+    *
+    from PP.TBL_PAYMENT_REQUEST
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="queryBySystemAndOrderNo" parameterType="java.util.Map" resultMap="PaymentRequestMap">
+    SELECT *
+    FROM PP.TBL_PAYMENT_REQUEST
+    WHERE
+    ORDER_NO = #{orderNo,jdbcType=VARCHAR}
+    AND ORDER_SYSTEM = #{orderSystem,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

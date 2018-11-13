@@ -1,0 +1,5 @@
+#*
+按钮
+*#
+<button disabled>下一步</button>
+<a href="#" class="button">下一步</a>

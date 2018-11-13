@@ -1,0 +1,9 @@
+#parse("newpc/components/head.vm")
+<body>
+    #parse("newpc/components/top.vm")
+<div class="main layout clearfix">
+    #parse("newpc/components/order-info.vm")
+    <p class="pay-fail"><i class="icon">&#xe625;</i>支付已撤销</p>
+</div>
+</body>
+</html>

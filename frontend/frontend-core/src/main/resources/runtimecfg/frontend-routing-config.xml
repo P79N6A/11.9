@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RoutingInfo>
+	<routingRuleList>
+		<RoutingRule>
+			<id>platFormTypeShardingRule</id>
+			<columnName>PLATFORM_TYPE</columnName>
+			<columnType>STRING</columnType>
+			<routingType>EQUALS</routingType>
+			<shardList>
+				<Shard>
+					<dataSource>frontendDs</dataSource>
+					<valueRange>WECHAT</valueRange>
+				</Shard>
+				<Shard>
+					<dataSource>frontendDs</dataSource>
+					<tableSuffix>ZFB</tableSuffix>
+					<valueRange>ALIPAY</valueRange>
+				</Shard>
+				<Shard>
+					<dataSource>frontendDs</dataSource>
+					<tableSuffix>UPOP</tableSuffix>
+					<valueRange>OPEN_UPOP</valueRange>
+				</Shard>
+				<Shard>
+					<dataSource>frontendDs</dataSource>
+					<tableSuffix>JD</tableSuffix>
+					<valueRange>JD</valueRange>
+				</Shard>
+				<Shard>
+					<dataSource>frontendDs</dataSource>
+					<tableSuffix>QQ</tableSuffix>
+					<valueRange>QQ</valueRange>
+				</Shard>
+			</shardList>
+		</RoutingRule>
+	</routingRuleList>
+	<routingConfigList>
+		<RoutingConfig>
+			<tableName>TBL_FRONTEND_PAY_ORDER</tableName>
+			<routingRuleId>platFormTypeShardingRule</routingRuleId>
+		</RoutingConfig>
+		<RoutingConfig>
+			<tableName>TBL_FRONTEND_PAY_RECORD</tableName>
+			<routingRuleId>platFormTypeShardingRule</routingRuleId>
+		</RoutingConfig>
+	</routingConfigList>
+</RoutingInfo>

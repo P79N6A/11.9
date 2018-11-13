@@ -1,0 +1,32 @@
+#parse('header.vm')
+<body>
+<div class="tc icon abnormal mt30">&#xe7e6;</div>
+<div class="tc mt10">
+    <div class="c333 fs16 bold">系统异常</div>
+    <div class="mt10 c666 fs14">数据读取错误，请尝试重新支付</div>
+</div>
+<!--<div class="pl12 pr12">-->
+    <!--<a class="mt30 w"href="">重新支付</a>-->
+<!--</div>-->
+<div class="pme-wrapper none" id="repayButton"><a href="#" class="pme-btn mt20">重新支付</a></div>
+## #if(${theme.showMerchantName})
+ <footer class="pme-footer" id="mod-footer" style="margin-bottom: 10px;">
+       <p>本服务由易宝支付（yeepay.com）提供</p>
+       <p>易宝支付客服电话：<span style="color:#6ec37a; text-decoration:none;">4001-500-800</span></p>
+  </footer>
+## #end
+</body>
+<script>
+    var repayurl = '';
+    if(localStorage.repayurl){
+        repayurl = localStorage.repayurl.replace(/\s+/g,"")
+    }
+    if(!repayurl){
+        document.querySelector("#repayButton").classList.add("none");
+    }else{
+        document.querySelector("#repayButton").classList.remove("none");
+        console.log(document.querySelector("#repayButton a").href)
+        document.querySelector("#repayButton a").href= repayurl;
+    }
+</script>
+</html>

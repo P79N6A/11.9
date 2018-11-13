@@ -1,0 +1,4 @@
+
+    <div class="global-error" style="margin-top: 50px; margin-left: 50px;">
+        #if($!{errormsg}) $!{errormsg} #else 系统繁忙，请稍后重试 #end
+    </div>

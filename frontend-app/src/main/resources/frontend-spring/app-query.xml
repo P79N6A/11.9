@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="queryService" class="com.yeepay.g3.utils.query.impl.QueryServiceImpl">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="querys">
+            <map>
+                <entry key="queryOrder">
+                    <bean class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                       SELECT C.CUSTOMERNUMBER,C.FULLNAME,O.*,P.*
+                                       FROM TRXORDER O
+                                       LEFT JOIN PAYMENT P ON P.TRXORDER_ID = O.ID
+                                       LEFT JOIN CUSTOMER C ON C.ID = O.RECEIVER_ID
+                                       WHERE 1=1
+                                       /~requestId: and o.requestId in {requestId,stringarray} ~/
+                                       /~externalId: and o.externalId in {externalId,stringarray} ~/
+                                       /~bankOrderId: and p.bankOrderId in {bankOrderId,stringarray} ~/
+                                       /~customerNumber: and c.customerNumber = {customerNumber,string} ~/
+                                       /~orderStatus: and o.status = {orderStatus,string} ~/
+                                       /~trxStatus: and p.trxStatus = {trxStatus,string} ~/
+                                       /~orderType: and o.orderType = {orderType,string} ~/
+                                       /~orderDateStart: and o.orderDate >= {orderDateStart,timestamp} ~/
+                                       /~orderDateEnd: and o.orderDate <= {orderDateEnd,timestamp} ~/
+                                       /~closeDateStart: and o.closeDate >= {closeDateStart,timestamp} ~/
+                                       /~closeDateEnd: and o.closeDate <= {closeDateEnd,timestamp} ~/
+                                       /~confirmDateStart: and p.confirmOrCancel >= {confirmDateStart,timestamp} ~/
+                                       /~confirmDateEnd: and p.confirmOrCancel <= {confirmDateEnd,timestamp} ~/
+                                       /~orderAmountStart: and o.orderAmount >= {orderAmountStart,double} ~/
+                                       /~orderAmountEnd: and o.orderAmount <= {orderAmountEnd,double} ~/
+                                       with ur
+                                    ]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="mpaybossQueryService" class="com.yeepay.g3.utils.query.impl.QueryServiceImpl">
+        <property name="dataSource">
+            <ref bean="mpaybossDataSource"/>
+        </property>
+        <property name="querys">
+            <map>
+                <entry key="queryMpayOrder">
+                    <bean id="queryMpayOrder" class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+					select
+						   ID,VERSION,ORDER_NO,CUSTOMER_NO,ORDER_TYPE,
+						   PLATFORM_TYPE,OUT_TRADE_NO,TOTAL_AMOUNT,PREPAY_ID,TRANSACTION_ID,
+						   SPBILL_CREATE_IP,CREATE_DATE,CREATE_TIME,LAST_MODIFY_TIME,EXPIRE_TIME,
+						   DESCRIPTION,STATUS,NOTIFY_URl,CODE_URl,TRADE_TYPE,SOURCE,EFFECTIVE_PID,FEE_TYPE,OPEN_ID,REMARK,WC_SUB_MER_NUMBER,
+						   AGENT_NO
+					from TBL_MPAY_ORDER bl
+					where 1=1
+					/~customerNo: and bl.CUSTOMER_NO = '[customerNo,String]'~/
+					/~wechatSubMerchantNumber: and bl.WC_SUB_MER_NUMBER = '[wechatSubMerchantNumber,String]'~/
+					/~outTradeNo: and bl.OUT_TRADE_NO = '[outTradeNo,String]'~/
+					/~orderNo: and bl.ORDER_NO = '[orderNo,String]'~/
+					/~transactionId: and bl.TRANSACTION_ID = '[transactionId,String]'~/
+					/~status: and bl.STATUS = '[status,String]'~/
+					/~source: and bl.SOURCE = '[source,String]'~/
+					/~orderType: and bl.ORDER_TYPE = '[orderType,String]'~/
+              		/~startCreateDate:  and bl.CREATE_TIME >= '[startCreateDate,String]' ~/
+					/~endCreateDate:    and bl.CREATE_TIME <= '[endCreateDate,String]' ~/
+					/~startUpdateDate:  and bl.LAST_MODIFY_TIME >= '[startUpdateDate,String]' ~/
+					/~endUpdateDate:    and bl.LAST_MODIFY_TIME <= '[endUpdateDate,String]' ~/
+					order by id desc
+					with ur
+				]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="queryCustomer">
+                    <bean id="queryCustomer" class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+					select
+							ID,VERSION,WECHAT_STATUS,SCAN_PAY_SWITCH,JSAPI_PAY_SWITCH,
+							CUSTOMER_NUMBER,CUSTOMER_SNAME ,WC_SUB_MER_NUMBER,
+							SOURCE,WC_APPID_PAY,WC_APPID_RECOMMEND,JSAPI_PAY_URL,
+							CREATE_TIME,UPDATE_TIME
+					from TBL_MPAY_CUS_CON bl
+					where 1=1
+					/~customerNumber: and bl.CUSTOMER_NUMBER = '[customerNumber,String]'~/
+					/~wechatSubMerchantNumber: and bl.WC_SUB_MER_NUMBER = '[wechatSubMerchantNumber,String]'~/
+					/~wechatAppIDPay: and bl.WC_APPID_PAY = '[wechatAppIDPay,String]'~/
+					/~wechatAppIDRecommend: and bl.WC_APPID_RECOMMEND = '[wechatAppIDRecommend,String]'~/
+					/~scanCodePaySwitch: and bl.SCAN_PAY_SWITCH = '[scanCodePaySwitch,String]'~/
+					/~JSAPIPaySwitch: and bl.JSAPI_PAY_SWITCH = '[JSAPIPaySwitch,String]'~/
+              		/~startCreateDate:  and bl.CREATE_TIME >= '[startCreateDate,String]' ~/
+					/~endCreateDate:    and bl.CREATE_TIME <= '[endCreateDate,String]' ~/
+					/~startUpdateDate:  and bl.UPDATE_TIME >= '[startUpdateDate,String]' ~/
+					/~endUpdateDate:    and bl.UPDATE_TIME <= '[endUpdateDate,String]' ~/
+					order by id desc
+					with ur
+				]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="frontEndQueryService" class="com.yeepay.g3.utils.query.impl.QueryServiceImpl">
+        <property name="dataSource" ref="feDataSource"/>
+        <property name="querys">
+            <map>
+                <entry key="queryOrder">
+                    <bean class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                    select * from (
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        '' COMPANY,'' LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER
+                                       where ( 1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                        )
+                                       union all
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        '' COMPANY,'' LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER_ZFB
+                                       where (1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                            )
+                                       union all
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        '' COMPANY,'' LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER_NET
+                                       where (1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                            )
+                                          union all
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        COMPANY,LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER_CFL
+                                       where (1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                            )
+                                            union all
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        '' COMPANY,'' LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER_UPOP
+                                       where (1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                            )
+                                            union all
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        '' COMPANY,'' LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER_JD
+                                       where (1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                            )
+                                            union all
+                                       select
+                                        ID,PLATFORM_TYPE,ORDER_TYPE,REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,REQUEST_ID,ORDER_NO,BANK_TRADE_ID,
+                                        TRANSACTION_ID,PAY_STATUS,NOTIFY_STATUS,OPEN_ID,PAY_BANK,PAY_BANKCARD_TYPE,PAY_INTERFACE,TOTAL_AMOUNT,
+                                        BANK_TOTAL_COST,GOODS_DESCRIPTION,DEVICE_INFO,PAGE_CALL_BACK,PAYER_IP,CREATE_TIME,MODIFY_TIME,EXPIRE_TIME,
+                                        BANK_SUCCESS_TIME,PAY_SUCCESS_TIME,REFUND_DATE,REFUND_STATUS,REFUND_TYPE,PAY_LIMIT_TYPE,PAYMENT_PRODUCT,
+                                        '' COMPANY,'' LOAN_TERM,ORDER_SYSTEM
+                                       from TBL_FRONTEND_PAY_ORDER_QQ
+                                       where (1=1
+                                            /~requestIds: and REQUEST_ID in {requestIds,stringarray} ~/
+                                            /~orderNos: and ORDER_NO in {orderNos,stringarray} ~/
+                                            /~transactionIds: and TRANSACTION_ID in {transactionIds,stringarray} ~/
+                                            /~bankTradeIds: and BANK_TRADE_ID in {bankTradeIds,stringarray} ~/
+                                            /~outTradeNos: and OUT_TRADE_NO in {outTradeNos,stringarray} ~/
+                                            /~customerNumber: and CUSTOMER_NUMBER = {customerNumber} ~/
+                                            /~orderType: and ORDER_TYPE = {orderType} ~/
+                                            /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                            /~requestSystem: and REQUEST_SYSTEM = {requestSystem} ~/
+                                            /~totalAmountStart: and TOTAL_AMOUNT >= {totalAmountStart,double} ~/
+                                            /~totalAmountEnd: and TOTAL_AMOUNT <= {totalAmountEnd,double} ~/
+                                            /~payStatus: and PAY_STATUS = {payStatus} ~/
+                                            /~notifyStatus: and NOTIFY_STATUS = {notifyStatus} ~/
+                                            /~payBank: and PAY_BANK = {payBank} ~/
+                                            /~cardType: and PAY_BANKCard_Type = {cardType} ~/
+                                            /~createDateStart: and CREATE_TIME >= {createDateStart,timestamp} ~/
+                                            /~createDateEnd: and CREATE_TIME <= {createDateEnd,timestamp} ~/
+                                            /~successDateStart: and MODIFY_TIME >= {successDateStart,timestamp} ~/
+                                            /~successDateEnd: and MODIFY_TIME <= {successDateEnd,timestamp} ~/
+                                            /~refundStatus: and REFUND_STATUS = {refundStatus} ~/
+                                            /~refundType: and REFUND_TYPE = {refundType} ~/
+                                            /~orderSystem: and ORDER_SYSTEM = {orderSystem} ~/
+                                            /~paymentProduct: and PAYMENT_PRODUCT = {paymentProduct} ~/
+                                            )
+                                        )
+                                        ORDER BY CREATE_TIME DESC
+                                        with ur
+                                    ]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="queryRecord">
+                    <bean class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                    select * from (
+                                       SELECT
+                                        RECORD_NO,ORDER_NO,REQUEST_ID,
+                                        REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+                                        RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE
+                                       FROM TBL_FRONTEND_PAY_RECORD
+                                       WHERE ( 1=1
+                                        /~orderNo:AND ORDER_NO = {orderNo} ~/
+                                        /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                        )
+                                       union all
+                                       SELECT
+                                        RECORD_NO,ORDER_NO,REQUEST_ID,
+                                        REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+                                        RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE
+                                       FROM TBL_FRONTEND_PAY_RECORD_ZFB
+                                       WHERE ( 1=1
+                                        /~orderNo:AND ORDER_NO = {orderNo} ~/
+                                        /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                        )
+                                       union all
+                                       SELECT
+                                        RECORD_NO,ORDER_NO,REQUEST_ID,
+                                        REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+                                        RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE
+                                       FROM TBL_FRONTEND_PAY_RECORD_NET
+                                       WHERE ( 1=1
+                                        /~orderNo:AND ORDER_NO = {orderNo} ~/
+                                        /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                        )
+                                        union all
+                                       SELECT
+                                        RECORD_NO,ORDER_NO,REQUEST_ID,
+                                        REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+                                        RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE
+                                       FROM TBL_FRONTEND_PAY_RECORD_CFL
+                                       WHERE ( 1=1
+                                        /~orderNo:AND ORDER_NO = {orderNo} ~/
+                                        /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                        )
+                                        union all
+                                       SELECT
+                                        RECORD_NO,ORDER_NO,REQUEST_ID,
+                                        REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+                                        RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE
+                                       FROM TBL_FRONTEND_PAY_RECORD_UPOP
+                                       WHERE ( 1=1
+                                        /~orderNo:AND ORDER_NO = {orderNo} ~/
+                                        /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                        )
+                                        union all
+                                       SELECT
+                                        RECORD_NO,ORDER_NO,REQUEST_ID,
+                                        REQUEST_SYSTEM,CUSTOMER_NUMBER,OUT_TRADE_NO,PLATFORM_TYPE,TOTAL_AMOUNT,
+                                        RESPONSE_CODE,RESPONSE_MSG,NOCARD_CODE,NOCARD_MSG,CREATE_TIME,FRONT_VALUE
+                                       FROM TBL_FRONTEND_PAY_RECORD_QQ
+                                       WHERE ( 1=1
+                                        /~orderNo:AND ORDER_NO = {orderNo} ~/
+                                        /~platformType: and PLATFORM_TYPE = {platformType} ~/
+                                        )
+                                       )
+                                       with ur
+                                    ]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="queryDailyData">
+                    <bean class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                    select *
+                                    from tbl_frontend_daily_data
+                                    where 1=1
+                                     /~orderDateStart:and order_date >= {orderDateStart} ~/
+                                     /~orderDateEnd:and order_date <= {orderDateEnd} ~/
+                                     /~platform:and platform_type = {platform} ~/
+                                     /~payStatus:and pay_status = {payStatus} ~/
+                                     /~customerNumber:and customer_number in {customerNumber,stringarray} ~/
+                                     /~orderType:and order_type = {orderType} ~/
+                                     /~requestSystem:and request_system = {requestSystem} ~/
+                                     /~orderSystem:and order_system = {orderSystem} ~/
+                                    with ur
+                                    ]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+                <entry key="queryMonthlyData">
+                    <bean class="com.yeepay.g3.utils.query.Query">
+                        <property name="queryWithoutParam" value="false"/>
+                        <property name="sql">
+                            <value>
+                                <![CDATA[
+                                    select *
+                                    from tbl_frontend_monthly_data
+                                    where 1=1
+                                     /~orderDate:and order_date = {orderDate} ~/
+                                     /~orderDateEnd:and order_date <= {orderDateEnd} ~/
+                                     /~platform:and platform_type = {platform} ~/
+                                     /~payStatus:and pay_status = {payStatus} ~/
+                                     /~customerNumber:and customer_number in {customerNumber,stringarray} ~/
+                                     /~orderType:and order_type = {orderType} ~/
+                                     /~requestSystem:and request_system = {requestSystem} ~/
+                                     /~orderSystem:and order_system = {orderSystem} ~/
+                                    with ur
+                                    ]]>
+                            </value>
+                        </property>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,22 @@
+.queryblock{
+    float: left;
+    width: 30%;
+}
+.queryblock ul li{
+    width: 400px;
+}
+.search_con ul{
+    margin-right: 0;
+}
+.search_con{
+    padding-left: 5%;
+}
+.search_con ul li{
+    width: 100%;
+}
+.search_con ul li.between .input_text{
+    width: 100px;
+}
+.search_con .btn{
+    margin-left: 35%;
+}

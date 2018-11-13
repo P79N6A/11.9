@@ -1,0 +1,38 @@
+#multiInputBoxDivId {
+    margin: 0;
+    padding: 0;
+    border: solid 1px #ccc;
+    border-width: 1px 1px 1px 1px;
+    position: absolute;
+    display: block;
+    z-index: 1007;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    max-height: 300px;
+    heigth: 200px;
+    width: 200px;
+    background: white;
+}
+.tipTextDiv {
+    position: relative;
+    width: 30px;
+    font-size: 12px;
+    background-color: white;
+    word-wrap: break-word;
+    margin-top: 0px;
+    margin-right: 0px;
+    float: left;
+    text-align: center;
+}
+.MultiInputBox {
+    width: 150px;
+    height: 168px;
+    border: solid 1px #ccc;
+    border-width: 1px 1px 1px 1px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    position: relative;
+    margin-top: 0px;
+    margin-left: 0px;
+    float: left;
+}

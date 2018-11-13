@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context.xsd
+      http://www.springframework.org/schema/integration/ip
+      http://www.springframework.org/schema/integration/ip/spring-integration-ip-2.0.xsd
+      http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+      http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/rabbit
+      http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+      ">
+	<rabbit:connection-factory id="receiveConnectionFactory"
+		host="rabbitmq.bass.3g" username="yjzf" password="1qaz2wsx" port="5672"
+		virtual-host="yjzf" />
+
+
+
+	<!-- 接收PP 配置 -->
+	<rabbit:queue id="nccashier_receive_pp" durable="true"
+				  auto-delete="false" exclusive="false" name="pp_notify_nccashier" />
+	<task:executor id="pptaskExecutor" pool-size="4-16"
+				   queue-capacity="128" keep-alive="60" />
+
+	<bean id="ppQueueLitener" class="com.yeepay.g3.core.nccashier.msg.PayprocessorPayResultMessageReceiver" />
+	<!-- queue litener 观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象 -->
+	<rabbit:listener-container
+			connection-factory="receiveConnectionFactory" concurrency="4"
+			acknowledge="auto" task-executor="pptaskExecutor">
+		<rabbit:listener queues="nccashier_receive_pp" ref="ppQueueLitener" />
+	</rabbit:listener-container>
+
+
+
+
+	<!-- 接收NCPAY 配置 -->
+	<rabbit:queue id="nccashier_receive_ncpay" durable="true"
+		auto-delete="false" exclusive="false" name="ncpay_notify_busin_nccashier" />
+	<task:executor id="taskExecutor" pool-size="4-16"
+		queue-capacity="128" keep-alive="60" />
+
+	<bean id="queueBusinLitener" class="com.yeepay.g3.core.nccashier.service.PayMessageReceiver" />
+	<!-- queue litener 观察 监听模式 当有消息到达时会通知监听在对应的队列上的监听对象 -->
+	<rabbit:listener-container
+		connection-factory="receiveConnectionFactory" concurrency="4"
+		acknowledge="auto" task-executor="taskExecutor">
+		<rabbit:listener queues="nccashier_receive_ncpay" ref="queueBusinLitener" />
+	</rabbit:listener-container>
+
+
+
+	<!-- 接收FE 配置 -->
+	<rabbit:queue id="frontend_notify_nccashier" durable="true" auto-delete="false"
+   		exclusive="false" name="frontend_notify_nccashier" />
+
+    <task:executor id="feTaskExecutor" pool-size="2-4" queue-capacity="128" keep-alive="60"/>
+    
+    <bean id="feQueueLitener" class="com.yeepay.g3.core.nccashier.service.FrontEndPayMessageReceiver"/>
+    
+    <rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="2" acknowledge="auto" task-executor="feTaskExecutor">
+    	<rabbit:listener queues="frontend_notify_nccashier" ref="feQueueLitener"/>
+    </rabbit:listener-container>
+    
+    
+    <!-- 接收FE分期支付 配置 -->
+	<rabbit:queue id="installment_notify_nccashier" durable="true" auto-delete="false"
+   		exclusive="false" name="installment_notify_nccashier" />
+
+    <task:executor id="feInstallmentTaskExecutor" pool-size="2-4" queue-capacity="128" keep-alive="60"/>
+    
+    <bean id="feInstallmentQueueLitener" class="com.yeepay.g3.core.nccashier.msg.FrontEndInstallmentPayMessageReceiver"/>
+    
+    <rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="2" acknowledge="auto" task-executor="feInstallmentTaskExecutor">
+    	<rabbit:listener queues="installment_notify_nccashier" ref="feInstallmentQueueLitener"/>
+    </rabbit:listener-container>
+</beans>

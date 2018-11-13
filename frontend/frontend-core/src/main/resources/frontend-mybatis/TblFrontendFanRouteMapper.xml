@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="FanRoute" >
+  <resultMap id="BaseResultMap" type="FanRoute" >
+    <id column="ID" property="id" jdbcType="BIGINT" />
+    <result column="CUSTOMER_NUM" property="customerNum" jdbcType="VARCHAR" />
+    <result column="AGENT_NUM" property="agentNum" jdbcType="VARCHAR" />
+    <result column="SUB_CUSTOMER_NUM" property="subCustomerNum" jdbcType="VARCHAR" />
+    <result column="REPORT_ID" property="reportId" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFY_TIME" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="ENABLED" property="enabled" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID,CUSTOMER_NUM,AGENT_NUM, SUB_CUSTOMER_NUM, REPORT_ID, CREATE_TIME, MODIFY_TIME, ENABLED
+  </sql>
+
+  <select id="queryFanRouteByReportId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FRONTEND.TBL_FRONTEND_FAN_ROUTE
+    WHERE
+    REPORT_ID = #{reportId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="FanRoute">
+    insert into FRONTEND.TBL_FRONTEND_FAN_ROUTE (CUSTOMER_NUM, AGENT_NUM,SUB_CUSTOMER_NUM, REPORT_ID,
+      CREATE_TIME, MODIFY_TIME, ENABLED
+      )
+    values (#{customerNum,jdbcType=VARCHAR},#{agentNum,jdbcType=VARCHAR}, #{subCustomerNum,jdbcType=VARCHAR}, #{reportId,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{enabled,jdbcType=INTEGER}
+      )
+  </insert>
+</mapper>

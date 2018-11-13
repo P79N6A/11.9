@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>易宝支付收银台</title>
+    <meta name="description" content="易宝支付（YeePay.com)是中国行业支付的开创者和领导者。易宝支付于2003年8月成立，总部位于北京，现有上千名员工，在上海、广东、江苏、福建、广西、天津、云南、四川、浙江、山东、陕西等设有31家分公司。自公司成立以来，易宝支付秉承成就客户、极致服务、实事求是、开放分享的核心价值观，以交易服务改变生活为使命，致力成为世界一流的交易服务平台，领跑电子支付、移动互联和互联网金融。">
+    <meta content="易宝支付,收银台,支付，网银，快捷，一键支付，扫描支付" name="Keywords">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+    <link rel="shortcut icon" type="text/css" href="${ctx.contextPath}/newpc/assets/images/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="${ctx.contextPath}/newpc/assets/css/reset.min.css">
+    <link rel="stylesheet" type="text/css" href="${ctx.contextPath}/newpc/assets/css/pc-shouyin-ad0f37dbcf.css">
+    <script>
+        var session=window.sessionStorage;
+        session.setItem("token", "$!{token}");
+        session.setItem("orderId", "$!{orderId}");
+        session.setItem("merchantNo", "$!{merchantNo}");
+        session.setItem("contextUrl", "${ctx.contextPath}");
+        session.setItem("isBindCardChangeCard", #if($isNotFirst)"isBindCardChangeCard"#else"false"#end);
+        session.setItem("jsTrys", "$!{jsTrys}");
+
+        function hideError(elem) {
+            elem.addEventListener("click", function () {
+                if (dom.querySelector(".global-error") != null) {
+                    dom.querySelector(".global-error").classList.add("none");
+                }
+            }, false);
+
+        }
+    </script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/polyfill.min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/modernizr-2.8.3.min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/jbase64.min.js"></script>
+    <script type="text/javascript" src="${ctx.contextPath}/newpc/assets/js/pc-shouyin-42a833b5f3.js"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?106891f095d7e69fd4140357f5c3e101";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+    </script>
+</head>

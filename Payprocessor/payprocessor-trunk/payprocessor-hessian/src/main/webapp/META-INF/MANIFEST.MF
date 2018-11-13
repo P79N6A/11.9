@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Class-Path: aopalliance-1.0.jar asm-3.1.jar asm-commons-3.3.jar asm-tr
+ ee-3.3.jar aspectjrt-1.6.9.jar aspectjweaver-1.6.9.jar c3p0-0.9.1.2.j
+ ar cglib-2.2.jar com.ibm.mq-7.0.1.jar com.ibm.mq.commonservices-7.0.1
+ .jar com.ibm.mq.headers-7.0.1.jar com.ibm.mq.jmqi-7.0.1.jar com.ibm.m
+ q.pcf-7.0.1.jar com.ibm.mqjms-7.0.1.jar commons-beanutils-1.8.3.jar c
+ ommons-codec-1.4.jar commons-collections-3.2.1.jar commons-dbcp-1.4.j
+ ar commons-fileupload-1.3.1.jar commons-httpclient-3.1.jar commons-io
+ -2.2.jar commons-lang-2.5.jar commons-lang3-3.1.jar commons-logging-1
+ .1.3.jar commons-net-3.3.jar commons-pool-1.6.jar concurrentlinkedhas
+ hmap-lru-1.1.jar connector-1.0.jar cwh-facade-1.0-SNAPSHOT.jar db2jcc
+ 4-1.6.0_9.7.jar db2jcc_license_cu-1.4.2_9.7.jar dom4j-1.6.1.jar dubbo
+ -2.5.4.jar ehcache-core-2.3.2.jar freemarker-2.3.19.jar h2-1.0.72.jar
+  hessian-4.0.7-yeepay.jar hibernate-validator-4.2.0.Final.jar httpcli
+ ent-4.1.jar httpcore-4.1.jar jackson-core-2.2.2.jar jackson-databind-
+ 2.2.2.jar javassist-3.16.0.GA.jar javassist-3.18.1-GA.jar javax.mail-
+ api-1.4.4.jar jgroups-2.12.0.Final.jar jms-1.1.jar jta-1.0.1B.jar log
+ 4j-1.2.14.jar memcache-client-forjava-yeepay-1.0.0.jar mvel2-2.1.0.dr
+ ools8.jar mybatis-3.0.4.jar mybatis-spring-1.0.0.jar nc-api-core-1.0-
+ SNAPSHOT.jar nc-api-facade-1.0-SNAPSHOT.jar nc-config-facade-1.0-SNAP
+ SHOT.jar nc-pay-facade-1.0-SNAPSHOT.jar netty-3.2.10.Final.jar notifi
+ er-facade-1.0-SNAPSHOT.jar ognl-3.0.6.jar pinyin4j-2.5.0.jar slf4j-ap
+ i-1.6.1.jar slf4j-log4j12-1.6.1.jar spring-aop-3.2.9.RELEASE.jar spri
+ ng-beans-3.2.9.RELEASE.jar spring-context-3.2.9.RELEASE.jar spring-co
+ ntext-support-3.2.9.RELEASE.jar spring-core-3.2.9.RELEASE.jar spring-
+ expression-3.2.9.RELEASE.jar spring-jdbc-3.2.9.RELEASE.jar spring-orm
+ -3.2.9.RELEASE.jar spring-tx-3.2.9.RELEASE.jar spring-web-3.2.9.RELEA
+ SE.jar spring-webmvc-3.2.9.RELEASE.jar struts2-core-2.3.16.3.jar stru
+ ts2-spring-plugin-2.3.16.3.jar validation-api-1.1.0.Final.jar xwork-c
+ ore-2.3.16.3.jar yeepay-cache-1.0-SNAPSHOT.jar yeepay-common-1.0-SNAP
+ SHOT.jar yeepay-config-1.0-SNAPSHOT.jar yeepay-jmx-client-1.0-SNAPSHO
+ T.jar yeepay-jmx-core-1.0-SNAPSHOT.jar yeepay-messaging-1.0-SNAPSHOT.
+ jar yeepay-persistence-1.0-SNAPSHOT.jar yeepay-rmi-1.0-SNAPSHOT.jar y
+ eepay-soa-1.0-SNAPSHOT.jar yeepay-utils-common-1.0-SNAPSHOT.jar yeepa
+ y-web-1.0-SNAPSHOT.jar yeepay-xutil-core-1.0-SNAPSHOT.jar yeepay-xuti
+ l-msg-1.0-SNAPSHOT.jar zkclient-0.1.jar zookeeper-3.4.5.jar
+

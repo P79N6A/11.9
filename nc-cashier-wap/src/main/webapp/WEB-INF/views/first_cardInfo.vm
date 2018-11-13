@@ -1,0 +1,697 @@
+#parse('header.vm')
+<body>
+#parse('back.vm')
+<header class="pme-order-info" id="mod-orderInfo">
+    #if(!${theme} || ${theme.showMerchantName})
+     <p class="receive-side" id="receiveSide" style="margin-bottom:0px; font-size:14px;">$!{companyText}</p>
+    #end
+    <p class="amount" style="margin-top:0px; font-size:30px;">￥$!{amount}#if($fee)<span style="font-size:12px; color:#454648">(包含手续费<span style="color:#f26758;">$!{fee}</span>元)</span>#end</p>
+    <label for="mod-detailsSwitch"></label>
+</header>
+<div class="pme-order-details-wrapper" id="mod-orderDetails">
+    <input type="checkbox" class="details-switch" id="mod-detailsSwitch"/>
+    <div class="order-details">
+        <div class="details-info">
+            <div style="color:#9e9e9e;">商品名称</div>
+            <div>$!{productname}</div>
+        </div>
+        <div class="details-info">
+            <div style="color:#9e9e9e;">订单编号</div>
+            <div>$!{orderid}</div>
+        </div>
+    </div>
+    <span class="details-switch-trigger">&#xe601;</span>
+</div>
+<p class="pme-wrapper f14 pme-tit">填写银行卡信息</p>
+#if($otherCards)
+<div class="mt10">
+    <div class="pme-bind-card J-bindCard marketing-wrapper" id="mod-bindCard" onclick="showBindCard()">
+        <div><img src="${ctx.contextPath}/static/images/$!{bc.bankCode}.png" height="30" id="J-bankLogo"></div>
+        <div class="ml10">
+            <p class="f18" id="J-bankName">$!{bc.bankName}</p>
+
+            <p class="mt5 card-num">尾号<span id="J-bankNo">$!{bc.cardlater}</span><span id="J-cardType" class="ml20">
+              #if ($bc.cardtype.name() == "CREDIT")
+               信用卡
+              #else
+               储蓄卡
+              #end
+            </span></p>
+        </div>
+        <i class="arrow iconfont">&#xe605;</i>
+        <p class="product-random-guide">随机立减</p>
+    </div>
+</div>
+#elseif(!$otherCards)
+<div class="mt10">
+    <div class="pme-bind-card marketing-wrapper" id="mod-bindCard">
+        <div><img id="J-bankLogo" src="${ctx.contextPath}/static/images/${bc.bankCode}.png" height="30" style="vertical-align:middle;"></div>
+        <div class="ml10">
+            <p class="f18" id="J-bankName">${bc.bankName}</p>
+
+            <p class="mt5 card-num" style="margin-top:2px;">尾号${bc.cardlater}<span id="J-cardType" class="ml20">
+                          #if ($bc.cardtype.name() == "CREDIT")
+                           信用卡
+                          #else
+                           储蓄卡
+                          #end
+               </span></p>
+        </div>
+        <p class="product-random-guide">随机立减</p>
+    </div>
+</div>
+#end
+<script>
+    sessionStorage.setItem("bindItemBankLogo", "${ctx.contextPath}/static/images/${bc.bankCode}.png");
+    sessionStorage.setItem("bindItemBankNo", "${bc.cardlater}");
+</script>
+<div class="mt10">
+    <form id="J-cardInfo" class="pme-form">
+      <input type="hidden" name="bankCode" value="${bc.bankCode}">
+      <input type="hidden" name="cardno" encrypt="true" value="${bc.cardno}">
+      <input type="hidden" name="cardType" value="${bc.cardtype}">
+      <input type="hidden" name="bankName" value="${bc.bankName}">
+        #if(${merchantSamePersonConf})
+        <p class="prompt" style="margin-left: 10px">请使用<span class="emp" style="color: #ff7f01">本人信息</span>进行支付，支付成功后不可更改</p>
+        #end
+      #if(${needname})
+               <figure class="input-box">
+                           <label>
+                               <mark>姓名</mark>
+                               #if(${owner})
+                               <input type="text"
+                                      placeholder="请输入您的真实姓名"
+                                       readonly name="name" encrypt="true" value="$!{owner}">
+                               #else
+                               <input type="text"
+                                      placeholder="请输入您的真实姓名"
+                                       name="name" encrypt="true" value="$!{cardInfo.name}">
+                               <i class="clear iconfont">&#xe600;</i>
+                               #end
+                           </label>
+               </figure>
+       #end
+       #if(${needidno})
+                      <figure class="input-box">
+                                  <label>
+                                      <mark>身份证号</mark>
+                                      #if(${idno})
+                                      <input maxlength="18" encrypt="true" type="text" readonly placeholder="真实证件号" name="idno" value="$!{idno}">
+                                      #else
+                                      <input maxlength="18" encrypt="true" type="text" placeholder="真实证件号" name="idno" value="$!{cardInfo.idno}">
+                                      <i class="clear iconfont">&#xe600;</i>
+                                      #end
+                                  </label>
+                      </figure>
+       #end
+
+        #if(${needvalid})
+        <figure class="input-box">
+            <label>
+                <mark>有效期</mark>
+                <input maxlength="4" autocomplete="off" type="tel" encrypt="true" placeholder="有效期,月/年（如09/15 输入0915）" name="valid" value="$!{cardInfo.valid}">
+                <i class="clear iconfont">&#xe600;</i>
+            </label>
+        </figure>
+        #end
+        #if(${needcvv})
+        <figure class="input-box">
+            <label>
+                <mark>C V V 2</mark>
+                <input id="userCvv" maxlength="3" autocomplete="off" type="tel" encrypt="true" placeholder="CVV2,卡背后三位" name="user-cvv" value="$!{cardInfo.cvv2}">
+                <input id="cvv" maxlength="3" encrypt="true" type="text"
+                       name="cvv2" value="$!{needBankCardDTO.cvv}" style="display: none;">
+                <i class="clear iconfont">&#xe600;</i>
+            </label>
+        </figure>
+        <script>
+            document.querySelector("#userCvv").addEventListener("input", function () {
+                document.querySelector("#cvv").value += this.value.charAt(this.value.length - 1);
+                document.querySelector("#cvv").value = document.querySelector("#cvv").value.substr(0, this.value.length);
+                var dot = '';
+                for (var i = 0, l = this.value.length; i < l; i++) {
+                    dot += "•";
+                }
+                this.value = dot;
+            }, false)
+        </script>
+        #end
+         #if(${needpass})
+                 <figure class="input-box">
+                             <label>
+                                 <mark>取款密码</mark>
+                                 <input type="password" maxlength="6" encrypt="true" name="pass" placeholder="取款密码" data-key-type="tel">
+                                 <i class="clear iconfont">&#xe600;</i>
+                             </label>
+                 </figure>
+              #end
+        #if(${needmobile})
+            <figure class="input-box">
+                <label>
+                    <mark>手机号</mark>
+					<input type="hidden" id="pNo" name="pNo" value="$!{phoneNo}"/>
+					#if(${phoneNo})
+						<input id="phoneNooo" maxlength="11" encrypt="true" type="tel" readonly placeholder="银行预留手机号" name="phone" value="$!{phoneNo}">
+					#else
+                        <input id="phoneNooo" maxlength="11" encrypt="true" type="tel" placeholder="银行预留手机号" name="phone"  value="$!{cardInfo.phone}">
+                        <i class="clear iconfont">&#xe600;</i>
+					#end
+                </label>
+            </figure>
+        #end
+#if(!$preRouter)
+        <figure class="input-box">
+            <label>
+                <mark>验证码</mark>
+                <input type="tel" maxlength="10" placeholder="短信验证码" name="verifycode">
+                <i class="clear iconfont">&#xe600;</i>
+                <!--<button onclick="getCode(this)" id="J_getCode" class="pme-btn pme-btn-sm">获取验证码</button>-->
+                <a href="javascript:void(-1);"  onclick="getCode(this)" id="J_getCode" class="pme-btn pme-btn-sm"style="background-color: #fff">获取验证码</a>
+            </label>
+        </figure>
+#else
+    <input type="hidden" maxlength="10" name="verifycode">
+#end
+        #if(!$notShowYeepayAgreementInfo)
+        <div class="pme-wrapper"><label><input type="checkbox" checked id="J-agree" class="checkbox"><i class="iconfont pme-checkbox">&#xe606;</i>#if($autoBindTip)${autoBindTip}#end同意</label><span class="pme-protocol-trigger J-prolTrigger">《服务协议》</span>#if(${bc.bankCode}=='BOC')<span class="pme-protocol-trigger J-bocProlTrigger">和《中国银行快捷支付服务协议》</span>#end
+        </div>
+        #end
+        #if(${quata}&&(${quata.orderQuotaDou}!=-1 || ${quata.dayQuotaDou}!=-1 || ${quata.monthQuotaDou}!=-1))
+                <figure class="pme-wrapper pme-limit-tip">
+                    限额提示：
+                    #if(${quata.orderQuotaDou}!=-1 && ${quata.orderQuotaDou})${quata.orderQuotaDou}元/笔；#end #if(${quata.dayQuotaDou}!=-1 && ${quata.dayQuotaDou})${quata.dayQuotaDou}元/日；#end #if(${quata.monthQuotaDou}!=-1 && ${quata.monthQuotaDou})${quata.monthQuotaDou}元/月 #end
+                    <div>具体限额以银行卡参考为准</div>
+                </figure>
+                #end
+        <div class="pme-wrapper pr">
+            <button type="button" class="J-payBtn" onclick="sub()">确认支付</button>
+        </div>
+        <input type="hidden" name="token" value="$!{token}">
+    </form>
+</div>
+<div class="none" id="J-bankList">${otherCards}</div>
+#if(!$notShowYeepayCompanyInfo)
+  #parse('footer.vm')
+#end
+<script src="${ctx.contextPath}/static/js/mobile-pay-dc14a8d575-201511091054.min.js"></script>
+<script>
+	var ncIsClick=true;
+    function validate(act) {
+            var root = this.parentNode.parentNode;
+            if (this.name == "name") {
+                if (this.value == "") {
+                    To.ui.errorMsg("姓名不能为空", root);
+                    return false;
+                }
+                if (!/^[\u4E00-\u9FA5·.*]+$/.test(this.value)) {
+                    To.ui.errorMsg("姓名只能为中文", root);
+                    return false;
+                }
+            }
+            if (this.name == "idno") {
+                if (this.value == "") {
+                    To.ui.errorMsg("身份证号不能为空", root);
+                    return false;
+                } else if (!/^([0-9|*]{17}[0-9Xx]{1})|([0-9|*]{15})$/.test(this.value)) {
+                    To.ui.errorMsg("身份证号码格式错误", root);
+                    return false;
+                }
+            }
+            if (this.name == "phone") {
+				var pNo = document.getElementById("pNo").value;
+				if(pNo==""){
+                    if (this.value == "") {
+                        To.ui.errorMsg("手机号不能为空", root);
+                        return false;
+                    } else if (/[^\d]/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是数字", root);
+                        return false;
+                    } else if (/^[^1]/.test(this.value)) {
+                        To.ui.errorMsg("手机号格式不正确", root);
+                        return false;
+                    } else if (!/[\d]{11}/.test(this.value)) {
+                        To.ui.errorMsg("手机号必须是11位数字", root);
+                        return false;
+                    }
+				}
+            }
+            if (this.name == "valid") {
+                if (this.value == "") {
+                    To.ui.errorMsg("有效期不能为空", root);
+                    return false;
+                } else if (/[^\d]/.test(this.value)) {
+                    To.ui.errorMsg("有效期必须是数字", root);
+                    return false;
+                } else if (this.value.length < 4) {
+                    To.ui.errorMsg("有效期必须是四位数字", root);
+                    return false;
+                }
+            }
+            if (this.name == "cvv2") {
+                if (this.value == "") {
+                    To.ui.errorMsg("CVV2不能为空", root);
+                    return false;
+                } else if (/[^\d]/.test(this.value)) {
+                    To.ui.errorMsg("CVV2必须是数字", root);
+                    return false;
+                }
+                else if (this.value.length < 3) {
+                    To.ui.errorMsg("CVV2必须是三位数字", root);
+                    return false;
+                }
+            }
+            if (this.name == "pass") {
+                if (this.value == "") {
+                    To.ui.errorMsg("取款密码不能为空", root);
+                    return false;
+                } else if (/[^\d]/.test(this.value)) {
+                    To.ui.errorMsg("取款密码必须是数字", root);
+                    return false;
+                }
+            }
+            if (act !== "getCode" && event.type != "blur") {
+            if (this.name == "verifycode" && this.type != "hidden") {
+                    if (this.value == "") {
+                        To.ui.errorMsg("短信验证码不能为空", root);
+                        return false;
+                    } else if (/[^\d]/.test(this.value)) {
+                        To.ui.errorMsg("短信验证码必须是数字", root);
+                        return false;
+                    }
+                }
+            }
+        }
+    +function bindValidate() {
+        var inputs = document.querySelectorAll("form input");
+        var type = /(text|password|number|tel|email|time|date)/;
+        for (var i = 0, l = inputs.length; i < l; i++) {
+            type.test(inputs[i].type) ? inputs[i].addEventListener("blur", validate, false) : false;
+        }
+    }();
+    var verifycode = '<div class="bankInfo">' +
+            '<p class="logo-m"><img class="bank-logo" src="' + sessionStorage.getItem("bindItemBankLogo") + '"></p>' +
+            '<div class="cardNumber">' +
+            '<span>卡号</span>' +
+            '<span class="card-later">' + '**** **** ****' + sessionStorage.getItem("bindItemBankNo") + '</span>' +
+            '</div>' +
+            '</div>' +
+            '<p class="bankInfo-tip none"></p>' +
+            '<form class="verifycode">' +
+            '<label for="verifyCode">' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '    <li class="unit"></li>' +
+            '<input type="tel" id="verifyCode" maxlength="6">' +
+            '</label>' +
+            '</form>' +
+            '<button class="get-code-btn" onclick="preRouterGetCode()">获取验证码</button>';
+
+    function verifycodeCallBack() {
+        var dom = document, session = window.sessionStorage;
+        var units = dom.querySelectorAll("form.verifycode li.unit");//保存验证码每一个单元格
+        var rule = /^\d+$/;
+        var verifyCodeField = dom.querySelector("#verifyCode");
+        verifyCodeField.addEventListener("input", function () {
+            document.querySelector("#J-cardInfo")["verifycode"].value = this.value;
+            for (var i = 0, l = 6; i < l; i++) {
+                typeof this.value[i] != "undefined" ? units[i].innerHTML = this.value[i] : units[i].innerHTML = "";
+            }
+            if (this.value.length == 6) {
+                jQuery.ajax({
+                    method: "GET",
+                    url: "$!{ctx.contextPath}/wap/ajax/pay/first",
+                    data: asyncEncrypt("J-cardInfo"),
+                    success: function (res) {
+                        var data = JSON.parse(res);
+                        switch (data.bizStatus) {
+                            case "smsFailed":  //短信验证码错误  留在当前page
+                                var bankInfoTip = document.querySelector(".bankInfo-tip")
+                                bankInfoTip.classList.remove("none");
+                                bankInfoTip.classList.add("dangerMsg")
+                                bankInfoTip.innerHTML = data.errormsg;
+                                break;
+                            case "success":
+                                location.assign("${ctx.contextPath}/wap/query/result?token=" + data.token);
+                                break;
+                            case "failed":
+                                var needRepay = data.needRepay;
+                                if (needRepay) {
+                                    location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg + "&needRepay=" + needRepay);
+                                } else {
+                                    location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg);
+                                }
+                                break;
+                        }
+                    }
+                });
+            }
+        }, false);
+        verifyCodeField.addEventListener("focus", function () {
+            document.querySelector(".popup-verifycode").style.top = "145px";
+        }, false);
+        verifyCodeField.addEventListener("blur", function () {
+            document.querySelector(".popup-verifycode").style.top = "50%";
+        }, false);
+    }
+
+    function sub() {
+        var error = document.querySelector("#pme-errorMsg");
+        var input = document.querySelectorAll("form input");
+        if (error && !error.classList.contains("hide")) {
+            document.querySelector(".J-payBtn").disabled = false;
+            return false;
+        }
+        for (var i = 0, l = input.length; i < l; i++) {
+            var result = validate.call(input[i],null,event);
+            if (result === false) {
+                document.querySelector(".J-payBtn").disabled = false;
+                return false;
+                break;
+            }
+
+        }
+        document.querySelector(".J-payBtn").disabled = true;
+        To.loading("正在支付，请耐心等待...");
+        #if(!$preRouter)
+        jQuery.ajax({
+            method: "POST",
+            url: "$!{ctx.contextPath}/wap/ajax/pay/first",
+            data: asyncEncrypt("J-cardInfo"),
+            success: function (res) {
+                var data = JSON.parse(res);
+                switch (data.bizStatus) {
+                    case "smsFailed":  //短信验证码错误  留在当前page
+                        To.Popup.alert(data.errormsg);
+                        document.querySelector(".J-payBtn").disabled = false;
+                        break;
+                    case "success":
+                        location.assign("${ctx.contextPath}/wap/query/result?token=" + data.token);
+                        break;
+                    case "failed":
+                        var needRepay = data.needRepay;
+                        if (needRepay) {
+                            location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg + "&needRepay=" + needRepay);
+                        } else {
+                            location.assign("${ctx.contextPath}/wap/fail?token=" + data.token + "&errorCode=" + data.errorcode + "&errorMsg=" + data.errormsg);
+                        }
+                        break;
+                }
+            }
+        });
+        #else
+            jQuery.ajax({
+                method: "POST",
+                url: "$!{ctx.contextPath}/wap/request/preRouter",
+                data: asyncEncrypt("J-cardInfo"),
+                success: function (res) {
+                    var data = JSON.parse(res);
+                    if (data.status == "success") {
+                        if (data.pageRedirectParam) {
+                            var html = '<form id="toBankForm"' + ' action="' + data.pageRedirectParam.redirectUrl + '" method="' + data.pageRedirectParam.method + '"  accept-charset="' + data.pageRedirectParam.encoding + '">'
+                            for (var key in data.pageRedirectParam.extMap) {
+                                html += '<input type="hidden" name="' + key + '" value="' + data.pageRedirectParam.extMap[key] + '" />'
+                            }
+                            html += '</form>';
+                            document.querySelector("body").insertAdjacentHTML('beforeEnd', html)
+                            document.querySelector("#toBankForm").submit();
+                        } else {
+                            To.Popup.base(verifycode, "popup-verifycode", true, true, "请输入验证码", "关闭");
+                            verifycodeCallBack();
+                            preRouterGetCode();
+                            document.querySelector(".pme-popup .close").addEventListener("click", function () {
+                                document.querySelector(".J-payBtn").disabled = false;
+                            }, false);
+                        }
+                    } else {
+                        To.Popup.alert(data.errormsg + "(" + data.errorcode + ")");
+                        document.querySelector(".J-payBtn").disabled = false;
+                    }
+    }
+            });
+        #end
+    }
+
+    var protocol = '<div class=content><p>一、概述</p><p>1、易宝支付《一键支付用户服务协议》（以下简称“本协议”）是您自愿与易宝支付有限公司（以下简称“易宝支付”）就易宝一键支付服务（以下简称“本服务”）的使用所签订的有效合约。您通过网络页面点击确认本协议或以其他方式选择接受本协议，即表示您与易宝支付已达成协议并同意接受本协议的全部约定内容。</p><p>2、在您接受本协议之前，请您仔细阅读本协议的全部内容，如您不同意接受本协议的任意内容，或者无法准确理解相关条款含义的，请不要进行后续操作。如果您对本协议的条款有疑问的，请通过易宝支付客服渠道进行询问（易宝支付客服电话为4001-500-800），易宝支付将向您解释条款内容。</p><p>3、您同意，易宝支付有权随时对本协议内容进行单方面的变更，无需另行单独通知您；若您在本协议内容公告变更生效后继续使用本服务的，表示您已充分阅读、理解并接受变更修改后的协议内容，也将遵循变更修改后的协议内容使用本服务；若您不同意变更修改后的协议内容，您应在变更生效前停止使用本服务。</p><p>二、双方权利义务</p><p>1、您应确保您在使用本服务时的银行卡为您本人的银行卡，确保您使用银行卡的行为合法、有效，未侵犯任何第三方合法权益；否则因此造成易宝支付、商户、持卡人损失的，您应负责赔偿并承担全部法律责任。</p><p>2、您应确保开通本服务所提供的手机号码为本人所有，并授权易宝支付可以通过第三方渠道对您所提供手机号码的真实性、有效性进行核实。</p><p>3、您应妥善保管银行卡、卡号、密码、发卡行预留的手机号码等与银行卡有关的一切信息。如您遗失或泄漏前述信息，您应及时通知发卡行及/或易宝支付，以减少可能发生的损失。无论是否已通知发卡行及/或易宝支付，因您的原因所致损失需由您自行承担。</p><p>4、您在使用本服务时，应当认真确认交易信息，包括且不限于商品名称、数量、金额等，并按易宝支付业务流程发出约定的指令。您认可和同意：您发出的指令不可撤回或撤销，易宝支付一旦根据您的指令委托银行或第三方从银行卡中划扣资金给收款人，您不应以非本人意愿交易或其他任何原因要求易宝支付退款或承担其他责任。</p><p>5、您不应将本服务用于任何违反国家相关法律法规或本协议的目的。</p><p>6、您在对使用本服务过程中发出指令的真实性及有效性承担全部责任；您承诺，易宝支付依照您的指令进行操作的一切风险由您承担。</p><p>7、您认可并以易宝支付系统平台记录的数据为准。</p><p>8、同时您授权易宝支付有权留存您在易宝支付网站填写的相应信息，以供后续向您持续性地提供相应服务（包括但不限于将本信息用于向您推广、提供其他更加优质的产品或服务）。</p><p>9、出现下列情况之一的，易宝支付有权立即终止您使用易宝支付相关服务而无需承担任何责任：</p><p>&nbsp;（1）违反本协议的约定；</p><p>&nbsp;（2）将本服务用于非法目的；</p><p>&nbsp;（3）违反易宝支付/或其他关联公司网站的条款、协议、规则、通告等相关规定，而被上述任一网站终止提供服务的；</p><p>&nbsp;（4）易宝支付认为向您提供本服务存在风险的；</p><p>&nbsp;（5）您的银行卡无效、有效期届满或注销（如有）。</p><p>10、若您未违反本协议约定且因不能归责于您的原因，造成银行卡内资金通过本服务出现损失，且您未从中获益的，您可向易宝支付申请补偿。您应在知悉资金发生损失后及时通知易宝支付并按要求提交相关的申请材料和证明文件，您同意，您能否得到补偿及具体金额取决于易宝支付自身独立的判断，易宝支付承诺不会因此损害您的合法权益。</p><p>11、您同意并认可易宝支付最终的补偿行为并不代表前述资金损失应归责于易宝支付，亦不代表易宝支付须为此承担其他任何责任。您同意，易宝支付在向您支付补偿的同时，即刻取得您可能或确实存在的就前述资金损失而产生的对第三方的所有债权及其他权利，包括但不限于就上述债权向第三方追偿的权利，且您不再就上述已经让渡给易宝支付的债权向该第三方主张任何权利，亦不再就资金损失向易宝支付主张任何权利。</p><p>12、此外，在接受补偿的同时或之后，您从其它渠道挽回了前述资金损失的，或有新证据证明您涉嫌欺诈的，或者发生您应当自行承担责任的其他情形，您应在第一时间返还易宝支付向您支付的补偿款项，否则易宝支付有权向您进行追偿。同时您承诺：资金损失事实真实存在，赔偿申请材料真实、有效。您已充分知晓并认识到，基于虚假信息申请保险赔偿将涉及刑事犯罪，易宝支付有权向国家有关机构申请刑事立案侦查。</p><p>三、承诺与保证</p><p>1、您保证使用本服务过程中提供的如姓名、身份证号、银行卡卡号及银行预留手机号等信息真实、准确、完整、有效。易宝支付按照您设置的相关信息为您提供相应服务，对于因您提供信息不真实或不完整所造成的损失由您自行承担。</p><p>2、您授权易宝支付在您使用本服务期间或本服务终止后，有权保留您在使用本服务期间所形成的相关信息数据，同时该授权不可撤销。</p><p>四、其他条款</p><p>1、您同意，本协议适用中华人民共和国大陆地区法律。因易宝支付与您就本协议的签订、履行或解释发生争议，双方应努力友好协商解决。如协商不成，易宝支付和用户同意由易宝支付住所地法院管辖审理双方的纠纷或争议。</p><p>2、本协议内容包括协议正文及所有易宝支付已经发布的或将来可能发布的易宝支付服务的使用规则。所有规则为本协议不可分割的一部分，与协议正文具有相同法律效力。若您在本协议内容发生修订后，继续使用本服务的，则视为您同意最新修订的协议内容；否则您须立即停止使用本服务。</p><p>3、您同意，本协议之效力、解释、变更、执行与争议解决均适用中华人民共和国法律，没有相关法律规定的，参照通用国际商业惯例和（或）行业惯例。</p><p>4、本协议部分内容被有管辖权的法院认定为违法或无效的，不因此影响其他内容的效力。</p><p>5、本协议未尽事宜，您需遵守易宝支付网站上公布的相关服务协议及相关规则。</p></div>';
+    if (document.querySelector(".J-prolTrigger") != null) {
+   document.querySelector(".J-prolTrigger").addEventListener("click", function () {
+        To.Popup.base(protocol, "pme-protocol", true,true, "服务协议","同意");
+    }, false);
+    }
+    #if(${bc.bankCode}=='BOC')
+    var bocProtocol = '<div class=content>'+'<p>请客户认真阅读本协议文本。</p>' +
+            '<p>1.中国银行股份有限公司借记卡快捷支付业务（以下简称“快捷支付业务”）是中国银行股份有限公司（以下简称“中国银行”）和易宝支付有限公司  公司（下称“合作支付机构”）联合为中国银行借记卡持卡客户（以下简称“客户”）提供的一项电子支付服务。凡是持有中国银行股份有限公司在中国大陆地区发行的借记卡的客户，均可申请该业务。</p>' +
+            '<p>2.客户在签约快捷支付业务时，将收到中国银行发送的带有手机交易码的签约确认短信。客户应认真阅读本协议，在同意本协议约定内容的前提下输入手机交易码。客户输入手机交易码即视同为同意本协议内容。</p>' +
+            '<p>3.客户通过互联网（Internet）在合作支付机构网站或客户端，选择在线与中国银行签订本服务协议，将指定的借记卡与此时登录的账户进行关联，开通快捷支付功能，并承担由此产生的一切责任。</p>' +
+            '<p>4.客户同意，中国银行以合作支付机构传送至中国银行的户名（如与合作支付机构约定不校验姓名则删除）、卡号、手机号码、证件号码（如与合作支付机构约定不校验证件号码则删除）等身份要素作为确认客户身份、为客户开通快捷支付业务的唯一证据。中国银行比对户名（如与合作支付机构约定不校验姓名则删除）、卡号、手机号码、证件号码（如与合作支付机构约定不校验证件号码则删除）与客户在银行预留信息一致后，通过95566发送手机交易码至客户预留手机号上，并对合作支付机构传送的客户填写的手机交易码进行验证，验证一致通过后，完成客户指定的借记卡与此时所登录账户的关联。客户须保证在中国银行预留手机号码为本人手机号码并确保其准确性。基于提高交易安全的目的，中国银行有权变更上述身份要素。客户须妥善保管本人中国银行借记卡信息，本人身份信息、手机交易码、安全认证工具等敏感信息，不得将敏感信息向他人透露。因客户银行预留信息错误，或个人信息、手机等保管不善产生的风险及损失由客户本人承担。</p>' +
+            '<p>5.开通快捷支付业务后，客户同意并授权中国银行在本协议约定的服务范围内，将其所关联借记卡的原有支付验证方式变更为按照合作支付机构发送的交易指令从客户指定的借记卡账户中支付相应款项。客户需在其绑定的借记卡的余额内进行支付，否则中国银行有权拒绝执行交易指令。</p>' +
+            '<p>6.中国银行可根据业务发展需要，设置或修改支付限额，客户对此无异议，客户办理快捷支付业务时需同时受中国银行和合作支付机构设置的支付限额的约束。在任何情况下，支付金额不应超过中国银行或合作支付机构设置的支付限额（以较低者为准）。如实际支付金额大于规定的支付限额，中国银行将拒绝执行交易指令。</p>' +
+            '<p>7.本协议项下，中国银行仅提供通过合作支付机构发生的支付结算服务。客户因通过合作支付机构购买商品而产生的一切关于商品或服务质量、商品交付，交易款项扣收与划付的争议均由客户与商户或商品/服务的实际销售商自行协商解决。</p>' +
+            '<p>8.客户使用借记卡快捷支付业务应防范的风险包括但不限于：</p>' +
+            '<p>（1）客户借记卡快捷支付使用的用户名、账户、密码等重要信息可能被其他人猜出、偷窥或通过木马病毒、假冒网站、欺诈电话或短信等手段窃取，从而导致客户信息泄露、资金损失、账户被恶意操作等后果。</p>' +
+            '<p>（2）手机可能被盗或未经许可被他人使用，若手机银行密码同时被窃取，可能造成账户资金损失等情况；若客户更换手机号时未取消以原手机号开通的短信提醒服务，当原手机号被他人使用时，可能造成客户的账户信息泄露等情况。</p>' +
+            '（3）客户使用设备的操作系统、杀毒软件、网络防火墙等客户端软件未及时更新或安装补丁程序，可能导致客户信息泄露、资金损失、账户被恶意操作等后果。</p>' +
+            '<p>9.客户应采取风险防范措施，安全使用借记卡快捷支付业务，相关措施包括不限于：</p>' +
+            '<p>（1）妥善保护借记卡快捷支付业务使用的用户名、账户、密码等重要身份识别标识、身份认证信息及工具，确保上述重要信息和认证工具不经口头或其它方式发生泄露或被盗用。</p>' +
+            '<p>（2）对所使用设备的操作系统、杀毒软件、网络防火墙等客户端软件采取有效的措施（如及时更新系统或安装补丁程序等）防范操作系统软件漏洞风险、电子设备中的病毒等。</p>' +
+            '<p>（3）妥善保管借记卡、手机及与借记卡快捷支付业务相关的重要身份证件等资料，不交给其他人保管，不放置在不安全场所。</p>' +
+            '<p>（4）避免使用容易被其他人猜出或破解的密码（如：采用生日、电话号码等与个人信息相关的信息或具有规律性的数字或字母组合作为快捷支付业务密码），避免设置与其他用途相同的密码（如：采用电子邮件密码作为借记卡快捷支付密码）。客户应定期或不定期更新其密码。</p>' +
+            '<p>（5） 应经常关注账户内资金变化，如发现任何通过中国银行借记卡快捷支付从事的未经客户许可的操作及交易，客户应马上与支付机构或中国银行取得联系。</p>' +
+            '<p>10.借记卡快捷支付业务资金清算可能出现异常及差错交易，银行及合作支付机构将对异常及差错交易及时进行纠正处理。银行及合作支付机构将根据客户要求提供交易记录的时间和方式等信息。</p>' +
+            '<p>11.客户不得利用中国银行快捷支付业务进行虚假交易、洗钱、诈骗、恐怖融资等行为，且有义务配合中国银行进行相关调查，一旦客户拒绝配合进行相关调查或中国银行认为客户存在或涉嫌虚假交易、洗钱或任何其他非法活动、欺诈或违反诚信原则的行为、或违反本协议约定的，中国银行有权采取以下一种、多种或全部措施：</p><p>（1）暂停或终止提供本协议项下快捷支付业务服务；</p><p>（2）终止本协议；</p><p>（3）取消客户的用卡资格。</p>' +
+            '<p>12.客户同意中国银行就快捷支付业务的开展，向支付机构提供客户留存在中国银行的户名（如与支付机构约定不校验姓名则去掉）、银行卡号、证件号码（如与支付机构约定不校验证件号码则去掉）、手机号码等信息。</p>' +
+            '<p>13.客户可以登录中国银行官方网站撤销本人名下指定借记卡与支付机构账户关联的快捷支付功能。</p>' +
+            '<p>14.中国银行系统升级、业务变化、收费变更，或根据业务发展需要修改本协议，中国银行将提前进行公告。若客户有异议，有权选择撤销相关服务，若客户选择继续接受该服务的，视为客户同意并接受相关业务或协议按变更或修改后的内容执行。双方同意，本协议所称公告均指在中国银行网点、中国银行网站【http://www.boc.cn】、电子银行渠道等进行公告。</p>' +
+            '<p>15.选择打勾的客户，视同已通读上述条款，对条款的内容及其后果已充分理解，对所有内容均无异议。</p>' +
+            '<p>16.本协议在客户于支付机构提供的页面服务协议栏位打勾并提交后生效。本协议的生效、履行及解释均使用中华人民共和国法律（为本协议之目的，不含中国香港、澳门、台湾地区法律）。本协议项下的争议向中国银行所在地人民法院起诉。</p>' +
+            '<p>合同使用说明：本合同为个人支付客户使用中国银行借记卡快捷支付服务时与中国银行签订的服务协议。中国银行借记卡快捷支付合作支付机构应在支付客户签约中国银行借记卡快捷支付服务时向客户展示该协议，客户阅签该协议后方可签约借记卡快捷支付服务。</p>'+'</div>';
+    document.querySelector(".J-bocProlTrigger").addEventListener("click", function () {
+        To.Popup.base(bocProtocol, "pme-protocol", true,true, "中国银行快捷支付服务协议","同意");
+    }, false);
+    #end
+    #if($createPaymentError)
+        var createPaymentError = JSON.parse('${createPaymentError}');
+    #else
+    var createPaymentError = {};
+    #end
+    function showBindCard() {
+            var bankList = JSON.parse(document.querySelector("#J-bankList").textContent);
+            var html = '';
+            for (var i = 0, l = bankList.length; i < l; i++) {
+                var cardType = bankList[i].cardtype == "CREDIT" ? "信用卡" : "储蓄卡";
+                html += '<div class="pme-bind-card"> <div><img src="${ctx.contextPath}/static/images/' + bankList[i].bankImage + '" height="30"></div><div class="ml10"><p class="f18">' + bankList[i].bankName + '</p><p class="mt5 card-num f12">尾号' + bankList[i].cardlater + '<span class="ml20">' + cardType + '</span></p>'+ (typeof createPaymentError[bankList[i].bindid] != "undefined" ? '<p class="error-info">' + createPaymentError[bankList[i].bindid].errorMsg + createPaymentError[bankList[i].bindid].errorCode + '</p>' : '') +'</div><div class="bank-data'+ (typeof createPaymentError[bankList[i].bindid] != "undefined"?' disabled':'') +'" data-bank-image="' + bankList[i].bankImage + '" data-bank-name="' + bankList[i].bankName + '" data-bank-no="' + bankList[i].cardlater + '" data-card-type="' + bankList[i].cardtype + '" data-bind-id="' + bankList[i].bindid + '"></div></div>'
+            }
+			#if($showChangeCard)
+           		html += '<a href="${ctx.contextPath}/wap/request/first?token=${token}" class="other-card">其他卡支付</a>'
+            #end
+			To.Popup.base(html, "pme-bank-list", true, false, "更换银行卡");
+            document.querySelector(".pme-bank-list").addEventListener("click", function (event) {
+                if (event.target.classList.contains("bank-data")) {
+                    var target = event.target;
+                    var dom = window.document;
+                    if (!parseInt(target.dataset.bindId)) {
+                          To.Popup.close();
+                    } else {
+                          location.assign("${ctx.contextPath}/wap/request/bind?token=$!{token}&bindId=" + target.dataset.bindId);
+                    }
+
+                }
+                To.Popup.close();
+            }, false);
+        }
+
+    function preRouterGetCode(elem) {//获取验证码
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/wap/ajax/smsSend",
+            data: {
+                bankCode: jQuery("input[name=bankCode]").val(),
+                cardno: BASE64.encoder(jQuery("input[name=cardno]").val()),
+                cardType: jQuery("input[name=cardType]").val(),
+                bankName: jQuery("input[name=bankName]").val(),
+                name: BASE64.encoder(jQuery("input[name=name]").val()),
+                idno: BASE64.encoder(jQuery("input[name=idno]").val()),
+                valid: BASE64.encoder(jQuery("input[name=valid]").val()),
+                cvv2: BASE64.encoder(jQuery("input[name=cvv2]").val()),
+                pass: BASE64.encoder(jQuery("input[name=pass]").val()),
+                phone: BASE64.encoder(jQuery("input[name=phone]").val()),
+                token: jQuery("input[name=token]").val()
+            },
+            success: function (data) {
+                var result = JSON.parse(data);
+                var getBtn = document.querySelector(".popup-verifycode .get-code-btn");
+                getBtn.disabled = true;
+                var units = document.querySelectorAll("form.verifycode li.unit");//保存验证码每一个单元格
+                document.querySelector("#verifyCode").value = ''
+                units.forEach(function (item) {
+                    item.innerHTML = '';
+                })
+
+                if (result.status == 'success') {
+                    timing(getBtn, 60, function () {
+                        getBtn.disabled = false;
+                        getBtn.textContent = "获取验证码";
+                    });
+                    document.querySelector(".bankInfo-tip").classList.remove("none");
+
+                    if (result.reqSmsSendTypeEnum == "YEEPAY") {
+                        if (result.phoneNo) {
+                            document.querySelector(".bankInfo-tip").innerHTML = "验证码已发送到手机：" + result.phoneNo.replace(result.phoneNo.substring(3, 7), "****");
+                        } else {
+                            document.querySelector(".bankInfo-tip").innerHTML = "验证码发送成功！";
+                        }
+                        document.querySelector(".bankInfo-tip").classList.remove("dangerMsg")
+
+                    } else if (result.reqSmsSendTypeEnum == "VOICE") {
+                            #if("$!sendSMSNo" !=""){
+                                document.querySelector(".bankInfo-tip").innerHTML = "$!sendSMSNo为您播报语音验证码";
+                                document.querySelector(".bankInfo-tip").classList.remove("dangerMsg")
+                            }
+                        #else
+                            document.querySelector(".bankInfo-tip").innerHTML = "<span style='color: #0073C7;'>语音</span>验证码播报中，请注意接听";
+                            document.querySelector(".bankInfo-tip").classList.remove("dangerMsg");
+                        #end
+                    }
+
+                } else {
+                    document.querySelector(".bankInfo-tip").classList.remove("none");
+                    document.querySelector(".bankInfo-tip").innerHTML = result.msg;
+                    document.querySelector(".bankInfo-tip").classList.add("dangerMsg")
+                }
+            }
+        });
+    }
+
+         function getCode(elem) {//获取验证码
+                 var error = document.querySelector("#pme-errorMsg");
+                 var input = document.querySelectorAll("form input");
+                 if (error && !error.classList.contains("hide")) {
+                     return false;
+                 }
+                 for (var i = 0, l = input.length; i < l; i++) {
+                     var result = validate.call(input[i], "getCode");
+                     if (result === false) {
+                         return false;
+                         break;
+                     }
+
+                 }
+                var target=document.getElementById("J_getCode");
+                 if(typeof elem.dataset.disabled=="undefined" || elem.dataset.disabled=="") {
+                     var verifycode = document.getElementsByName("verifycode")[0];
+                     verifycode.placeholder = "正在获取...";
+                     target.dataset.disabled = "true";
+                     jQuery.ajax({
+                         method: "POST",
+                         url: "${ctx.contextPath}/wap/ajax/smsSend",
+                         data: {
+                             bankCode:jQuery("input[name=bankCode]").val(),
+                             cardno:BASE64.encoder(jQuery("input[name=cardno]").val()),
+                             cardType:jQuery("input[name=cardType]").val(),
+                             bankName:jQuery("input[name=bankName]").val(),
+                             name:BASE64.encoder(jQuery("input[name=name]").val()),
+                             idno:BASE64.encoder(jQuery("input[name=idno]").val()),
+                             valid:BASE64.encoder(jQuery("input[name=valid]").val()),
+                             cvv2:BASE64.encoder(jQuery("input[name=cvv2]").val()),
+                             pass:BASE64.encoder(jQuery("input[name=pass]").val()),
+                             phone:BASE64.encoder(jQuery("input[name=phone]").val()),
+                             token:jQuery("input[name=token]").val()
+                         },
+                         success: function (data) {
+                             var result = JSON.parse(data);
+                             if (result.status == "success") {
+                                 target.dataset.disabled = "true";
+                                 timing(target, 60, function () {
+                                     target.removeAttribute("data-disabled");
+                                     target.textContent = "获取验证码";
+                                 });
+                                 if(result.reqSmsSendTypeEnum == "YEEPAY"){
+                                     #if(${phoneNo})
+                                     						To.Popup.alert("验证码已发送到手机：${phoneNo}");
+                                     					#else
+                                                             var ybNum = result.phoneNo;
+	                                                         var ybVal = ybNum.replace(ybNum.substring(3 , 7) , "****");
+                                                             To.Popup.alert("验证码已发送到手机："+ybVal);
+                                     					#end
+
+                                   }else if(result.reqSmsSendTypeEnum == "VOICE"){
+								   		#if("$!sendSMSNo" !=""){
+								   			To.Popup.alert("<span style='color: #0073C7;'>$!sendSMSNo</span>"+"为您播报语音验证码");
+										 }
+										#else
+									 		To.Popup.alert("<div style='text-align: center'><span style='color: #0073C7;'>语音</span>验证码播报中，请注意接听</div>");
+										#end
+                                   }
+                                 verifycode.placeholder = "请输入验证码";
+                             } else {
+                                 target.dataset.disabled = "";
+                                 To.Popup.alert(result.msg);
+                                 verifycode.placeholder = "获取验证码";
+                             }
+                         },
+                         error: function () {
+                         target.dataset.disabled = "";
+                         ncIsClick = true;
+                         //alert("999");
+                             verifycode.placeholder = "获取验证码";
+                         }
+                     });
+                 }
+             }
+         function timing(elem, t, callback, context) {//倒计时
+         /**
+         * @param [elem] DOM 显示倒计时的节点
+         * @param [t] number 倒计时长
+         * @param [callback] function 回调函数
+         * @param [context] object 回调函数上下文
+         * */
+         var timeId = null;
+         timeId = setTimeout(function () {
+         if (t > 0) {
+         elem.textContent = t + "s后重新发送";
+         t--;
+         timeId = setTimeout(arguments.callee, 1000);
+         } else {
+         t = 0;
+         clearTimeout(timeId);
+         typeof callback == "function" ? callback.call(context) : false;
+         }
+         }, 0);
+         }
+         document.querySelector("#J-agree").addEventListener("click", function () {
+                              if (this.checked) {
+                                  document.querySelector(".J-payBtn").disabled = false;
+                              } else {
+                                  document.querySelector(".J-payBtn").disabled = true;
+                              }
+                          }, false);
+    +function marketinginfo() {
+        /*获取营销立减活动信息*/
+        jQuery.ajax({
+            method: "POST",
+            url: "${ctx.contextPath}/market/info",
+            data: {token: "${token}"},
+            dataType: "json"
+        }).done(function (data) {
+            if (data.doMarketActivity == "Y") {
+                if (data.activityCopyWrites.hasOwnProperty("ALL")) {
+                    /*所有支付方式都支持做营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.ALL.copyWrite);
+                }
+                if (data.activityCopyWrites.hasOwnProperty("NCPAY")) {
+                    /*一键支付支持营销活动*/
+                    jQuery(".product-random-guide").css("display", "inline-block").text(data.activityCopyWrites.NCPAY.copyWrite);
+                }
+            }
+        });
+    }();
+</script>
+#if ($errormsg)
+<script>
+    To.Popup.alert("$errormsg");
+</script>
+#end
+</body>
+</html>

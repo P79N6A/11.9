@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+	   xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context.xsd
+      http://www.springframework.org/schema/integration/ip
+      http://www.springframework.org/schema/integration/ip/spring-integration-ip-2.0.xsd
+      http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+      http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/rabbit
+      http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+      ">
+	<rabbit:connection-factory id="receiveConnectionFactory"
+							   host="rabbitmq.bass.3g" username="yjzf" password="1qaz2wsx" port="5672"
+							   virtual-host="yjzf"/>
+
+	<rabbit:connection-factory id="oprReceiveConnectionFactory"
+							   host="rabbitmq.bass.3g" username="opr" password="yeepay.com" port="5672"
+							   virtual-host="opr" />
+
+	<!--接受ncpay消息配置 -->
+	<rabbit:queue id="payprocessor_receive_ncpay" durable="true"
+				  auto-delete="false" exclusive="false" name="ncpay_notify_busin_payprocessor" />
+	<task:executor id="taskExecutor" pool-size="4-16" queue-capacity="128" keep-alive="60" />
+	<bean id="queueBusinLitener" class="com.yeepay.g3.core.payprocessor.msg.PayMessageReceiver" />
+	<rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="4" acknowledge="auto" task-executor="taskExecutor">
+		<rabbit:listener queues="payprocessor_receive_ncpay" ref="queueBusinLitener" />
+	</rabbit:listener-container>
+
+	<!--&lt;!&ndash; 接收FE 配置 &ndash;&gt;-->
+	<rabbit:queue id="payprocessor_receive_frontend" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor" />
+	<rabbit:queue id="payprocessor_receive_frontend.delay.main" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor.delay.main" />
+	<rabbit:queue id="payprocessor_receive_frontend.delay.1s" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor.delay.1s" />
+	<rabbit:queue id="payprocessor_receive_frontend.delay.2s" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor.delay.2s" />
+	<rabbit:queue id="payprocessor_receive_frontend.delay.5s" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor.delay.5s" />
+	<rabbit:queue id="payprocessor_receive_frontend.delay.10s" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor.delay.10s" />
+	<rabbit:queue id="payprocessor_receive_frontend.delay.30s" durable="true" auto-delete="false"
+				  exclusive="false" name="frontend_notify_payprocessor.delay.30s" />
+	<task:executor id="feTaskExecutor" pool-size="4-16" queue-capacity="128" keep-alive="60"/>
+	<bean id="feQueueLitener" class="com.yeepay.g3.core.payprocessor.msg.FrontEndPayMessageReceiver"/>
+	<rabbit:listener-container connection-factory="receiveConnectionFactory"
+							   concurrency="4" acknowledge="auto" task-executor="feTaskExecutor">
+		<rabbit:listener  ref="feQueueLitener" queues="
+    		payprocessor_receive_frontend,
+			payprocessor_receive_frontend.delay.main,
+			payprocessor_receive_frontend.delay.1s,
+			payprocessor_receive_frontend.delay.2s,
+			payprocessor_receive_frontend.delay.5s,
+			payprocessor_receive_frontend.delay.10s,
+			payprocessor_receive_frontend.delay.30s"/>
+	</rabbit:listener-container>
+
+	<!--接收FE-NET回调配置-->
+	<rabbit:queue id="payprocessor_receive_netpay" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor"/>
+	<rabbit:queue id="payprocessor_receive_netpay.delay.main" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor.delay.main"/>
+	<rabbit:queue id="payprocessor_receive_netpay.delay.1s" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor.delay.1s"/>
+	<rabbit:queue id="payprocessor_receive_netpay.delay.2s" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor.delay.2s"/>
+	<rabbit:queue id="payprocessor_receive_netpay.delay.5s" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor.delay.5s"/>
+	<rabbit:queue id="payprocessor_receive_netpay.delay.10s" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor.delay.10s"/>
+	<rabbit:queue id="payprocessor_receive_netpay.delay.30s" durable="true" auto-delete="false"
+				  exclusive="false" name="netpay_notify_payprocessor.delay.30s"/>
+	<task:executor id="npTaskExecutor" pool-size="4-16" queue-capacity="128" keep-alive="60"/>
+	<bean id="npQueueLitener" class="com.yeepay.g3.core.payprocessor.msg.NetPayMessageReceiver"/>
+	<rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="4" acknowledge="auto"
+							   task-executor="npTaskExecutor">
+		<rabbit:listener ref="npQueueLitener" queues="
+			payprocessor_receive_netpay,
+			payprocessor_receive_netpay.delay.main,
+			payprocessor_receive_netpay.delay.1s,
+			payprocessor_receive_netpay.delay.2s,
+			payprocessor_receive_netpay.delay.5s,
+			payprocessor_receive_netpay.delay.10s,
+			payprocessor_receive_netpay.delay.30s"/>
+	</rabbit:listener-container>
+
+
+	<!--接收FE-CFL回调配置-->
+	<rabbit:queue id="installment_notify_payprocessor" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor" />
+	<rabbit:queue id="installment_notify_payprocessor.delay.main" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor.delay.main" />
+	<rabbit:queue id="installment_notify_payprocessor.delay.1s" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor.delay.1s" />
+	<rabbit:queue id="installment_notify_payprocessor.delay.2s" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor.delay.2s" />
+	<rabbit:queue id="installment_notify_payprocessor.delay.5s" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor.delay.5s" />
+	<rabbit:queue id="installment_notify_payprocessor.delay.10s" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor.delay.10s" />
+	<rabbit:queue id="installment_notify_payprocessor.delay.30s" durable="true" auto-delete="false"
+				  exclusive="false" name="installment_notify_payprocessor.delay.30s" />
+	<task:executor id="cflTaskExecutor" pool-size="2-4" queue-capacity="128" keep-alive="60"/>
+	<bean id="cflQueueLitener" class="com.yeepay.g3.core.payprocessor.msg.CflPayMessageReceiver"/>
+	<rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="2" acknowledge="auto"
+							   task-executor="cflTaskExecutor">
+		<rabbit:listener ref="cflQueueLitener" queues="
+			installment_notify_payprocessor,
+			installment_notify_payprocessor.delay.main,
+			installment_notify_payprocessor.delay.1s,
+			installment_notify_payprocessor.delay.2s,
+			installment_notify_payprocessor.delay.5s,
+			installment_notify_payprocessor.delay.10s,
+			installment_notify_payprocessor.delay.30s"/>
+	</rabbit:listener-container>
+
+	<!--&lt;!&ndash; 接收账户支付（支付处理器发送）消息回调 &ndash;&gt;-->
+	<rabbit:queue id="account_pay_notify_payprocessor" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor" />
+	<rabbit:queue id="account_pay_notify_payprocessor.delay.main" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor.delay.main" />
+	<rabbit:queue id="account_pay_notify_payprocessor.delay.1s" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor.delay.1s" />
+	<rabbit:queue id="account_pay_notify_payprocessor.delay.2s" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor.delay.2s" />
+	<rabbit:queue id="account_pay_notify_payprocessor.delay.5s" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor.delay.5s" />
+	<rabbit:queue id="account_pay_notify_payprocessor.delay.10s" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor.delay.10s" />
+	<rabbit:queue id="account_pay_notify_payprocessor.delay.30s" durable="true" auto-delete="false"
+				  exclusive="false" name="account_pay_notify_payprocessor.delay.30s" />
+	<task:executor id="accountTaskExecutor" pool-size="2-4" queue-capacity="128" keep-alive="60"/>
+	<bean id="accountQueueLitener" class="com.yeepay.g3.core.payprocessor.msg.AccountPayMessageReceiver"/>
+	<rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="2" acknowledge="auto"
+							   task-executor="accountTaskExecutor">
+		<rabbit:listener ref="accountQueueLitener" queues="
+			account_pay_notify_payprocessor,
+			account_pay_notify_payprocessor.delay.main,
+			account_pay_notify_payprocessor.delay.1s,
+			account_pay_notify_payprocessor.delay.2s,
+			account_pay_notify_payprocessor.delay.5s,
+			account_pay_notify_payprocessor.delay.10s,
+			account_pay_notify_payprocessor.delay.30s"/>
+	</rabbit:listener-container>
+
+	<!--接收订单处理器订单撤销mq -->
+	<rabbit:queue id="com.yeepay.opr.queue_4_pc_h5_closeoreder" durable="true" auto-delete="false"
+				  exclusive="false" name="com.yeepay.opr.queue_4_pc_h5_closeoreder" />
+	<task:executor id="oprCancelRequestTaskExecutor" pool-size="2-4" queue-capacity="128" keep-alive="60"/>
+	<bean id="oprCancelRequestQueueLitener" class="com.yeepay.g3.core.payprocessor.msg.CancelRequestMessageReceiver"/>
+	<rabbit:listener-container connection-factory="oprReceiveConnectionFactory" concurrency="2" acknowledge="auto"
+							   task-executor="oprCancelRequestTaskExecutor">
+		<rabbit:listener ref="oprCancelRequestQueueLitener" queues="com.yeepay.opr.queue_4_pc_h5_closeoreder"/>
+	</rabbit:listener-container>
+
+
+	<!--接收非订单处理器（POS）订单撤销mq -->
+	<rabbit:queue id="com.yeepay.orderSystem.queue_4_closeoreder" durable="true" auto-delete="false"
+				  exclusive="false" name="com.yeepay.orderSystem.queue_4_closeoreder" />
+	<task:executor id="otherOrderSysCancelRequestTaskExecutor" pool-size="2-4" queue-capacity="128" keep-alive="60"/>
+	<bean id="otherOrderSysCancelRequestQueueLitener" class="com.yeepay.g3.core.payprocessor.msg.OrderSysCancelRequestMessageReceiver"/>
+	<rabbit:listener-container connection-factory="receiveConnectionFactory" concurrency="2" acknowledge="auto"
+							   task-executor="otherOrderSysCancelRequestTaskExecutor">
+		<rabbit:listener ref="otherOrderSysCancelRequestQueueLitener" queues="com.yeepay.orderSystem.queue_4_closeoreder"/>
+	</rabbit:listener-container>
+
+</beans>
